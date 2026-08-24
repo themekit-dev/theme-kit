@@ -22,3 +22,8 @@ import ThemeSwitcher from "../components/ThemeSwitcher.astro";
 ## Bootstrap & Sync
 
 `createBlockingScript`, `buildThemeCssMap`, `darkModeCSSTemplate` — zero-flash bootstrap; `createAstroThemePersistence()` persistence adapter; `computeFingerprint()` cookie/config fingerprinting; `getGlobalRuntime()` / `setGlobalRuntime()` share one runtime across islands.
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).

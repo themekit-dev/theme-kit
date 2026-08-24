@@ -6,7 +6,6 @@ import {
   GITHUB_URL,
   NPM_ORG_URL,
   CONTACT_URL,
-  npmPackageUrl,
   SITE_NAME,
 } from "../lib/site";
 
@@ -79,7 +78,7 @@ const socials = [
     ),
   },
   {
-    href: npmPackageUrl("@theme-kit/core"),
+    href: NPM_ORG_URL,
     label: "npm",
     icon: (
       <svg

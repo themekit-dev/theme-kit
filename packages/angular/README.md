@@ -46,3 +46,8 @@ export class ThemeSwitcher {
 ## SSR & Bootstrap
 
 `createAngularPersistence()`, `createBlockingScriptContent`, `buildThemeCSSMap` — zero-flash bootstrap helpers.
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).

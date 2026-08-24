@@ -67,3 +67,8 @@ After hydration, the plugin installs one app-wide runtime (provided to `useTheme
 - Nuxt 3 module (`configKey: "themeKit"`) with `themes`, `defaultTheme`, `initialMode`, `initialFamily`, `transition`, `scrollbar` and `storageKey` options.
 - Auto-imports composables, registers `ThemeProvider`, `ThemeScope` and `ThemeScrollbar`, and installs the runtime plugin.
 - Re-exports the Vue integration plus the full `@theme-kit/core` surface, and the SSR helpers (`resolveThemeFromCookies`, `computeFingerprint`, `parseCookieHeader`, `themeKitCookieNames`, `createNuxtThemeBootstrapScript`).
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).

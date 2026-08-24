@@ -26,3 +26,8 @@ const { theme, mode, toggleTheme } = useTheme();
 ## Components
 
 `ThemeScope` — scoped theming component for subtrees.
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).

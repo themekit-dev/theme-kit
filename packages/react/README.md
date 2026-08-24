@@ -32,3 +32,8 @@ function ThemeSwitcher() {
 ## Components
 
 `ThemeProvider`, `ThemeScope`, `ThemeModeButton`, `ThemeInspector`, plus `useScopedTheme(ref, themeName)` for imperative scoping.
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).

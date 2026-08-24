@@ -19,3 +19,8 @@ Framework-free theming for any HTML page — no build step required.
 ## Elements
 
 `<theme-kit-provider>`, `<theme-kit-scope>`, `<theme-kit-toggle>`, `<theme-kit-select>`, plus `getProviderRuntime()` for imperative access.
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).

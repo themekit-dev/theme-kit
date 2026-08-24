@@ -52,3 +52,8 @@ export function ThemeSwitcher() {
 ## Client
 
 `ClientThemeProvider` (cookie + localStorage, fingerprint, `.dark` class sync), `ThemeBootstrap`, and `@theme-kit/next/client` which re-exports every React hook plus `ThemeScope`, `ThemeInspector`, `ThemeModeButton`.
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).

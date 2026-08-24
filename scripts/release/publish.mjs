@@ -82,10 +82,13 @@ console.log("\nPublishing...\n");
 let ok = 0;
 for (const name of order) {
   const pkg = byName.get(name);
-  const args = ["publish", "--access", "public"];
+  // `pnpm publish` (not `npm publish`): pnpm rewrites workspace:* dependencies
+  // to the actual version in the published package.json; npm would ship the
+  // literal "workspace:*" specifier and break every dependent package.
+  const args = ["publish", "--access", "public", "--no-git-checks"];
   if (distTag) args.push("--tag", distTag);
   try {
-    execSync(`npm ${args.join(" ")}`, {
+    execSync(`pnpm ${args.join(" ")}`, {
       cwd: pkg.dir,
       encoding: "utf8",
       stdio: "inherit",

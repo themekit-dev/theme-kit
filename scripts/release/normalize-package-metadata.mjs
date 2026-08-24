@@ -293,6 +293,7 @@ for (const { dir, pkgPath, json } of packages) {
       "## Documentation",
       "",
       `Full API reference and guides: [Theme Kit docs](${DOCS_URL}).`,
+      `All packages: [npm](https://www.npmjs.com/org/theme-kit).`,
       "",
       "## License",
       "",

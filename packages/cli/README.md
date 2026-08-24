@@ -109,3 +109,8 @@ and `LICENSE`.
 ## License
 
 MIT
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).

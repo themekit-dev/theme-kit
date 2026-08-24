@@ -4,6 +4,7 @@ import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
 import { getContent } from "../../lib/content";
 import { packages } from "../../lib/packages";
+import { NPM_ORG_URL } from "../../lib/site";
 
 export const metadata = {
   title: "Packages",
@@ -20,6 +21,18 @@ export default function PackagesPage() {
           title="Every package, deep-dived"
           description="Each package below has its own page with install tabs, copy-paste snippets and a full API reference table. Click through to explore."
         />
+        <p className="text-sm opacity-60 mt-2">
+          All packages available on{" "}
+          <a
+            href={NPM_ORG_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="text-primary hover:underline"
+          >
+            npm ↗
+          </a>
+          .
+        </p>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-12">
         {packages.map((pkg) => (

@@ -24,3 +24,8 @@ Loader/server-side theming resolves the theme from cookies and renders it before
 ## Client
 
 `ThemeProvider` consumes the loader-resolved selection, with the full hook set and `ThemeScope`.
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).

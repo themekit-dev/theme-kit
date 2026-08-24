@@ -27,3 +27,8 @@ body {
 - Dark mode via `@custom-variant dark (&:where(.dark, .dark *))` — scoped to the `.dark` class Theme Kit maintains.
 - `synchronizeDarkClass(theme)` keeps the `.dark` class in sync with the active theme.
 - Ships `theme.css`, `dark.css` and `preflight.css` layers.
+
+## Documentation
+
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+All packages: [npm](https://www.npmjs.com/org/theme-kit).
