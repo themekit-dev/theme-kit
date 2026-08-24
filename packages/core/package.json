@@ -1,0 +1,63 @@
+{
+  "name": "@theme-kit/core",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./vanilla": {
+      "types": "./dist/vanilla.d.ts",
+      "import": "./dist/vanilla.js",
+      "require": "./dist/vanilla.cjs"
+    },
+    "./vite": {
+      "types": "./dist/vite-plugin.d.ts",
+      "import": "./dist/vite-plugin.js",
+      "require": "./dist/vite-plugin.cjs"
+    },
+    "./scrollbar.css": "./scrollbar.css"
+  },
+  "files": [
+    "dist",
+    "scrollbar.css",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "dev": "tsup src/index.ts --watch --format esm,cjs --dts",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  },
+  "description": "Framework-agnostic theming engine: theme store, runtime, transitions, scheduling, accessibility, and DOM adapters.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "theming",
+    "dark-mode",
+    "css-variables",
+    "design-tokens"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

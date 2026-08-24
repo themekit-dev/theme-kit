@@ -1,0 +1,60 @@
+{
+  "name": "@theme-kit/tailwind",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "style": "./dist/index.css",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "style": "./dist/index.css",
+      "import": "./dist/index.js"
+    },
+    "./theme.css": {
+      "import": "./dist/theme.css",
+      "default": "./dist/theme.css"
+    },
+    "./dark.css": {
+      "import": "./dist/dark.css",
+      "default": "./dist/dark.css"
+    },
+    "./preflight.css": {
+      "import": "./dist/preflight.css",
+      "default": "./dist/preflight.css"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "dev": "tsup src/index.ts --watch --format esm --dts"
+  },
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
+  },
+  "dependencies": {
+    "@theme-kit/core": "workspace:*"
+  },
+  "description": "Tailwind CSS v4 plugin that maps Theme Kit tokens to Tailwind theme variables.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "tailwindcss",
+    "theming",
+    "css-variables"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

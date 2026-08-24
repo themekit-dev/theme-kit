@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "paths": {
+      "@theme-kit/react": ["../react/dist/index.d.ts"],
+      "@theme-kit/react/*": ["../react/dist/*.d.ts"]
+    }
+  },
+  "include": ["src"]
+}

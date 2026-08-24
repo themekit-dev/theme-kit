@@ -1,0 +1,26 @@
+{
+  "name": "theme-kit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "release:audit": "node scripts/release/audit-packages.mjs && node scripts/release/export-inventory.mjs && node scripts/release/snippet-audit.mjs",
+    "release:pack": "node scripts/release/pack-verify.mjs",
+    "release:consumer": "node release-test/run.mjs",
+    "release:api": "pnpm --filter @theme-kit/docs api:generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@changesets/cli": "^2.31.1",
+    "@types/node": "^26.1.1",
+    "eslint": "^10.8.0",
+    "prettier": "^3.9.6",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
+  }
+}

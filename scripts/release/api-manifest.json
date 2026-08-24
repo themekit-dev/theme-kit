@@ -1,0 +1,1264 @@
+{
+  "@theme-kit/angular": {
+    "version": "1.0.0",
+    "dts": "packages\\angular\\dist\\types\\theme-kit-angular.d.ts",
+    "exports": {
+      "values": [
+        "THEME_KIT_RUNTIME",
+        "THEME_KIT_SCOPED_RUNTIME",
+        "ThemeInspectorComponent",
+        "ThemeScopeDirective",
+        "ThemeScrollbarDirective",
+        "buildThemeCSSMap",
+        "createAngularPersistence",
+        "createBlockingScriptContent",
+        "injectBootstrapTheme",
+        "injectDaisyTheme",
+        "injectOpenPropsTheme",
+        "injectShadcnTheme",
+        "injectTheme",
+        "injectThemeBatch",
+        "injectThemeHistory",
+        "injectThemeLifecycle",
+        "injectThemePacks",
+        "injectThemeRestore",
+        "injectThemeRuntime",
+        "injectThemeSchedule",
+        "injectThemeSnapshot",
+        "injectThemeTimeTravel",
+        "provideThemeKit",
+        "provideThemeKitRuntime"
+      ],
+      "types": [
+        "InjectAdapterOptions",
+        "ThemeCSSMap",
+        "ThemeHistoryState",
+        "ThemeInspectorComponent",
+        "ThemeKitProviderOptions",
+        "ThemeScheduleController",
+        "ThemeScopeDirective",
+        "ThemeScrollbarDirective",
+        "ThemeState"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/astro": {
+    "version": "1.0.0",
+    "dts": "packages\\astro\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ThemeInspector",
+        "ThemeProviderClient",
+        "ThemeScope",
+        "ThemeScrollbar",
+        "buildThemeCssMap",
+        "computeFingerprint",
+        "createAstroThemePersistence",
+        "createBlockingScript",
+        "darkModeCSSTemplate",
+        "getGlobalRuntime",
+        "setGlobalRuntime",
+        "useSetThemeFamily",
+        "useSetThemeMode",
+        "useTheme",
+        "useThemeBatch",
+        "useThemeFamily",
+        "useThemeHistory",
+        "useThemeLifecycle",
+        "useThemeMode",
+        "useThemePacks",
+        "useThemeRestore",
+        "useThemeRuntime",
+        "useThemeSchedule",
+        "useThemeSnapshot",
+        "useThemeTokens",
+        "useThemeValue",
+        "useToggleTheme"
+      ],
+      "types": [
+        "ThemeInspectorProps",
+        "ThemeProviderClientProps",
+        "ThemeScopeProps",
+        "ThemeScrollbarProps"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [
+        "./ThemeInspector.astro",
+        "./adapters",
+        "./client",
+        "./provider.astro"
+      ]
+    }
+  },
+  "@theme-kit/cli": {
+    "version": "1.0.0",
+    "dts": "packages\\cli\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ExitCodes",
+        "UsageError",
+        "VERSION",
+        "cmdExport",
+        "cmdGenerate",
+        "cmdInspect",
+        "cmdMigrate",
+        "cmdValidate",
+        "parseArgs"
+      ],
+      "types": [
+        "ParsedArgs",
+        "UsageError"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/core": {
+    "version": "1.0.0",
+    "dts": "packages\\core\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ANIMATED_GROUP_KEYS",
+        "DEFAULT_SCHEDULED_DARK_THEME",
+        "DEFAULT_SCHEDULED_LIGHT_THEME",
+        "DEFAULT_THEME_TRANSITION",
+        "DEFAULT_TIMEZONE_LOCATION",
+        "DEFAULT_TRANSITION_PRESET",
+        "EMPTY_THEME_DIFF",
+        "EMPTY_THEME_SCHEDULE_STATE",
+        "GROUP_PROPERTIES",
+        "GROUP_VAR_PREFIXES",
+        "PRE_PAINT_SCROLLBAR_CSS",
+        "TRANSITION_PRESETS",
+        "ThemeError",
+        "ThemeRegistry",
+        "auto",
+        "buildThemeCssMap",
+        "calculateSunTimes",
+        "cancelThemeAnimation",
+        "clearMigrations",
+        "composeTheme",
+        "contrast",
+        "createAccessibilityPlugin",
+        "createAdapterRegistry",
+        "createAnimationsPlugin",
+        "createBroadcastPlugin",
+        "createCSSVariablesBinding",
+        "createDOMBinding",
+        "createDebuggerPlugin",
+        "createDefaultPersistence",
+        "createDevToolsPlugin",
+        "createGenerationPlugin",
+        "createHistoryPlugin",
+        "createMultiWindowSync",
+        "createNoopSync",
+        "createOverlayScrollbar",
+        "createPersistencePlugin",
+        "createPluginManager",
+        "createPrePaintScrollbarCSS",
+        "createPrePaintScrollbarScript",
+        "createScheduledPlugin",
+        "createScheduledThemeBinding",
+        "createScopedThemeBinding",
+        "createSharedWorkerSync",
+        "createStorageEventSync",
+        "createSystemThemeBinding",
+        "createThemeBootstrapScript",
+        "createThemeBroadcast",
+        "createThemeDebugger",
+        "createThemeDiff",
+        "createThemeHistory",
+        "createThemeLifecycle",
+        "createThemeModeController",
+        "createThemePersistence",
+        "createThemeRegistry",
+        "createThemeRuntime",
+        "createThemeSchedule",
+        "createThemeScrollbar",
+        "createThemeSelectionBroadcast",
+        "createThemeStore",
+        "createTransitionPlan",
+        "darkModeCSSTemplate",
+        "defineTheme",
+        "destroySharedWorkerUrl",
+        "evaluateExpression",
+        "extendTheme",
+        "flattenTokens",
+        "generateTheme",
+        "getAccessibilityProfiles",
+        "getBrandPresets",
+        "getBrowserTimeZone",
+        "getBuiltInThemes",
+        "getContrastRatio",
+        "getDefaultThemes",
+        "getHighContrastTheme",
+        "getLargeTextTheme",
+        "getLocationForTimeZone",
+        "getNeutralThemes",
+        "getPresetThemes",
+        "getThemeFamily",
+        "getTimeZoneList",
+        "isExpression",
+        "isSettled",
+        "mergePresetTokens",
+        "mergeThemeDefinitions",
+        "mergeTokens",
+        "migrateTheme",
+        "migrations",
+        "prefersReducedMotion",
+        "registerMigration",
+        "resolveInitialTheme",
+        "resolveScheduledThemePair",
+        "resolveScopeTransition",
+        "resolveScopedTheme",
+        "resolveScopedThemePrePaint",
+        "resolveSelectedTheme",
+        "resolveSelection",
+        "resolveSelectionTheme",
+        "resolveSolarLocation",
+        "resolveTheme",
+        "resolveThemeName",
+        "resolveThemeRegistry",
+        "resolveTokens",
+        "runThemeAnimation",
+        "scanForTransition",
+        "scopeToCSSVariables",
+        "simulateCVD",
+        "simulateThemeForCVD",
+        "themeToCSSVariables",
+        "validateTheme",
+        "validateThemeContrast"
+      ],
+      "types": [
+        "AccessibilityPluginOptions",
+        "AdapterPlugin",
+        "AdapterPluginContext",
+        "AdapterRegistration",
+        "AdapterRegistry",
+        "AdapterStrategy",
+        "AnimatedGroupKey",
+        "AnimationsPluginOptions",
+        "BroadcastChannelLike",
+        "BroadcastPluginOptions",
+        "BuildThemeCssMapOptions",
+        "CSSVariablesOptions",
+        "CVDType",
+        "CalculateSunTimesLocationOptions",
+        "ContrastCheck",
+        "ContrastValidationResult",
+        "DOMBindingOptions",
+        "DebuggerPluginOptions",
+        "DevToolsPluginOptions",
+        "GenerateThemeOptions",
+        "GeneratedThemePair",
+        "GenerationPluginOptions",
+        "HistoryEntry",
+        "HistoryPluginOptions",
+        "InitialThemeResolution",
+        "MigrateOptions",
+        "MigrationStep",
+        "MultiWindowSyncOptions",
+        "OverlayScrollbarHandle",
+        "OverlayScrollbarOptions",
+        "PersistencePluginOptions",
+        "PluginManager",
+        "PrePaintScrollbarOptions",
+        "PresetFamily",
+        "PresetOverrides",
+        "PresetThemeName",
+        "PresetVariant",
+        "PresetVariantOverride",
+        "ResolveInitialThemeOptions",
+        "ResolveSelectionOptions",
+        "ResolveSelectionThemeOptions",
+        "ResolvedSolarLocation",
+        "ScheduledPluginOptions",
+        "ScheduledThemeBindingOptions",
+        "ScheduledThemeOptions",
+        "ScheduledThemePairInput",
+        "ScopedThemeBindingOptions",
+        "ScopedThemePrePaint",
+        "ScopedThemePrePaintOptions",
+        "ScopedThemeSelection",
+        "ScrollbarArrowDir",
+        "ScrollbarAxis",
+        "ScrollbarOptionsResolved",
+        "SelectionThemeResolution",
+        "SolarLocationInput",
+        "StorageAdapter",
+        "SystemThemeBindingOptions",
+        "ThemeAdapter",
+        "ThemeAnimationInput",
+        "ThemeBootstrapScriptOptions",
+        "ThemeBroadcastAdapter",
+        "ThemeBroadcastOptions",
+        "ThemeChangeEvent",
+        "ThemeChangeSource",
+        "ThemeDebugger",
+        "ThemeDefinition",
+        "ThemeDiff",
+        "ThemeError",
+        "ThemeHistory",
+        "ThemeHistoryOptions",
+        "ThemeLifecycle",
+        "ThemeLifecycleEventMap",
+        "ThemeLifecycleEventName",
+        "ThemeMeta",
+        "ThemeMode",
+        "ThemeModeControllerOptions",
+        "ThemeName",
+        "ThemePack",
+        "ThemePersistenceAdapter",
+        "ThemePersistenceOptions",
+        "ThemePlugin",
+        "ThemePluginHooks",
+        "ThemeRegistry",
+        "ThemeRegistryOptions",
+        "ThemeRuntime",
+        "ThemeRuntimeOptions",
+        "ThemeRuntimeSnapshot",
+        "ThemeSchedule",
+        "ThemeScheduleOptions",
+        "ThemeScheduleSetOptions",
+        "ThemeScheduleState",
+        "ThemeScheduleStatus",
+        "ThemeScheduleTransition",
+        "ThemeSelectionBroadcastOptions",
+        "ThemeSelectionPersistenceAdapter",
+        "ThemeSelectionState",
+        "ThemeStore",
+        "ThemeStoreOptions",
+        "ThemeToCSSVariablesOptions",
+        "ThemeTokens",
+        "ThemeTransitionOptions",
+        "TimeZoneLocation",
+        "TokenGroup",
+        "TokenRemap",
+        "TransitionPlan",
+        "TransitionPreset",
+        "ValidateThemeContrastOptions",
+        "ValidateThemeOptions",
+        "ValidationIssue",
+        "ValidationResult"
+      ],
+      "internal": {
+        "values": [
+          "checkContrastPair",
+          "clamp",
+          "computeMaxScroll",
+          "computeThumbSize",
+          "computeTranslate",
+          "easeAlpha",
+          "getCVDLabel",
+          "hasTokenReferences",
+          "isAutoCall",
+          "isContrastCall",
+          "lerp",
+          "observeScrollbarSizing",
+          "overscrollFactor",
+          "parseContrastCall",
+          "resolveFlatTokens",
+          "resolveValueReferences"
+        ],
+        "types": [
+          "ArrowButton",
+          "ArrowIcon",
+          "AxisState",
+          "Host",
+          "RenderState"
+        ]
+      },
+      "subpaths": [
+        "./scrollbar.css",
+        "./vanilla",
+        "./vite"
+      ]
+    }
+  },
+  "@theme-kit/devtools": {
+    "version": "1.0.0",
+    "dts": "packages\\devtools\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "createDevToolsInspector",
+        "createDevToolsPanel",
+        "createDevToolsPlugin"
+      ],
+      "types": [
+        "DevToolsEntry",
+        "DevToolsInspector",
+        "DevToolsInspectorOptions",
+        "DevToolsPerformanceEntry",
+        "DevToolsState"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/mantine": {
+    "version": "1.0.0",
+    "dts": "packages\\mantine\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "MantineThemeProvider",
+        "createMantineTheme",
+        "useMantineTheme"
+      ],
+      "types": [
+        "MantineThemeProviderProps"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/next": {
+    "version": "1.0.0",
+    "dts": "packages\\next\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ThemeProvider",
+        "ThemeScope",
+        "ThemeScrollbar"
+      ],
+      "types": [
+        "ThemeProviderBodyProps",
+        "ThemeProviderHtmlProps",
+        "ThemeProviderProps",
+        "ThemeScopeProps",
+        "ThemeScrollbarProps"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [
+        "./client"
+      ]
+    }
+  },
+  "@theme-kit/nuxt": {
+    "version": "1.0.0",
+    "dts": "packages\\nuxt\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ANIMATED_GROUP_KEYS",
+        "DEFAULT_SCHEDULED_DARK_THEME",
+        "DEFAULT_SCHEDULED_LIGHT_THEME",
+        "DEFAULT_THEME_TRANSITION",
+        "DEFAULT_TIMEZONE_LOCATION",
+        "DEFAULT_TRANSITION_PRESET",
+        "EMPTY_THEME_DIFF",
+        "EMPTY_THEME_SCHEDULE_STATE",
+        "GROUP_PROPERTIES",
+        "GROUP_VAR_PREFIXES",
+        "PRE_PAINT_SCROLLBAR_CSS",
+        "TRANSITION_PRESETS",
+        "ThemeError",
+        "ThemeInspector",
+        "ThemeProvider",
+        "ThemeRegistry",
+        "ThemeScope",
+        "ThemeScrollbar",
+        "auto",
+        "buildThemeCssMap",
+        "calculateSunTimes",
+        "cancelThemeAnimation",
+        "clearMigrations",
+        "composeTheme",
+        "computeFingerprint",
+        "contrast",
+        "createAccessibilityPlugin",
+        "createAdapterRegistry",
+        "createAnimationsPlugin",
+        "createBroadcastPlugin",
+        "createCSSVariablesBinding",
+        "createDOMBinding",
+        "createDebuggerPlugin",
+        "createDefaultPersistence",
+        "createDevToolsPlugin",
+        "createGenerationPlugin",
+        "createHistoryPlugin",
+        "createMultiWindowSync",
+        "createNoopSync",
+        "createNuxtThemeBootstrapScript",
+        "createOverlayScrollbar",
+        "createPersistencePlugin",
+        "createPluginManager",
+        "createPrePaintScrollbarCSS",
+        "createPrePaintScrollbarScript",
+        "createScheduledPlugin",
+        "createScheduledThemeBinding",
+        "createScopedThemeBinding",
+        "createSharedWorkerSync",
+        "createStorageEventSync",
+        "createSystemThemeBinding",
+        "createThemeBootstrapScript",
+        "createThemeBroadcast",
+        "createThemeDebugger",
+        "createThemeDiff",
+        "createThemeHistory",
+        "createThemeLifecycle",
+        "createThemeModeController",
+        "createThemePersistence",
+        "createThemeRegistry",
+        "createThemeRuntime",
+        "createThemeSchedule",
+        "createThemeScrollbar",
+        "createThemeSelectionBroadcast",
+        "createThemeStore",
+        "createTransitionPlan",
+        "darkModeCSSTemplate",
+        "defineTheme",
+        "destroySharedWorkerUrl",
+        "evaluateExpression",
+        "extendTheme",
+        "flattenTokens",
+        "generateTheme",
+        "getAccessibilityProfiles",
+        "getBrandPresets",
+        "getBrowserTimeZone",
+        "getBuiltInThemes",
+        "getContrastRatio",
+        "getDefaultThemes",
+        "getHighContrastTheme",
+        "getLargeTextTheme",
+        "getLocationForTimeZone",
+        "getNeutralThemes",
+        "getPresetThemes",
+        "getThemeFamily",
+        "getTimeZoneList",
+        "isExpression",
+        "isSettled",
+        "mergePresetTokens",
+        "mergeThemeDefinitions",
+        "mergeTokens",
+        "migrateTheme",
+        "migrations",
+        "parseCookieHeader",
+        "prefersReducedMotion",
+        "registerMigration",
+        "resolveInitialTheme",
+        "resolveScheduledThemePair",
+        "resolveScopeTransition",
+        "resolveScopedTheme",
+        "resolveScopedThemePrePaint",
+        "resolveSelectedTheme",
+        "resolveSelection",
+        "resolveSelectionTheme",
+        "resolveSolarLocation",
+        "resolveTheme",
+        "resolveThemeFromCookies",
+        "resolveThemeName",
+        "resolveThemeRegistry",
+        "resolveTokens",
+        "runThemeAnimation",
+        "scanForTransition",
+        "scopeToCSSVariables",
+        "simulateCVD",
+        "simulateThemeForCVD",
+        "themeKitCookieNames",
+        "themeToCSSVariables",
+        "useBootstrapTheme",
+        "useDaisyTheme",
+        "useOpenPropsTheme",
+        "useShadcnTheme",
+        "useTheme",
+        "useThemeBatch",
+        "useThemeHistory",
+        "useThemeLifecycle",
+        "useThemePacks",
+        "useThemeRestore",
+        "useThemeRuntime",
+        "useThemeSchedule",
+        "useThemeSnapshot",
+        "validateTheme",
+        "validateThemeContrast"
+      ],
+      "types": [
+        "AccessibilityPluginOptions",
+        "AdapterPlugin",
+        "AdapterPluginContext",
+        "AdapterRegistration",
+        "AdapterRegistry",
+        "AdapterStrategy",
+        "AnimatedGroupKey",
+        "AnimationsPluginOptions",
+        "BroadcastChannelLike",
+        "BroadcastPluginOptions",
+        "BuildThemeCssMapOptions",
+        "CSSVariablesOptions",
+        "CVDType",
+        "CalculateSunTimesLocationOptions",
+        "ContrastCheck",
+        "ContrastValidationResult",
+        "DOMBindingOptions",
+        "DebuggerPluginOptions",
+        "DevToolsPluginOptions",
+        "GenerateThemeOptions",
+        "GeneratedThemePair",
+        "GenerationPluginOptions",
+        "HistoryEntry",
+        "HistoryPluginOptions",
+        "InitialThemeResolution",
+        "MigrateOptions",
+        "MigrationStep",
+        "ModuleOptions",
+        "MultiWindowSyncOptions",
+        "NuxtThemeBootstrapOptions",
+        "OverlayScrollbarHandle",
+        "OverlayScrollbarOptions",
+        "PersistencePluginOptions",
+        "PluginManager",
+        "PrePaintScrollbarOptions",
+        "PresetFamily",
+        "PresetOverrides",
+        "PresetThemeName",
+        "PresetVariant",
+        "PresetVariantOverride",
+        "ResolveInitialThemeOptions",
+        "ResolveSelectionOptions",
+        "ResolveSelectionThemeOptions",
+        "ResolveThemeFromCookiesOptions",
+        "ResolvedSolarLocation",
+        "ScheduledPluginOptions",
+        "ScheduledThemeBindingOptions",
+        "ScheduledThemeOptions",
+        "ScheduledThemePairInput",
+        "ScopedThemeBindingOptions",
+        "ScopedThemePrePaint",
+        "ScopedThemePrePaintOptions",
+        "ScopedThemeSelection",
+        "ScrollbarArrowDir",
+        "ScrollbarAxis",
+        "ScrollbarOptionsResolved",
+        "SelectionThemeResolution",
+        "SolarLocationInput",
+        "StorageAdapter",
+        "SystemThemeBindingOptions",
+        "ThemeAdapter",
+        "ThemeAnimationInput",
+        "ThemeBootstrapScriptOptions",
+        "ThemeBroadcastAdapter",
+        "ThemeBroadcastOptions",
+        "ThemeChangeEvent",
+        "ThemeChangeSource",
+        "ThemeDebugger",
+        "ThemeDefinition",
+        "ThemeDiff",
+        "ThemeError",
+        "ThemeHistory",
+        "ThemeHistoryOptions",
+        "ThemeInspectorProps",
+        "ThemeLifecycle",
+        "ThemeLifecycleEventMap",
+        "ThemeLifecycleEventName",
+        "ThemeMeta",
+        "ThemeMode",
+        "ThemeModeControllerOptions",
+        "ThemeName",
+        "ThemePack",
+        "ThemePersistenceAdapter",
+        "ThemePersistenceOptions",
+        "ThemePlugin",
+        "ThemePluginHooks",
+        "ThemeProviderProps",
+        "ThemeRegistry",
+        "ThemeRegistryOptions",
+        "ThemeRuntime",
+        "ThemeRuntimeOptions",
+        "ThemeRuntimeSnapshot",
+        "ThemeSchedule",
+        "ThemeScheduleOptions",
+        "ThemeScheduleSetOptions",
+        "ThemeScheduleState",
+        "ThemeScheduleStatus",
+        "ThemeScheduleTransition",
+        "ThemeScopeProps",
+        "ThemeScrollbarProps",
+        "ThemeSelectionBroadcastOptions",
+        "ThemeSelectionPersistenceAdapter",
+        "ThemeSelectionState",
+        "ThemeStore",
+        "ThemeStoreOptions",
+        "ThemeToCSSVariablesOptions",
+        "ThemeTokens",
+        "ThemeTransitionOptions",
+        "TimeZoneLocation",
+        "TokenGroup",
+        "TokenRemap",
+        "TransitionPlan",
+        "TransitionPreset",
+        "ValidateThemeContrastOptions",
+        "ValidateThemeOptions",
+        "ValidationIssue",
+        "ValidationResult"
+      ],
+      "internal": {
+        "values": [
+          "checkContrastPair",
+          "clamp",
+          "computeMaxScroll",
+          "computeThumbSize",
+          "computeTranslate",
+          "easeAlpha",
+          "getCVDLabel",
+          "hasTokenReferences",
+          "isAutoCall",
+          "isContrastCall",
+          "lerp",
+          "observeScrollbarSizing",
+          "overscrollFactor",
+          "parseContrastCall",
+          "resolveFlatTokens",
+          "resolveValueReferences"
+        ],
+        "types": [
+          "ArrowButton",
+          "ArrowIcon",
+          "AxisState",
+          "Host",
+          "RenderState"
+        ]
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/react": {
+    "version": "1.0.0",
+    "dts": "packages\\react\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ThemeInspector",
+        "ThemeModeButton",
+        "ThemeProvider",
+        "ThemeScope",
+        "ThemeScrollbar",
+        "useScopedTheme",
+        "useSetThemeFamily",
+        "useSetThemeMode",
+        "useTheme",
+        "useThemeBatch",
+        "useThemeFamily",
+        "useThemeHistory",
+        "useThemeLifecycle",
+        "useThemeMode",
+        "useThemePacks",
+        "useThemeRestore",
+        "useThemeRuntime",
+        "useThemeSchedule",
+        "useThemeSnapshot",
+        "useThemeTimeTravel",
+        "useThemeTokens",
+        "useThemeValue",
+        "useToggleTheme"
+      ],
+      "types": [
+        "ThemeInspectorProps",
+        "ThemeProviderProps",
+        "ThemeScopeProps",
+        "ThemeScrollbarAppearance",
+        "ThemeScrollbarBehavior",
+        "ThemeScrollbarIcons",
+        "ThemeScrollbarProps"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/remix": {
+    "version": "1.0.0",
+    "dts": "packages\\remix\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "AntdThemeProvider",
+        "ChakraThemeProvider",
+        "MantineThemeProvider",
+        "MuiThemeProvider",
+        "ThemeHead",
+        "ThemeInspector",
+        "ThemeProvider",
+        "ThemeScope",
+        "ThemeScrollbar",
+        "createRemixThemePersistence",
+        "useAntdTheme",
+        "useBootstrapTheme",
+        "useChakraTheme",
+        "useDaisyTheme",
+        "useMantineTheme",
+        "useMuiTheme",
+        "useOpenPropsTheme",
+        "useSetThemeFamily",
+        "useSetThemeMode",
+        "useShadcnTheme",
+        "useTheme",
+        "useThemeBatch",
+        "useThemeFamily",
+        "useThemeHistory",
+        "useThemeLifecycle",
+        "useThemeMode",
+        "useThemePacks",
+        "useThemeRestore",
+        "useThemeRuntime",
+        "useThemeSchedule",
+        "useThemeSnapshot",
+        "useThemeTimeTravel",
+        "useThemeTokens",
+        "useThemeValue",
+        "useToggleTheme"
+      ],
+      "types": [
+        "AntdThemeProviderProps",
+        "ChakraThemeProviderProps",
+        "MantineThemeProviderProps",
+        "MuiThemeProviderProps",
+        "RemixThemePersistenceOptions",
+        "ThemeHeadProps",
+        "ThemeInspectorProps",
+        "ThemeProviderProps",
+        "ThemeScrollbarProps"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [
+        "./server"
+      ]
+    }
+  },
+  "@theme-kit/solid": {
+    "version": "1.0.0",
+    "dts": "packages\\solid\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ThemeInspector",
+        "ThemeProvider",
+        "ThemeScope",
+        "ThemeScrollbar",
+        "useBootstrapTheme",
+        "useDaisyTheme",
+        "useOpenPropsTheme",
+        "useShadcnTheme",
+        "useTheme",
+        "useThemeBatch",
+        "useThemeFamily",
+        "useThemeHistory",
+        "useThemeLifecycle",
+        "useThemeMode",
+        "useThemePacks",
+        "useThemeRestore",
+        "useThemeRuntime",
+        "useThemeSchedule",
+        "useThemeSnapshot",
+        "useThemeTokens",
+        "useThemeValue"
+      ],
+      "types": [
+        "ThemeInspectorProps",
+        "ThemeProviderProps",
+        "ThemeScopeProps",
+        "ThemeScrollbarProps",
+        "UseAdapterOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/svelte": {
+    "version": "1.0.0",
+    "dts": "packages\\svelte\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ThemeProvider",
+        "ThemeScope",
+        "ThemeScrollbar",
+        "getThemeRuntime",
+        "getThemeSchedule",
+        "setThemeRuntime",
+        "themeInspector",
+        "useBootstrapTheme",
+        "useDaisyTheme",
+        "useOpenPropsTheme",
+        "useShadcnTheme",
+        "useTheme",
+        "useThemeBatch",
+        "useThemeFamily",
+        "useThemeHistory",
+        "useThemeLifecycle",
+        "useThemeMode",
+        "useThemePacks",
+        "useThemeRestore",
+        "useThemeRuntime",
+        "useThemeSchedule",
+        "useThemeSnapshot",
+        "useThemeTokens",
+        "useThemeValue"
+      ],
+      "types": [
+        "ThemeInspectorProps",
+        "ThemeProviderProps",
+        "ThemeScopeProps",
+        "ThemeScrollbarProps",
+        "UseAdapterOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/tailwind": {
+    "version": "1.0.0",
+    "dts": "packages\\tailwind\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "createTailwindPlugin",
+        "synchronizeDarkClass",
+        "themeCSS"
+      ],
+      "types": [
+        "TailwindPluginOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [
+        "./dark.css",
+        "./preflight.css",
+        "./theme.css"
+      ]
+    }
+  },
+  "@theme-kit/vue": {
+    "version": "1.0.0",
+    "dts": "packages\\vue\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ThemeInspector",
+        "ThemeKitSymbol",
+        "ThemeProvider",
+        "ThemeScope",
+        "ThemeScrollbar",
+        "provideThemeRuntime",
+        "useBootstrapTheme",
+        "useDaisyTheme",
+        "useOpenPropsTheme",
+        "useShadcnTheme",
+        "useTheme",
+        "useThemeBatch",
+        "useThemeFamily",
+        "useThemeHistory",
+        "useThemeLifecycle",
+        "useThemeMode",
+        "useThemePacks",
+        "useThemeRestore",
+        "useThemeRuntime",
+        "useThemeSchedule",
+        "useThemeSnapshot",
+        "useThemeTokens",
+        "useThemeValue"
+      ],
+      "types": [
+        "ThemeInspectorProps",
+        "ThemeProviderProps",
+        "ThemeScheduleController",
+        "ThemeScopeProps",
+        "ThemeScrollbarProps",
+        "UseAdapterOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/web": {
+    "version": "1.0.0",
+    "dts": "packages\\web\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ThemeKitInspector",
+        "ThemeKitProvider",
+        "ThemeKitScope",
+        "ThemeKitScrollbar",
+        "ThemeKitSelect",
+        "ThemeKitToggle",
+        "defineCustomElements",
+        "getProviderRuntime",
+        "getThemeSchedule",
+        "useThemeFamily",
+        "useThemeMode",
+        "useThemeRuntime",
+        "useThemeTokens",
+        "useThemeValue"
+      ],
+      "types": [
+        "ThemeKitInspector",
+        "ThemeKitProvider",
+        "ThemeKitProviderProps",
+        "ThemeKitScope",
+        "ThemeKitScrollbar",
+        "ThemeKitSelect",
+        "ThemeKitToggle"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/antd": {
+    "version": "1.0.0",
+    "dts": "packages\\adapters\\antd\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "ANTD_ADAPTER_ID",
+        "AntdThemeProvider",
+        "DEFAULT_ANTD_OPTIONS",
+        "buildAntdConfig",
+        "createAntdAdapter",
+        "createAntdTheme",
+        "useAntdTheme"
+      ],
+      "types": [
+        "AntdAdapterOptions",
+        "AntdThemeAdapter",
+        "AntdThemeProviderProps",
+        "CreateAntdAdapterOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/bootstrap": {
+    "version": "1.0.0",
+    "dts": "packages\\adapters\\bootstrap\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "createBootstrapAdapter",
+        "createBootstrapVariables",
+        "injectBootstrapCSS",
+        "useBootstrapTheme"
+      ],
+      "types": [
+        "BootstrapAdapterOptions",
+        "CreateBootstrapAdapterOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [
+        "./bootstrap.css",
+        "./factory"
+      ]
+    }
+  },
+  "@theme-kit/chakra": {
+    "version": "1.0.0",
+    "dts": "packages\\adapters\\chakra\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "CHAKRA_ADAPTER_ID",
+        "ChakraThemeProvider",
+        "DEFAULT_CHAKRA_OPTIONS",
+        "buildChakraConfig",
+        "createChakraAdapter",
+        "createChakraTheme",
+        "useChakraTheme"
+      ],
+      "types": [
+        "ChakraAdapterOptions",
+        "ChakraThemeAdapter",
+        "ChakraThemeProviderProps",
+        "CreateChakraAdapterOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/daisyui": {
+    "version": "1.0.0",
+    "dts": "packages\\adapters\\daisyui\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "createDaisyAdapter",
+        "createDaisyVariables",
+        "injectDaisyCSS",
+        "useDaisyTheme"
+      ],
+      "types": [
+        "CreateDaisyAdapterOptions",
+        "DaisyAdapterOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [
+        "./daisyui.css",
+        "./factory"
+      ]
+    }
+  },
+  "@theme-kit/mui": {
+    "version": "1.0.0",
+    "dts": "packages\\adapters\\mui\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "DEFAULT_MUI_OPTIONS",
+        "MUI_ADAPTER_ID",
+        "MuiThemeProvider",
+        "buildMuiThemeOptions",
+        "createMuiAdapter",
+        "createMuiTheme",
+        "useMuiTheme"
+      ],
+      "types": [
+        "CreateMuiAdapterOptions",
+        "MuiAdapterOptions",
+        "MuiThemeAdapter",
+        "MuiThemeProviderProps"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  },
+  "@theme-kit/open-props": {
+    "version": "1.0.0",
+    "dts": "packages\\adapters\\open-props\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "createOpenPropsAdapter",
+        "createOpenPropsVariables",
+        "injectOpenPropsCSS",
+        "useOpenPropsTheme"
+      ],
+      "types": [
+        "CreateOpenPropsAdapterOptions",
+        "OpenPropsAdapterOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [
+        "./factory",
+        "./open-props.css"
+      ]
+    }
+  },
+  "@theme-kit/shadcn": {
+    "version": "1.0.0",
+    "dts": "packages\\adapters\\shadcn\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "createShadcnAdapter",
+        "createShadcnVariables",
+        "injectShadcnCSS",
+        "useShadcnTheme"
+      ],
+      "types": [
+        "CreateShadcnAdapterOptions",
+        "ShadcnAdapterOptions"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [
+        "./factory",
+        "./shadcn.css"
+      ]
+    }
+  },
+  "@theme-kit/adapters": {
+    "version": "1.0.0",
+    "dts": "packages\\adapters\\shared\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "generateShades",
+        "hexToRgb",
+        "mixColors",
+        "mixHex",
+        "readBreakpoints",
+        "readColor",
+        "readFontFamily",
+        "readFontSize",
+        "readNested",
+        "readRadius",
+        "readRadiusNumber",
+        "readToken",
+        "resolveAdapterSource",
+        "rgbToHex",
+        "rgbTriplet"
+      ],
+      "types": [
+        "AdapterResolvedTheme",
+        "AdapterSource",
+        "RGB"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [
+        "./react"
+      ]
+    }
+  },
+  "@theme-kit/unocss": {
+    "version": "1.0.0",
+    "dts": "packages\\adapters\\unocss\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "createUnoTheme",
+        "presetThemeKit"
+      ],
+      "types": [
+        "ThemeTokens"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": []
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "name": "fixture-valid-theme",
+  "light": {
+    "name": "forest-light",
+    "meta": { "family": "forest", "mode": "light" },
+    "tokens": {
+      "colors": {
+        "background": "#f0fff0",
+        "foreground": "#002200",
+        "card": "#ffffff",
+        "cardForeground": "#002200",
+        "popover": "#ffffff",
+        "popoverForeground": "#002200",
+        "primary": "#2f855a",
+        "primaryForeground": "#ffffff",
+        "secondary": "#e2f0e2",
+        "secondaryForeground": "#2f4f2f",
+        "muted": "#e2f0e2",
+        "mutedForeground": "#2f4f2f",
+        "accent": "#d4ecd4",
+        "accentForeground": "#0a2b0a",
+        "destructive": "#b91c1c",
+        "destructiveForeground": "#ffffff",
+        "success": "#15803d",
+        "successForeground": "#ffffff",
+        "border": "#c8dcc8",
+        "input": "#c8dcc8",
+        "ring": "#2f855a"
+      },
+      "radius": { "lg": "0.5rem", "md": "0.375rem", "sm": "0.25rem" }
+    }
+  },
+  "dark": {
+    "name": "forest-dark",
+    "meta": { "family": "forest", "mode": "dark" },
+    "tokens": {
+      "colors": {
+        "background": "#0a150a",
+        "foreground": "#eaffea",
+        "card": "#0f200f",
+        "cardForeground": "#eaffea",
+        "popover": "#0f200f",
+        "popoverForeground": "#eaffea",
+        "primary": "#4ade80",
+        "primaryForeground": "#062b0e",
+        "secondary": "#162616",
+        "secondaryForeground": "#c8ecc8",
+        "muted": "#162616",
+        "mutedForeground": "#8fbf8f",
+        "accent": "#1f3a1f",
+        "accentForeground": "#eaffea",
+        "destructive": "#f87171",
+        "destructiveForeground": "#2b0a0a",
+        "success": "#4ade80",
+        "successForeground": "#062b0e",
+        "border": "#1f3a1f",
+        "input": "#1f3a1f",
+        "ring": "#4ade80"
+      },
+      "radius": { "lg": "0.5rem", "md": "0.375rem", "sm": "0.25rem" }
+    }
+  }
+}

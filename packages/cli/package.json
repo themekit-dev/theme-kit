@@ -1,0 +1,58 @@
+{
+  "name": "@theme-kit/cli",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "theme-kit": "dist/cli.cjs"
+  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "dev": "tsup src/cli.ts --watch --format esm,cjs --dts",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@theme-kit/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "description": "Theme Kit CLI: generate, validate, inspect, and migrate themes.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "cli",
+    "generator",
+    "theming"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

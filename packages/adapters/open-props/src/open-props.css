@@ -1,0 +1,53 @@
+/*!
+ * @theme-kit/open-props
+ *
+ * Maps Theme Kit semantic tokens onto Open Props variable names. Theme Kit is
+ * the source of truth; each Open Props variable below aliases a `--theme-*`
+ * variable that the Theme Kit runtime owns and updates automatically.
+ */
+
+:root {
+  --color-canvas: var(--theme-color-background);
+  --color-background: var(--theme-color-background);
+  --color-text: var(--theme-color-foreground);
+  --color-foreground: var(--theme-color-foreground);
+
+  --color-surface-1: var(--theme-color-card, var(--theme-color-background));
+  --color-surface-2: var(--theme-color-muted, var(--theme-color-background));
+
+  --color-primary: var(--theme-color-primary);
+  --brand: var(--theme-color-primary);
+  --link: var(--theme-color-primary);
+
+  --color-accent: var(--theme-color-accent, var(--theme-color-primary));
+  --color-secondary: var(--theme-color-secondary, var(--theme-color-muted));
+  --color-muted: var(--theme-color-muted);
+  --color-muted-foreground: var(--theme-color-muted-foreground, var(--theme-color-mutedForeground));
+
+  --color-border: var(--theme-color-border);
+  --color-error: var(--theme-color-destructive);
+  --color-danger: var(--theme-color-destructive);
+
+  --radius-1: var(--theme-radius-sm, 0.25rem);
+  --radius-2: var(--theme-radius-md, 0.5rem);
+  --radius-3: var(--theme-radius-lg, 0.75rem);
+  --radius-4: var(--theme-radius-xl, 1rem);
+
+  --font-sans: var(--theme-typography-font-family-sans, system-ui, sans-serif);
+  --font-mono: var(--theme-typography-font-family-mono, ui-monospace, monospace);
+
+  --shadow-1: var(--theme-shadow-sm);
+  --shadow-2: var(--theme-shadow-md);
+  --shadow-3: var(--theme-shadow-lg);
+  --shadow-4: var(--theme-shadow-xl);
+
+  --size-1: var(--theme-spacing-1, 0.25rem);
+  --size-2: var(--theme-spacing-2, 0.5rem);
+  --size-3: var(--theme-spacing-3, 0.75rem);
+  --size-4: var(--theme-spacing-4, 1rem);
+  --size-5: var(--theme-spacing-5, 1.25rem);
+  --size-6: var(--theme-spacing-6, 1.5rem);
+  --size-8: var(--theme-spacing-8, 2rem);
+  --size-10: var(--theme-spacing-10, 2.5rem);
+  --size-12: var(--theme-spacing-12, 3rem);
+}

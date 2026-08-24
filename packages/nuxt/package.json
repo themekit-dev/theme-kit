@@ -1,0 +1,56 @@
+{
+  "name": "@theme-kit/nuxt",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json && node -e \"require('fs').cpSync('src/runtime/components','dist/runtime/components',{recursive:true})\"",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "nuxt": "^3.10.0",
+    "vue": "^3.4.0"
+  },
+  "dependencies": {
+    "@theme-kit/core": "workspace:*",
+    "@theme-kit/vue": "workspace:*"
+  },
+  "devDependencies": {
+    "@nuxt/kit": "^3.10.0",
+    "@nuxt/schema": "^3.10.0",
+    "@types/node": "^26.1.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
+  },
+  "description": "Nuxt module for Theme Kit: SSR, cookies, and zero-flash theming.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "nuxt",
+    "theming",
+    "ssr",
+    "dark-mode"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

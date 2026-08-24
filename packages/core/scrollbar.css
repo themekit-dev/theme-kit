@@ -1,0 +1,242 @@
+/*
+ * Theme Kit — scrollbar overlay base styles.
+ *
+ * Three-phase architecture:
+ *
+ *   Phase 1 — Bootstrap (createPrePaintScrollbarScript)
+ *     Adds `tk-scrollbar` to <html> before first paint.
+ *     Native scrollbar is hidden immediately — never painted.
+ *
+ *   Phase 2 — ThemeScrollbar (overlay)
+ *     Creates the custom overlay strips (.tk-scrollbar).
+ *     Tracks scroll position, handles drag, hover, animations.
+ *
+ *   Phase 3 — Ready
+ *     Adds `tk-scrollbar-ready` to <html> after first paint.
+ *     Enables CSS fade-in for the overlay.
+ *
+ *   import "@theme-kit/core/scrollbar.css";
+ *   import { createOverlayScrollbar } from "@theme-kit/core";
+ */
+
+/* ── Phase 1: Native scrollbar hiding ─────────────────────────── */
+
+/* Hidden via tk-scrollbar class (added by the bootstrap before
+   first paint). Never remove this class while the overlay is active. */
+html.tk-scrollbar,
+html.tk-scrollbar body,
+body.tk-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html.tk-scrollbar::-webkit-scrollbar,
+html.tk-scrollbar body::-webkit-scrollbar,
+body.tk-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Every scrollable under the bootstrapped document keeps its native track
+   hidden — so code blocks, tables and nested panels never show a native bar,
+   regardless of overlay detection timing. The custom strips are the only
+   scrollbars. */
+html.tk-scrollbar * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html.tk-scrollbar *::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Inner scrollables the overlay attaches to — hidden via the
+   data-theme-kit-scrollbar attribute the engine sets on them. */
+[data-theme-kit-scrollbar="overlay"]::-webkit-scrollbar,
+[data-theme-kit-scrollbar="overlay"] body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+[data-theme-kit-scrollbar="overlay"] {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ── Phase 2: Overlay strip positioning ───────────────────────── */
+
+/* The overlay appends strip roots (these are real DOM nodes, marked with the
+   `data-theme-kit-host` attribute) — never the <html> element. We scope the
+   base strip rule to those hosts so the bootstrap `tk-scrollbar` class on
+   <html> (which hides native bars) can never collide with `position:fixed` /
+   `opacity:0` and accidentally hide the whole document. */
+[data-theme-kit-host] {
+  position: fixed;
+  z-index: 9998;
+  pointer-events: none;
+  box-sizing: border-box;
+  contain: layout style;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.tk-scrollbar[data-position="absolute"] {
+  position: absolute;
+  z-index: 1;
+}
+
+/* <html> carries the `tk-scrollbar` bootstrap class for native-bar hiding;
+   make sure it never inherits the overlay strip styles above (which would
+   set position:fixed/opacity:0 on the document root). */
+html.tk-scrollbar {
+  position: static !important;
+  opacity: 1 !important;
+  contain: normal !important;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+
+/* CSS custom properties for scrollbar theming.
+   These can be overridden by users in their CSS. */
+[data-theme-kit-host] {
+  --tk-scrollbar-thumb: var(--theme-color-accent, var(--theme-color-primary, #737373));
+  --tk-scrollbar-track: transparent;
+  --tk-scrollbar-thumb-hover: var(--theme-color-accent, var(--theme-color-primary, #737373));
+  --tk-scrollbar-thumb-active: var(--theme-color-accent, var(--theme-color-primary, #737373));
+}
+
+/* ── Phase 3: Ready — overlay fades in ────────────────────────── */
+
+html.tk-scrollbar-ready .tk-scrollbar {
+  opacity: 1;
+}
+
+/* ── Overlay internals ────────────────────────────────────────────────── */
+
+.tk-scrollbar .tk-track {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+
+.tk-scrollbar .tk-thumb {
+  position: absolute;
+  pointer-events: auto;
+  user-select: none;
+  will-change: transform, width, height, background-color, opacity;
+}
+
+.tk-scrollbar .tk-arrow {
+  position: absolute;
+  pointer-events: auto;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  cursor: pointer;
+}
+
+.tk-scrollbar .tk-arrow::before {
+  content: "";
+  display: block;
+}
+
+.tk-scrollbar .tk-arrow.tk-arrow-up::before {
+  border-left: var(--tk-arrow, 5px) solid transparent;
+  border-right: var(--tk-arrow, 5px) solid transparent;
+  border-bottom: calc(var(--tk-arrow, 5px) * 1.2) solid currentColor;
+}
+
+.tk-scrollbar .tk-arrow.tk-arrow-down::before {
+  border-left: var(--tk-arrow, 5px) solid transparent;
+  border-right: var(--tk-arrow, 5px) solid transparent;
+  border-top: calc(var(--tk-arrow, 5px) * 1.2) solid currentColor;
+}
+
+.tk-scrollbar .tk-arrow.tk-arrow-left::before {
+  border-top: var(--tk-arrow, 5px) solid transparent;
+  border-bottom: var(--tk-arrow, 5px) solid transparent;
+  border-right: calc(var(--tk-arrow, 5px) * 1.2) solid currentColor;
+}
+
+.tk-scrollbar .tk-arrow.tk-arrow-right::before {
+  border-top: var(--tk-arrow, 5px) solid transparent;
+  border-bottom: var(--tk-arrow, 5px) solid transparent;
+  border-left: calc(var(--tk-arrow, 5px) * 1.2) solid currentColor;
+}
+
+/* Custom arrow icons (set via arrowIcon / arrow*Icon) replace the triangle. */
+.tk-scrollbar .tk-arrow.tk-arrow-custom::before {
+  content: none;
+}
+
+/* Custom arrow icons fill the button and scale their content to fit. */
+.tk-scrollbar .tk-arrow.tk-arrow-custom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.tk-scrollbar .tk-arrow.tk-arrow-custom > * {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tk-scrollbar .tk-arrow.tk-arrow-custom svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* ── Native-feel redesign ───────────────────────────────────────────────
+   The engine paints colors inline (theme tokens + alpha), so these rules only
+   add the geometry/depth a real scrollbar has: a rounded, softly hollowed
+   track; a thumb with a 1px separation ring that lifts on hover; compact
+   rounded arrow buttons with adaptive hover/active feedback. Everything is
+   background-agnostic (color-mix off theme tokens) so it stays readable over
+   plain page content AND blurred surfaces like the docs mobile menu. */
+
+.tk-scrollbar .tk-track {
+  background-clip: padding-box;
+}
+
+.tk-scrollbar .tk-thumb {
+  box-shadow:
+    0 1px 2px 0
+      color-mix(in srgb, var(--theme-color-foreground, #000) 16%, transparent),
+    inset 0 0 0 1px
+      color-mix(in srgb, var(--theme-color-background, #fff) 26%, transparent);
+}
+
+[data-theme-kit-host]:hover .tk-thumb,
+.tk-scrollbar .tk-thumb:hover {
+  box-shadow:
+    0 1px 4px 0
+      color-mix(in srgb, var(--theme-color-foreground, #000) 22%, transparent),
+    inset 0 0 0 1px
+      color-mix(in srgb, var(--theme-color-background, #fff) 40%, transparent);
+}
+
+.tk-scrollbar .tk-arrow {
+  border-radius: 7px;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.tk-scrollbar .tk-arrow:hover {
+  background-color: color-mix(in srgb, currentColor 12%, transparent);
+  transform: scale(1.06);
+}
+
+.tk-scrollbar .tk-arrow:active {
+  background-color: color-mix(in srgb, currentColor 22%, transparent);
+  transform: scale(0.94);
+}

@@ -1,0 +1,75 @@
+@theme {
+  --color-background: var(--theme-color-background);
+  --color-foreground: var(--theme-color-foreground);
+  --color-card: var(--theme-color-card);
+  --color-card-foreground: var(--theme-color-card-foreground, var(--theme-color-cardForeground));
+  --color-popover: var(--theme-color-popover);
+  --color-popover-foreground: var(--theme-color-popover-foreground, var(--theme-color-popoverForeground));
+  --color-primary: var(--theme-color-primary);
+  --color-primary-foreground: var(--theme-color-primary-foreground, var(--theme-color-primaryForeground));
+  --color-secondary: var(--theme-color-secondary);
+  --color-secondary-foreground: var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground));
+  --color-muted: var(--theme-color-muted);
+  --color-muted-foreground: var(--theme-color-muted-foreground, var(--theme-color-mutedForeground));
+  --color-accent: var(--theme-color-accent);
+  --color-accent-foreground: var(--theme-color-accent-foreground, var(--theme-color-accentForeground));
+  --color-destructive: var(--theme-color-destructive);
+  --color-destructive-foreground: var(--theme-color-destructive-foreground, var(--theme-color-destructiveForeground));
+  --color-success: var(--theme-color-success);
+  --color-success-foreground: var(--theme-color-success-foreground, var(--theme-color-successForeground));
+  --color-border: var(--theme-color-border);
+  --color-input: var(--theme-color-input);
+  --color-ring: var(--theme-color-ring);
+
+  --radius-lg: var(--theme-radius-lg);
+
+  /* Spacing: preserve Tailwind v4 defaults */
+  --spacing-0: var(--theme-spacing-0, 0px);
+  --spacing-1: var(--theme-spacing-1, 4px);
+  --spacing-2: var(--theme-spacing-2, 8px);
+  --spacing-3: var(--theme-spacing-3, 12px);
+  --spacing-4: var(--theme-spacing-4, 16px);
+  --spacing-5: var(--theme-spacing-5, 20px);
+  --spacing-6: var(--theme-spacing-6, 24px);
+  --spacing-8: var(--theme-spacing-8, 32px);
+  --spacing-10: var(--theme-spacing-10, 40px);
+  --spacing-12: var(--theme-spacing-12, 48px);
+  --spacing-16: var(--theme-spacing-16, 64px);
+  --spacing-20: var(--theme-spacing-20, 80px);
+  --spacing-24: var(--theme-spacing-24, 96px);
+  --spacing-px: var(--theme-spacing-px, 1px);
+
+  /* Shadows: preserve Tailwind v4 defaults */
+  --shadow-xs: var(--theme-shadow-xs, 0 1px 2px rgba(0,0,0,0.05));
+  --shadow-sm: var(--theme-shadow-sm, 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06));
+  --shadow-md: var(--theme-shadow-md, 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06));
+  --shadow-lg: var(--theme-shadow-lg, 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05));
+  --shadow-xl: var(--theme-shadow-xl, 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04));
+  --shadow-2xl: var(--theme-shadow-2xl, 0 25px 50px rgba(0,0,0,0.25));
+
+  /* Border widths */
+  --border-width-0: var(--theme-border-width-0, 0px);
+  --border-width-1: var(--theme-border-width-1, 1px);
+  --border-width-2: var(--theme-border-width-2, 2px);
+  --border-width-4: var(--theme-border-width-4, 4px);
+  --border-width-8: var(--theme-border-width-8, 8px);
+
+  /* Z-index */
+  --z-index-0: var(--theme-z-index-0, auto);
+  --z-index-10: var(--theme-z-index-10, 10);
+  --z-index-20: var(--theme-z-index-20, 20);
+  --z-index-30: var(--theme-z-index-30, 30);
+  --z-index-40: var(--theme-z-index-40, 40);
+  --z-index-50: var(--theme-z-index-50, 50);
+
+  /* Breakpoints: kept as literal values. CSS custom properties cannot be used
+     inside @media queries, so mapping these to `var(--theme-breakpoint-*)`
+     produced invalid `@media (width >= var(...))` rules that browsers dropped,
+     silently disabling every responsive utility. The `--theme-breakpoint-*`
+     tokens are still emitted by the runtime for JS / container-query use. */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}

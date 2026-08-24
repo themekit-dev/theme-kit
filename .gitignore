@@ -1,0 +1,54 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+build
+.next
+.out
+.nuxt
+.output
+
+# TypeScript
+*.tsbuildinfo
+
+# Coverage
+coverage
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Kilo / agent state
+.kilo/
+
+# Vercel
+.vercel
+
+# Release tooling — generated reports and tarballs
+scripts/release/reports/
+scripts/release/export-inventory-output.txt
+release-test/tarballs/
+release-test/*/node_modules/
+release-test/*/package-lock.json
+release-test/pack-verify-report.json
+
+# Test fixtures that are generated at install time
+release-test/vanilla-app/package.json
+release-test/react-app/package.json
+release-test/cli-app/package.json
+release-test/clean-app/package.json

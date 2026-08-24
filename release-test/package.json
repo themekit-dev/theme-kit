@@ -1,0 +1,14 @@
+{
+  "name": "theme-kit-release-test",
+  "private": true,
+  "version": "0.0.0",
+  "description": "External consumer fixture for Theme Kit 1.0.0. Installs packages from real tarballs, not workspace resolution.",
+  "scripts": {
+    "pack": "node ../scripts/release/pack-verify.mjs",
+    "install:all": "node install.mjs",
+    "test:vanilla": "npm --prefix vanilla-app run test",
+    "test:react": "npm --prefix react-app run test",
+    "verify": "node run.mjs"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,65 @@
+{
+  "name": "@theme-kit/mui",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "dev": "tsup src/index.ts --watch --format esm --dts",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
+    "@mui/material": "^9.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@theme-kit/adapters": "workspace:*",
+    "@theme-kit/core": "workspace:*",
+    "@theme-kit/react": "workspace:*"
+  },
+  "devDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^9.0.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "vitest": "^4.0.0"
+  },
+  "description": "MUI adapter for Theme Kit.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "mui",
+    "material-ui",
+    "adapter",
+    "theming"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

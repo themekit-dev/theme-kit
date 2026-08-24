@@ -1,0 +1,58 @@
+{
+  "name": "@theme-kit/vue",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0"
+  },
+  "dependencies": {
+    "@theme-kit/core": "workspace:*",
+    "@theme-kit/web": "workspace:*",
+    "@theme-kit/shadcn": "workspace:*",
+    "@theme-kit/bootstrap": "workspace:*",
+    "@theme-kit/daisyui": "workspace:*",
+    "@theme-kit/open-props": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10",
+    "vue": "^3.5.0"
+  },
+  "description": "Vue 3 bindings for Theme Kit.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "vue",
+    "theming",
+    "dark-mode"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

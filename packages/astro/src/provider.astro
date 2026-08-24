@@ -1,0 +1,84 @@
+---
+import {
+  getBuiltInThemes,
+  resolveInitialTheme,
+  resolveSelectionTheme,
+  themeToCSSVariables,
+  type ThemeDefinition,
+  type ThemeMode,
+} from "@theme-kit/core";
+import { computeFingerprint } from "./fingerprint";
+import { buildThemeCssMap, darkModeCSSTemplate, createBlockingScript } from "./blocking-script";
+import ThemeProviderClient from "./client";
+
+export interface Props {
+  themes?: readonly ThemeDefinition[];
+  defaultTheme?: string;
+  lang?: string;
+}
+
+const { themes, defaultTheme, lang = "en" } = Astro.props as Props;
+
+const resolvedThemes = themes?.length
+  ? themes
+  : (getBuiltInThemes() as unknown as readonly ThemeDefinition[]);
+
+const fingerprint = computeFingerprint(resolvedThemes, defaultTheme);
+
+let mode: ThemeMode = "system";
+let family: string | undefined;
+
+const modeCookie = Astro.cookies.get("theme-mode")?.value;
+const familyCookie = Astro.cookies.get("theme-family")?.value;
+const savedFingerprint = Astro.cookies.get("theme-fingerprint")?.value;
+
+if (savedFingerprint === fingerprint) {
+  if (modeCookie === "light" || modeCookie === "dark" || modeCookie === "system") {
+    mode = modeCookie;
+  }
+  if (familyCookie) {
+    family = familyCookie;
+  }
+}
+
+const initial = resolveInitialTheme({
+  themes: resolvedThemes,
+  ...(defaultTheme !== undefined ? { defaultTheme } : {}),
+  ...(family ? { family } : {}),
+  ...(mode !== "system" ? { mode } : {}),
+});
+
+const cssVars = themeToCSSVariables(initial.theme);
+const themeMode = initial.selection.mode === "dark" ? "dark" : "light" as const;
+const themeName = String(initial.theme.name);
+
+let darkStyle = "";
+if (initial.selection.mode === "system") {
+  const dark = resolveSelectionTheme({
+    themes: resolvedThemes,
+    selection: { family: initial.selection.family, mode: "dark" },
+  });
+  const darkVariables = themeToCSSVariables(dark.theme);
+  darkStyle = darkModeCSSTemplate(darkVariables);
+}
+
+const themeCssMap = buildThemeCssMap(resolvedThemes);
+const blockingScript = createBlockingScript(fingerprint, themeCssMap);
+const ssrStyle = { colorScheme: themeMode, ...cssVars } as Record<string, string>;
+---
+
+<html lang={lang} data-theme={themeName} class={themeMode === "dark" ? "dark" : ""} style={ssrStyle}>
+  <head>
+    <script set:html={blockingScript} />
+    {darkStyle && <style set:html={darkStyle} />}
+    <slot name="head" />
+  </head>
+  <body>
+    <ThemeProviderClient
+      client:load
+      themes={resolvedThemes}
+      initial={initial}
+    />
+    <slot />
+  </body>
+</html>

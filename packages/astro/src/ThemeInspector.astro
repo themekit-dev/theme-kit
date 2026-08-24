@@ -1,0 +1,29 @@
+---
+import { ThemeKitInspector } from "@theme-kit/web";
+
+// SSR-safe (no-op on the server); the <script> below defines it in the browser.
+ThemeKitInspector.define();
+
+interface Props {
+  /** Distance from the bottom of the viewport, in px. Default 104. */
+  bottom?: number;
+  /** Distance from the right edge of the viewport, in px. Default 32. */
+  right?: number;
+  /** Toggle button size, in px. Default 40. */
+  size?: number;
+}
+
+const { bottom, right, size } = Astro.props as Props;
+
+const attrs: Record<string, string> = {};
+if (bottom != null) attrs["bottom"] = String(bottom);
+if (right != null) attrs["right"] = String(right);
+if (size != null) attrs["size"] = String(size);
+---
+
+<theme-kit-inspector {...attrs} />
+
+<script>
+  import { ThemeKitInspector } from "@theme-kit/web";
+  ThemeKitInspector.define();
+</script>

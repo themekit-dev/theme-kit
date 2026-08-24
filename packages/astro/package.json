@@ -1,0 +1,86 @@
+{
+  "name": "@theme-kit/astro",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "astro": "./src/provider.astro",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./provider.astro": "./src/provider.astro",
+    "./ThemeInspector.astro": "./src/ThemeInspector.astro",
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters.d.ts",
+      "import": "./dist/adapters.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src/provider.astro",
+    "src/ThemeInspector.astro",
+    "src/client.tsx",
+    "src/adapters.tsx",
+    "src/fingerprint.ts",
+    "src/blocking-script.ts",
+    "src/persistence.ts",
+    "src/shared-runtime.ts",
+    "src/hooks.ts",
+    "src/theme-scope.tsx"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "astro": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@theme-kit/core": "workspace:*",
+    "@theme-kit/web": "workspace:*",
+    "@theme-kit/react": "workspace:*",
+    "@theme-kit/shadcn": "workspace:*",
+    "@theme-kit/bootstrap": "workspace:*",
+    "@theme-kit/daisyui": "workspace:*",
+    "@theme-kit/open-props": "workspace:*",
+    "@theme-kit/mui": "workspace:*",
+    "@theme-kit/chakra": "workspace:*",
+    "@theme-kit/antd": "workspace:*",
+    "@theme-kit/mantine": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "description": "Astro integration for Theme Kit.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "astro",
+    "theming",
+    "dark-mode"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

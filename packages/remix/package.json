@@ -1,0 +1,67 @@
+{
+  "name": "@theme-kit/remix",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "@remix-run/react": "^2.16.0",
+    "@remix-run/node": "^2.16.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@theme-kit/core": "workspace:*",
+    "@theme-kit/react": "workspace:*",
+    "@theme-kit/shadcn": "workspace:*",
+    "@theme-kit/bootstrap": "workspace:*",
+    "@theme-kit/daisyui": "workspace:*",
+    "@theme-kit/open-props": "workspace:*",
+    "@theme-kit/mui": "workspace:*",
+    "@theme-kit/chakra": "workspace:*",
+    "@theme-kit/antd": "workspace:*",
+    "@theme-kit/mantine": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3"
+  },
+  "description": "Remix integration for Theme Kit.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "remix",
+    "theming",
+    "dark-mode"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

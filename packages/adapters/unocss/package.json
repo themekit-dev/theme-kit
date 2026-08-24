@@ -1,0 +1,54 @@
+{
+  "name": "@theme-kit/unocss",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "dev": "tsup src/index.ts --watch --format esm --dts",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "unocss": "^66.0.0"
+  },
+  "dependencies": {
+    "@theme-kit/adapters": "workspace:*",
+    "@theme-kit/core": "workspace:*",
+    "@unocss/core": "^66.0.0"
+  },
+  "devDependencies": {
+    "unocss": "^66.0.0",
+    "vitest": "^4.0.0"
+  },
+  "description": "UnoCSS adapter for Theme Kit.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "unocss",
+    "adapter",
+    "theming"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

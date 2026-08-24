@@ -1,0 +1,8 @@
+{
+  "name": "broken-theme",
+  "tokens": {
+    "colors": {
+      "background": "not-a-color"
+    }
+  }
+}

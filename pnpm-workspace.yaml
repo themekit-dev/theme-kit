@@ -1,0 +1,11 @@
+packages:
+  - "packages/*"
+  - "packages/adapters/*"
+  - "examples/*"
+  - "apps/*"
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true
+  sharp: false

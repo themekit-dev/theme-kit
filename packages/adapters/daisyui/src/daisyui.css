@@ -1,0 +1,48 @@
+/*!
+ * @theme-kit/daisyui
+ *
+ * Maps Theme Kit semantic tokens onto daisyUI 5 CSS variables. Theme Kit is
+ * the source of truth; each daisyUI variable below aliases a `--theme-*`
+ * variable that the Theme Kit runtime owns and updates automatically.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  --color-base-100: var(--theme-color-background);
+  --color-base-200: var(--theme-color-secondary, var(--theme-color-muted));
+  --color-base-300: var(--theme-color-border, var(--theme-color-muted));
+  --color-base-content: var(--theme-color-foreground);
+
+  --color-primary: var(--theme-color-primary);
+  --color-primary-content: var(--theme-color-primary-foreground, var(--theme-color-primaryForeground));
+
+  --color-secondary: var(--theme-color-secondary);
+  --color-secondary-content: var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground));
+
+  --color-accent: var(--theme-color-accent);
+  --color-accent-content: var(--theme-color-accent-foreground, var(--theme-color-accentForeground));
+
+  --color-neutral: var(--theme-color-muted, var(--theme-color-border));
+  --color-neutral-content: var(--theme-color-muted-foreground, var(--theme-color-mutedForeground));
+
+  --color-info: var(--theme-color-info, var(--theme-color-accent));
+  --color-info-content: var(--theme-color-info-foreground, var(--theme-color-infoForeground, var(--theme-color-accentForeground)));
+
+  --color-success: var(--theme-color-success, var(--theme-color-secondary));
+  --color-success-content: var(--theme-color-success-foreground, var(--theme-color-successForeground, var(--theme-color-secondaryForeground)));
+
+  --color-warning: var(--theme-color-warning, var(--theme-color-accent));
+  --color-warning-content: var(--theme-color-warning-foreground, var(--theme-color-warningForeground, var(--theme-color-accentForeground)));
+
+  --color-error: var(--theme-color-destructive);
+  --color-error-content: var(--theme-color-destructive-foreground, var(--theme-color-destructiveForeground));
+
+  --radius-selector: var(--theme-radius-sm, 0.25rem);
+  --radius-field: var(--theme-radius-md, 0.25rem);
+  --radius-box: var(--theme-radius-lg, 0.5rem);
+
+  --border: var(--theme-border-width, 1px);
+  --depth: 1;
+  --noise: 0;
+}

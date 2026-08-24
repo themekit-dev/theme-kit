@@ -1,0 +1,1181 @@
+@import "tailwindcss";
+@import "@theme-kit/tailwind";
+@import "@theme-kit/core/scrollbar.css";
+
+@theme {
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  --container-6xl: 77rem;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+:root {
+  color-scheme: light dark;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --site-header-height: 4rem;
+}
+
+* {
+  border-color: var(--theme-color-border);
+}
+
+html {
+  min-height: 100%;
+  background-color: var(--theme-color-background);
+  scrollbar-gutter: stable;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--theme-color-background);
+  color: var(--theme-color-foreground);
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-geist-sans);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--theme-color-primary) 30%, transparent);
+}
+
+:root :focus-visible {
+  outline: 1.5px solid var(--theme-color-ring);
+  outline-offset: 0.4px;
+}
+
+.search-dialog-input:focus-visible {
+  outline: none;
+}
+.search-input-wrap:focus-within {
+  border-bottom-color: var(--theme-color-ring);
+}
+
+/* ---------- Reusable primitives ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--theme-radius-lg);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--theme-color-primary);
+  color: var(
+    --theme-color-primary-foreground,
+    var(--theme-color-primaryForeground)
+  );
+  box-shadow: 0 8px 24px -8px
+    color-mix(in srgb, var(--theme-color-primary) 55%, transparent);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 12px 32px -8px
+    color-mix(in srgb, var(--theme-color-primary) 65%, transparent);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--theme-color-foreground);
+  border-color: var(--theme-color-border);
+}
+
+.btn-ghost:hover {
+  background: var(--theme-color-muted);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--theme-color-secondary);
+  color: var(--theme-color-secondary-foreground, var(--theme-color-foreground));
+  border-color: var(--theme-color-border);
+}
+
+.btn-secondary:hover {
+  background: color-mix(
+    in srgb,
+    var(--theme-color-secondary) 88%,
+    var(--theme-color-primary)
+  );
+  transform: translateY(-1px);
+}
+
+.btn-sm {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+}
+
+.btn-lg {
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid var(--theme-color-border);
+  background: color-mix(in srgb, var(--theme-color-card) 70%, transparent);
+  color: var(--theme-color-foreground);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.18s ease;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+
+.chip:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--theme-color-primary) 50%,
+    var(--theme-color-border)
+  );
+  transform: translateY(-1px);
+}
+
+.chip-active {
+  background: var(--theme-color-primary);
+  color: var(
+    --theme-color-primary-foreground,
+    var(--theme-color-primaryForeground)
+  );
+  border-color: var(--theme-color-primary);
+  box-shadow: 0 6px 20px -6px
+    color-mix(in srgb, var(--theme-color-primary) 60%, transparent);
+}
+
+.glass-card {
+  border: 1px solid var(--theme-color-border);
+  border-radius: var(--theme-radius-lg, 0.75rem);
+  background: var(--theme-color-card);
+}
+
+/* Hover-lift companion of .glass-card: cards rise slightly and pick up a
+   soft primary-tinted shadow. */
+.card-lift {
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(
+    in srgb,
+    var(--theme-color-primary) 45%,
+    var(--theme-color-border)
+  );
+  box-shadow: 0 24px 60px -32px
+    color-mix(in srgb, var(--theme-color-primary) 35%, transparent);
+}
+
+.gradient-text {
+  background: linear-gradient(
+    120deg,
+    var(--theme-color-primary),
+    color-mix(
+      in srgb,
+      var(--theme-color-primary) 45%,
+      var(--theme-color-accent)
+    )
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-shift 8s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.mono {
+  font-family: var(--font-mono);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Badges ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  border: 1px solid var(--theme-color-border);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.badge-accent {
+  background: color-mix(in srgb, var(--theme-color-primary) 14%, transparent);
+  color: var(--theme-color-primary);
+  border-color: color-mix(
+    in srgb,
+    var(--theme-color-primary) 28%,
+    var(--theme-color-border)
+  );
+}
+
+.badge-neutral {
+  background: var(--theme-color-muted);
+  color: var(--theme-color-foreground);
+}
+
+.badge-success {
+  background: color-mix(
+    in srgb,
+    var(--theme-color-primary) 8%,
+    var(--theme-color-secondary)
+  );
+  color: var(--theme-color-foreground);
+  border-color: color-mix(
+    in srgb,
+    var(--theme-color-primary) 22%,
+    var(--theme-color-border)
+  );
+}
+
+/* ---------- Landing page ---------- */
+
+.hero-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.55;
+  pointer-events: none;
+  /* No transition here: background resolves from the inherited (and already
+     interpolated) --theme-color-* vars on :root, so a local background
+     transition would double-ease and lag during a theme switch. */
+  animation:
+    orb-float 16s ease-in-out infinite alternate,
+    orb-hue 26s ease-in-out infinite alternate;
+  will-change: transform, filter;
+}
+
+.hero-orb-1 {
+  width: 42vw;
+  height: 42vw;
+  top: -12%;
+  right: -8%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--theme-color-primary) 45%, transparent),
+    transparent 70%
+  );
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--theme-color-foreground) 8%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  mask-image: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    black,
+    transparent 75%
+  );
+  pointer-events: none;
+  animation: grid-pan 26s linear infinite;
+}
+
+.hero-orb-2 {
+  width: 36vw;
+  height: 36vw;
+  bottom: -16%;
+  left: -10%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--theme-color-accent) 55%, transparent),
+    transparent 70%
+  );
+  animation-delay: -6s;
+}
+
+@keyframes orb-float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(3%, -5%) scale(1.08);
+  }
+  66% {
+    transform: translate(-3%, 4%) scale(0.96);
+  }
+  100% {
+    transform: translate(4%, -7%) scale(1.14);
+  }
+}
+
+@keyframes orb-hue {
+  from {
+    filter: blur(80px) hue-rotate(0deg) saturate(1);
+  }
+  to {
+    filter: blur(80px) hue-rotate(45deg) saturate(1.15);
+  }
+}
+
+@keyframes grid-pan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 56px 56px;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fade-up 0.6s ease both;
+}
+
+.fade-up-1 {
+  animation-delay: 0.05s;
+}
+.fade-up-2 {
+  animation-delay: 0.12s;
+}
+.fade-up-3 {
+  animation-delay: 0.19s;
+}
+.fade-up-4 {
+  animation-delay: 0.26s;
+}
+
+.swatch {
+  transition: transform 0.2s ease;
+}
+
+.swatch:hover {
+  transform: scale(1.12);
+}
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: color-mix(
+    in srgb,
+    var(--theme-color-background) 78%,
+    transparent
+  );
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--theme-color-border);
+}
+
+/* ---------- Sidebar ---------- */
+
+.site-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.585rem;
+  padding: 0.475rem 0.625rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--theme-color-foreground);
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.site-nav-link:hover {
+  background: var(--theme-color-muted);
+}
+
+.site-nav-link-active {
+  background: var(--theme-color-primary);
+  color: var(
+    --theme-color-primary-foreground,
+    var(--theme-color-primaryForeground)
+  );
+  box-shadow: 0 6px 18px -6px
+    color-mix(in srgb, var(--theme-color-primary) 55%, transparent);
+}
+
+.site-nav-link-active:hover {
+  background: var(--theme-color-primary);
+}
+
+/* ---------- Prose (docs pages) ---------- */
+
+.prose-doc {
+  max-width: 768px;
+  overflow-x: clip;
+}
+
+.prose-doc h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+/* Anchor targets land below the fixed header when navigated to from the
+   table of contents or a #hash link. */
+.prose-doc :is(h1, h2, h3, h4) {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Same for JSX-built pages (sections + SectionHeading h2s). */
+[data-toc-root] :is(h2, h3) {
+  scroll-margin-top: 5.5rem;
+}
+
+.prose-doc h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 2.5rem 0 0.85rem;
+  letter-spacing: -0.01em;
+}
+
+.prose-doc h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.75rem 0 0.5rem;
+}
+
+.prose-doc p {
+  margin: 0.8rem 0;
+  line-height: 1.7;
+}
+
+.prose-doc ul,
+.prose-doc ol {
+  margin: 0.8rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose-doc li {
+  margin: 0.4rem 0;
+  line-height: 1.65;
+}
+
+.prose-doc ul li {
+  list-style: disc;
+}
+
+.prose-doc ol li {
+  list-style: decimal;
+}
+
+.prose-doc code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--theme-color-muted);
+  color: var(--theme-color-foreground);
+  border-radius: 5px;
+  padding: 0.15em 0.4em;
+}
+
+.prose-doc pre {
+  background: color-mix(in srgb, var(--theme-color-card) 85%, transparent);
+  border: 1px solid var(--theme-color-border);
+  padding: 1.1rem 1.3rem;
+  overflow-x: auto;
+  margin: 1.1rem 0;
+}
+
+.prose-doc pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+
+/* ---------- Shiki code blocks ---------- */
+
+.code-block {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 1.1rem 0;
+  border: 1px solid
+    color-mix(in srgb, var(--theme-color-ring) 28%, var(--theme-color-border));
+  border-radius: 0.6rem;
+  background: var(--tk-code-bg);
+  box-shadow: 0 1px 3px
+    color-mix(in srgb, var(--theme-color-foreground) 4%, transparent);
+
+  /* --tk-* are the single source of truth for syntax colors. They resolve
+     against the active theme-kit theme (any light/dark/preset/brand/scoped
+     theme) so snippets stay readable on every surface. Comfortable tweaks
+     stop here. Each role maps to a *distinct* mix of semantic tokens so the
+     palette stays harmonized with the theme while every syntax element stays
+     distinguishable. */
+  --tk-code-bg: var(
+    --theme-code-background,
+    color-mix(
+      in srgb,
+      var(--theme-color-muted) 56%,
+      var(--theme-color-background)
+    )
+  );
+  --tk-syntax-plain: var(
+    --theme-code-foreground,
+    var(--theme-color-foreground)
+  );
+  --tk-syntax-comment: var(
+    --theme-code-comment,
+    color-mix(in srgb, var(--theme-color-foreground) 55%, transparent)
+  );
+  --tk-syntax-keyword: var(--theme-code-keyword, var(--theme-color-primary));
+  --tk-syntax-operator: var(
+    --theme-code-operator,
+    color-mix(
+      in srgb,
+      var(--theme-color-foreground) 70%,
+      var(--theme-color-primary)
+    )
+  );
+  --tk-syntax-string: var(
+    --theme-code-string,
+    color-mix(in srgb, var(--theme-color-primary) 70%, #10b981)
+  );
+  --tk-syntax-function: var(
+    --theme-code-function,
+    color-mix(in srgb, var(--theme-color-primary) 75%, #3b82f6)
+  );
+  --tk-syntax-type: var(
+    --theme-code-type,
+    color-mix(in srgb, var(--theme-color-primary) 70%, #8b5cf6)
+  );
+  --tk-syntax-tag: var(
+    --theme-code-tag,
+    color-mix(in srgb, var(--theme-color-primary) 75%, #ec4899)
+  );
+  --tk-syntax-attr: var(
+    --theme-code-attribute,
+    color-mix(
+      in srgb,
+      var(--theme-color-foreground) 82%,
+      var(--theme-color-primary)
+    )
+  );
+  --tk-syntax-variable: var(
+    --theme-code-variable,
+    var(--theme-color-foreground)
+  );
+  --tk-syntax-property: var(
+    --theme-code-property,
+    color-mix(
+      in srgb,
+      var(--theme-color-foreground) 85%,
+      var(--theme-color-primary)
+    )
+  );
+  --tk-syntax-number: var(
+    --theme-code-number,
+    color-mix(in srgb, var(--theme-color-primary) 65%, #f97316)
+  );
+  --tk-syntax-diff-add: color-mix(
+    in srgb,
+    var(--theme-color-primary) 60%,
+    var(--theme-color-foreground)
+  );
+  --tk-syntax-diff-remove: var(--theme-color-destructive);
+  --tk-syntax-danger: var(--theme-color-destructive);
+}
+
+/*
+  Dark-mode refinement for themes that don't ship explicit `code` tokens
+  (presets, brands, user themes). On dark surfaces the generic color-mix
+  fallbacks above can drift into muddy, low-contrast territory — these
+  overrides anchor each role's lightness to the theme's *foreground* (which is
+  light in dark mode) so every syntax element stays readable. The .dark class
+  is set on <html> by the theme-kit provider.
+*/
+html.dark {
+  --tk-syntax-plain: var(--theme-code-foreground, var(--theme-color-foreground));
+  --tk-syntax-comment: var(
+    --theme-code-comment,
+    color-mix(in srgb, var(--theme-color-foreground) 62%, transparent)
+  );
+  --tk-syntax-keyword: var(
+    --theme-code-keyword,
+    color-mix(in srgb, var(--theme-color-primary) 88%, var(--theme-color-foreground))
+  );
+  --tk-syntax-operator: var(
+    --theme-code-operator,
+    color-mix(in srgb, var(--theme-color-primary) 80%, var(--theme-color-foreground))
+  );
+  --tk-syntax-string: var(
+    --theme-code-string,
+    color-mix(in srgb, var(--theme-color-primary) 40%, #4ade80)
+  );
+  --tk-syntax-function: var(
+    --theme-code-function,
+    color-mix(in srgb, var(--theme-color-primary) 45%, #60a5fa)
+  );
+  --tk-syntax-type: var(
+    --theme-code-type,
+    color-mix(in srgb, var(--theme-color-primary) 50%, #c084fc)
+  );
+  --tk-syntax-tag: var(
+    --theme-code-tag,
+    color-mix(in srgb, var(--theme-color-primary) 45%, #f472b6)
+  );
+  --tk-syntax-attr: var(
+    --theme-code-attribute,
+    color-mix(in srgb, var(--theme-color-foreground) 88%, var(--theme-color-primary))
+  );
+  --tk-syntax-variable: var(
+    --theme-code-variable,
+    var(--theme-color-foreground)
+  );
+  --tk-syntax-property: var(
+    --theme-code-property,
+    color-mix(in srgb, var(--theme-color-foreground) 90%, var(--theme-color-primary))
+  );
+  --tk-syntax-number: var(
+    --theme-code-number,
+    color-mix(in srgb, var(--theme-color-primary) 40%, #fbbf24)
+  );
+  --tk-syntax-diff-add: color-mix(
+    in srgb,
+    var(--theme-color-success, var(--theme-color-primary)) 75%,
+    var(--theme-color-foreground)
+  );
+}
+
+.code-block-unbordered {
+  border: 0;
+}
+
+.code-block-toolbar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--theme-color-border) 65%, transparent);
+  background: color-mix(in srgb, var(--theme-color-muted) 22%, transparent);
+  transition: background 0.1s ease;
+}
+
+.code-block:hover .code-block-toolbar,
+.code-block:focus-within .code-block-toolbar {
+  background: color-mix(in srgb, var(--theme-color-muted) 32%, transparent);
+}
+
+.code-block-filename {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--theme-color-foreground);
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.code-block-lang {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.4rem;
+  color: var(--theme-color-foreground);
+  opacity: 0.65;
+  border-radius: 0.4rem;
+  background: var(--theme-color-secondary);
+}
+
+.code-block-copy {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid
+    color-mix(in srgb, var(--theme-color-border) 70%, transparent);
+  border-radius: 0.4rem;
+  background: color-mix(in srgb, var(--theme-color-card) 65%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--theme-color-foreground);
+  cursor: pointer;
+}
+
+.code-block-copy:hover {
+  opacity: 1;
+  background: var(--theme-color-muted);
+  border-color: color-mix(
+    in srgb,
+    var(--theme-color-primary) 40%,
+    var(--theme-color-border)
+  );
+}
+
+.code-block > div:last-child {
+  overflow-x: auto;
+  width: 100%;
+  background: var(--tk-code-bg);
+}
+
+.code-block pre.shiki {
+  margin: 0;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--tk-syntax-plain);
+  background: var(--tk-code-bg);
+  width: max-content;
+  min-width: 100%;
+  height: fit-content;
+  border: 0;
+  box-sizing: border-box;
+}
+
+.code-block pre.shiki code {
+  display: block;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: 14.2px;
+  line-height: 1.5;
+  font-family: var(--font-geist-mono);
+}
+
+.code-block pre.shiki .line {
+  display: flex;
+  align-items: baseline;
+}
+
+.code-block pre.shiki code.has-line-numbers .line {
+  display: flex;
+  align-items: baseline;
+  width: max-content;
+  min-width: 100%;
+}
+
+.code-block pre.shiki .line-code {
+  display: block;
+  flex: 1 0 auto;
+  min-width: max-content;
+  padding-left: 0.65rem;
+  padding-right: 1.1rem;
+}
+
+.code-block pre.shiki .line-number {
+  position: static;
+  flex: 0 0 auto;
+  width: 1.8rem;
+  min-width: 1.8rem;
+  padding-left: 0.2rem;
+  padding-right: 0.5rem;
+  text-align: right;
+  opacity: 0.45;
+  user-select: none;
+  -webkit-user-select: none;
+  font-size: 0.85em;
+  line-height: inherit;
+  font-variant-numeric: tabular-nums;
+  color: var(
+    --theme-color-muted-foreground,
+    var(--theme-color-mutedForeground)
+  );
+  background: transparent;
+  border-right: 1px solid
+    color-mix(in srgb, var(--theme-color-border) 35%, transparent);
+}
+
+.code-block pre.shiki .highlighted {
+  background: color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
+  box-shadow: inset 2px 0 0 var(--theme-color-primary);
+}
+
+.code-block pre.shiki .highlighted .line-number {
+  background: color-mix(in srgb, var(--theme-color-primary) 12%, transparent);
+}
+
+/* Collapsible code blocks — collapsed state shows a max-height cut-off with
+   a gradient fade so the user knows there's more content below. */
+.code-block .code-block-collapsed {
+  overflow: hidden;
+  max-height: 280px;
+  position: relative;
+}
+
+.code-block .code-block-collapsed::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--tk-code-bg, var(--theme-color-muted))
+  );
+  pointer-events: none;
+}
+
+.code-block .code-block-expand {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--theme-color-primary);
+  background: color-mix(
+    in srgb,
+    var(--tk-code-bg, var(--theme-color-muted)) 90%,
+    var(--theme-color-background)
+  );
+  border-top: 1px solid
+    color-mix(in srgb, var(--theme-color-border) 60%, transparent);
+  cursor: pointer;
+}
+
+.code-block .code-block-expand:hover {
+  background: color-mix(in srgb, var(--theme-color-primary) 10%, transparent);
+}
+
+.code-block pre.shiki .diff-add,
+.code-block pre.shiki .diff-remove {
+  position: relative;
+  display: block;
+  box-shadow: inset 2px 0 0
+    color-mix(in srgb, var(--theme-color-primary) 55%, transparent);
+}
+
+.code-block pre.shiki .diff-add {
+  background: color-mix(in srgb, var(--theme-color-primary) 14%, transparent);
+}
+
+.code-block pre.shiki .diff-remove {
+  background: color-mix(
+    in srgb,
+    var(--theme-color-destructive) 14%,
+    transparent
+  );
+}
+
+.prose-doc table {
+  max-width: 100%;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 1rem;
+  overflow-x: auto;
+}
+
+.prose-doc th,
+.prose-doc td {
+  border: 1px solid var(--theme-color-border);
+  padding: 0.55rem 0.8rem;
+  text-align: left;
+}
+
+.prose-doc th {
+  background: var(--theme-color-muted);
+  font-weight: 600;
+}
+
+.prose-doc blockquote {
+  border-left: 3px solid var(--theme-color-primary);
+  padding-left: 1rem;
+  margin: 1.1rem 0;
+  color: var(--theme-color-muted-foreground);
+}
+
+.prose-doc a {
+  color: var(--theme-color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------- 404 / decorative background (not-found) ---------- */
+
+.hero-aurora {
+  position: absolute;
+  inset: -25% -15%;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      50% 45% at 22% 25%,
+      color-mix(in srgb, var(--theme-color-primary) 20%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      45% 40% at 78% 30%,
+      color-mix(in srgb, var(--theme-color-accent) 20%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      40% 45% at 60% 90%,
+      color-mix(in srgb, var(--theme-color-secondary) 18%, transparent),
+      transparent 70%
+    );
+  filter: blur(36px);
+  animation: aurora-drift 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate3d(3%, 2%, 0) rotate(2deg) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-1%, 3%, 0) rotate(-2deg) scale(1.03);
+  }
+}
+
+/* ---------- Animated hero background (landing page) ---------- */
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    70% 55% at 50% -5%,
+    color-mix(in srgb, var(--theme-color-primary) 10%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-particle {
+  position: absolute;
+  bottom: -4%;
+  border-radius: 9999px;
+  opacity: 0;
+  animation: particle-rise var(--p-dur, 12s) linear var(--p-delay, 0s) infinite;
+}
+
+@keyframes particle-rise {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--p-o, 0.4);
+  }
+  85% {
+    opacity: var(--p-o, 0.4);
+  }
+  100% {
+    transform: translateY(-105vh) translateX(var(--p-x, 24px));
+    opacity: 0;
+  }
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 75% at 50% 35%,
+    transparent 45%,
+    color-mix(in srgb, var(--theme-color-background) 70%, transparent) 100%
+  );
+  pointer-events: none;
+}
+
+/* ---------- Motion utilities ---------- */
+
+.float-y {
+  animation: float-y 6s ease-in-out infinite;
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+.pulse-soft {
+  animation: pulse-soft 3.2s ease-in-out infinite;
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.hero-card {
+  box-shadow: 0 40px 100px -40px
+    color-mix(in srgb, var(--theme-color-primary) 40%, transparent);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px) scale(0.99);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ---------- Docs page background ---------- */
+
+.docs-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--theme-color-background);
+}
+
+.docs-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      42% 38% at 12% 8%,
+      color-mix(in srgb, var(--theme-color-primary) 8%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      36% 34% at 88% 18%,
+      color-mix(in srgb, var(--theme-color-accent) 7%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      45% 42% at 68% 88%,
+      color-mix(in srgb, var(--theme-color-primary) 6%, transparent),
+      transparent 72%
+    );
+}
+
+/* scroll-reveal content would stay invisible. Make it visible
+   up front when scripting is unavailable. */
+@media (scripting: none) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb,
+  .hero-aurora,
+  .hero-grid,
+  .hero-particle,
+  .gradient-text,
+  .fade-up,
+  .float-y,
+  .pulse-soft,
+  .reveal,
+  .card-lift {
+    animation: none;
+  }
+  .card-lift:hover {
+    transform: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  body,
+  .site-header {
+    transition: none !important;
+  }
+  /* Mobile menu: no slide/drop or staggered-link animations. */
+  #mobile-menu,
+  #mobile-menu nav,
+  #mobile-menu nav * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

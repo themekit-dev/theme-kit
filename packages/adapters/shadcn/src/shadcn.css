@@ -1,0 +1,60 @@
+/*!
+ * @theme-kit/shadcn
+ *
+ * Compatibility layer between Theme Kit semantic tokens and the CSS variables
+ * that shadcn/ui components consume. Theme Kit is the source of truth; each
+ * `--*` variable below is an alias to a `--theme-*` variable that the Theme Kit
+ * runtime owns and updates automatically.
+ *
+ * Import once, done:
+ *   import "@theme-kit/shadcn";
+ */
+
+:root {
+  --background: var(--theme-color-background);
+  --foreground: var(--theme-color-foreground);
+
+  --card: var(--theme-color-card, var(--theme-color-background));
+  --card-foreground: var(--theme-color-card-foreground, var(--theme-color-cardForeground, var(--theme-color-foreground)));
+
+  --popover: var(--theme-color-popover, var(--theme-color-card, var(--theme-color-background)));
+  --popover-foreground: var(--theme-color-popover-foreground, var(--theme-color-popoverForeground, var(--theme-color-foreground)));
+
+  --primary: var(--theme-color-primary);
+  --primary-foreground: var(--theme-color-primary-foreground, var(--theme-color-primaryForeground));
+
+  --secondary: var(--theme-color-secondary, var(--theme-color-muted));
+  --secondary-foreground: var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground, var(--theme-color-foreground)));
+
+  --muted: var(--theme-color-muted);
+  --muted-foreground: var(--theme-color-muted-foreground, var(--theme-color-mutedForeground));
+
+  --accent: var(--theme-color-accent, var(--theme-color-secondary));
+  --accent-foreground: var(--theme-color-accent-foreground, var(--theme-color-accentForeground, var(--theme-color-foreground)));
+
+  --destructive: var(--theme-color-destructive);
+  --destructive-foreground: var(--theme-color-destructive-foreground, var(--theme-color-destructiveForeground));
+
+  --border: var(--theme-color-border);
+  --input: var(--theme-color-input, var(--theme-color-border));
+  --ring: var(--theme-color-ring, var(--theme-color-primary));
+
+  --radius: var(--theme-radius-lg, 0.625rem);
+
+  /* Charts */
+  --chart-1: var(--theme-color-chart-1, var(--theme-color-ring, var(--theme-color-primary)));
+  --chart-2: var(--theme-color-chart-2, var(--theme-color-accent, var(--theme-color-secondary)));
+  --chart-3: var(--theme-color-chart-3, var(--theme-color-muted, var(--theme-color-border)));
+  --chart-4: var(--theme-color-chart-4, var(--theme-color-muted-foreground, var(--theme-color-mutedForeground)));
+  --chart-5: var(--theme-color-chart-5, var(--theme-color-destructive, var(--theme-color-primary)));
+
+  /* Sidebar */
+  --sidebar: var(--theme-color-sidebar, var(--theme-color-card, var(--theme-color-background)));
+  --sidebar-foreground: var(--theme-color-sidebar-foreground, var(--theme-color-sidebarForeground, var(--theme-color-foreground)));
+  --sidebar-primary: var(--theme-color-sidebar-primary, var(--theme-color-primary));
+  --sidebar-primary-foreground: var(--theme-color-sidebar-primary-foreground, var(--theme-color-sidebar-primaryForeground, var(--theme-color-primaryForeground)));
+  --sidebar-accent: var(--theme-color-sidebar-accent, var(--theme-color-accent, var(--theme-color-muted)));
+  --sidebar-accent-foreground: var(--theme-color-sidebar-accent-foreground, var(--theme-color-sidebar-accentForeground, var(--theme-color-accentForeground)));
+  --sidebar-border: var(--theme-color-sidebar-border, var(--theme-color-sidebarBorder, var(--theme-color-border)));
+  --sidebar-ring: var(--theme-color-sidebar-ring, var(--theme-color-sidebarRing, var(--theme-color-ring)));
+}

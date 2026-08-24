@@ -1,0 +1,60 @@
+{
+  "name": "@theme-kit/chakra",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "dev": "tsup src/index.ts --watch --format esm --dts",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "@chakra-ui/react": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@theme-kit/adapters": "workspace:*",
+    "@theme-kit/core": "workspace:*",
+    "@theme-kit/react": "workspace:*"
+  },
+  "devDependencies": {
+    "@chakra-ui/react": "^3.0.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "vitest": "^4.0.0"
+  },
+  "description": "Chakra UI adapter for Theme Kit.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thememk/theme-kit.git"
+  },
+  "homepage": "https://theme-kit-docs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/thememk/theme-kit/issues"
+  },
+  "keywords": [
+    "theme",
+    "chakra-ui",
+    "adapter",
+    "theming"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
