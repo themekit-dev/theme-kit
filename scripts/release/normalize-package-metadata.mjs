@@ -21,7 +21,7 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(join(here, "..", ".."));
 
-const REPO_URL = "https://github.com/thememk/theme-kit";
+const REPO_URL = "https://github.com/themekit-dev/theme-kit";
 // TODO(1.0.0): after the first Vercel deployment, replace this with the real
 // .vercel.app URL (keep it in sync with apps/docs/lib/site.ts SITE_URL, and
 // the README). Set once — it becomes the `homepage` of every published package.
@@ -181,7 +181,7 @@ import { readdirSync } from "node:fs";
 
 const rootLicense = readFileSync(join(repoRoot, "LICENSE"), "utf8");
 const packages = collectPackages();
-const repoField = { type: "git", url: `git+https://github.com/thememk/theme-kit.git` };
+const repoField = { type: "git", url: `git+https://github.com/themekit-dev/theme-kit.git` };
 const bugsField = { url: `${REPO_URL}/issues` };
 
 let changed = [];
@@ -207,20 +207,32 @@ for (const { dir, pkgPath, json } of packages) {
   if (!json.repository) {
     json.repository = repoField;
     dirty = true;
-  } else if (typeof json.repository === "object" && json.repository.url && !json.repository.url.startsWith("git+")) {
-    json.repository.url = `git+${json.repository.url}`;
-    dirty = true;
+  } else if (typeof json.repository === "object" && json.repository.url) {
+    // org migration: rewrite the old org in existing repository URLs
+    if (json.repository.url.includes("github.com/thememk/")) {
+      json.repository.url = json.repository.url.replace(
+        "github.com/thememk/",
+        "github.com/themekit-dev/",
+      );
+      dirty = true;
+    } else if (!json.repository.url.startsWith("git+")) {
+      json.repository.url = `git+${json.repository.url}`;
+      dirty = true;
+    }
   }
   if (!json.homepage) {
     json.homepage = DOCS_URL;
     dirty = true;
-  } else if (json.homepage === "https://thememk.dev") {
+  } else if (json.homepage === "https://theme-kit-docs.vercel.app") {
     // old placeholder → replace with the current canonical docs URL
     json.homepage = DOCS_URL;
     dirty = true;
   }
   if (!json.bugs) {
     json.bugs = bugsField;
+    dirty = true;
+  } else if (typeof json.bugs === "object" && json.bugs.url?.includes("github.com/thememk/")) {
+    json.bugs.url = json.bugs.url.replace("github.com/thememk/", "github.com/themekit-dev/");
     dirty = true;
   }
   if (!json.keywords?.length && KEYWORDS[name]) {

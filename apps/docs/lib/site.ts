@@ -9,7 +9,7 @@
  * themekit.dev, change the default below (or the env var) — nothing else.
  */
 
-const GH_ORG = "thememk";
+const GH_ORG = "themekit-dev";
 const GH_REPO = "theme-kit";
 export const GITHUB_URL = `https://github.com/${GH_ORG}/${GH_REPO}`;
 export const GITHUB_SOURCE = `${GITHUB_URL}/blob/main`;
@@ -46,9 +46,6 @@ export function sourceUrlForPackage(pkg: string): string {
 
 export const CONTACT_EMAIL = "thememkproductions@gmail.com";
 export const CONTACT_URL = `mailto:${CONTACT_EMAIL}`;
-
-export const TWITTER_SHARE_URL =
-  "https://twitter.com/intent/tweet?text=Theme%20Kit%20by%20@thememk%20-%20framework-agnostic%20theming";
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://theme-kit-docs.vercel.app";

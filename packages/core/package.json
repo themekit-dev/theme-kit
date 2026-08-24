@@ -41,11 +41,11 @@
   "description": "Framework-agnostic theming engine: theme store, runtime, transitions, scheduling, accessibility, and DOM adapters.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thememk/theme-kit.git"
+    "url": "git+https://github.com/themekit-dev/theme-kit.git"
   },
   "homepage": "https://theme-kit-docs.vercel.app",
   "bugs": {
-    "url": "https://github.com/thememk/theme-kit/issues"
+    "url": "https://github.com/themekit-dev/theme-kit/issues"
   },
   "keywords": [
     "theme",

@@ -55,7 +55,7 @@ export default function LicensePage() {
         </p>
         <p>
           <a href={GITHUB_LICENSE} className="underline">
-            github.com/thememk/theme-kit/LICENSE
+            github.com/themekit-dev/theme-kit/LICENSE
           </a>
         </p>
       </LegalSection>

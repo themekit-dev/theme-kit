@@ -24,6 +24,6 @@ createCSSVariablesBinding(store);
 `./vanilla`, `./vite`, `./scrollbar.css`
 
 ## Documentation
-Full API reference and guides: [Theme Kit docs](https://thememk.dev).
+Full API reference and guides: [Theme Kit docs](https://theme-kit-docs.vercel.app).
 ## License
 MIT

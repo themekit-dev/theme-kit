@@ -10,6 +10,6 @@ npm install @theme-kit/shadcn
 `./factory`, `./shadcn.css`
 
 ## Documentation
-Full API reference and guides: [Theme Kit docs](https://thememk.dev).
+Full API reference and guides: [Theme Kit docs](https://theme-kit-docs.vercel.app).
 ## License
 MIT

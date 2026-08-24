@@ -6,7 +6,6 @@ import {
   GITHUB_URL,
   NPM_ORG_URL,
   CONTACT_URL,
-  TWITTER_SHARE_URL,
   npmPackageUrl,
   SITE_NAME,
 } from "../lib/site";
@@ -87,21 +86,6 @@ const socials = [
         aria-hidden
       >
         <path d="M2 5h20v13H13v2H9v-2H2V5Zm2 2v9h4V9h1.5v7H11V7H4Zm13 0h-3v9h3V7Zm-1.5 2v5H16V9h-.5Z" />
-      </svg>
-    ),
-  },
-  {
-    href: TWITTER_SHARE_URL,
-    label: "X / Twitter",
-    icon: (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        aria-hidden
-      >
-        <path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.21-6.82L5.06 21.75H1.74l7.73-8.84L1.4 2.25h6.83l4.71 6.23L18.24 2.25Zm-1.16 17.52h1.83L7.09 4.13H5.13L17.08 19.77Z" />
       </svg>
     ),
   },

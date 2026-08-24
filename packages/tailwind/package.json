@@ -42,11 +42,11 @@
   "description": "Tailwind CSS v4 plugin that maps Theme Kit tokens to Tailwind theme variables.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thememk/theme-kit.git"
+    "url": "git+https://github.com/themekit-dev/theme-kit.git"
   },
   "homepage": "https://theme-kit-docs.vercel.app",
   "bugs": {
-    "url": "https://github.com/thememk/theme-kit/issues"
+    "url": "https://github.com/themekit-dev/theme-kit/issues"
   },
   "keywords": [
     "theme",

@@ -32,7 +32,7 @@ export default function SecurityPage() {
             <>
               <strong>Primary channel:</strong>{" "}
               <a href={GITHUB_SECURITY} className="underline">
-                github.com/thememk/theme-kit/security/advisories
+                github.com/themekit-dev/theme-kit/security/advisories
               </a>{" "}
               — this creates a private advisory visible only to the
               maintainers.

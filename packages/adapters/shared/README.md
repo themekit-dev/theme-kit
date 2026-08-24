@@ -10,6 +10,6 @@ npm install @theme-kit/adapters
 `./react`
 
 ## Documentation
-Full API reference and guides: [Theme Kit docs](https://thememk.dev).
+Full API reference and guides: [Theme Kit docs](https://theme-kit-docs.vercel.app).
 ## License
 MIT

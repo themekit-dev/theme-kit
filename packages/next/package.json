@@ -48,11 +48,11 @@
   "description": "Next.js integration for Theme Kit with SSR-first theming and zero-flash bootstrapping.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thememk/theme-kit.git"
+    "url": "git+https://github.com/themekit-dev/theme-kit.git"
   },
   "homepage": "https://theme-kit-docs.vercel.app",
   "bugs": {
-    "url": "https://github.com/thememk/theme-kit/issues"
+    "url": "https://github.com/themekit-dev/theme-kit/issues"
   },
   "keywords": [
     "theme",

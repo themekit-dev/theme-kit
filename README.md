@@ -8,7 +8,7 @@ components.
 [Documentation](https://theme-kit-docs.vercel.app) ·
 [Playground](https://theme-kit-docs.vercel.app/playground) ·
 [npm](https://www.npmjs.com/org/theme-kit) ·
-[GitHub](https://github.com/thememk/theme-kit)
+[GitHub](https://github.com/themekit-dev/theme-kit)
 
 ## Install
 
@@ -121,4 +121,4 @@ Full documentation: <https://theme-kit-docs.vercel.app>
 
 ## License
 
-[MIT](https://github.com/thememk/theme-kit/blob/main/LICENSE)
+[MIT](https://github.com/themekit-dev/theme-kit/blob/main/LICENSE)
