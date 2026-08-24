@@ -5,8 +5,8 @@ SSR-safe hydration, smooth transitions, scoped themes, and ecosystem adapters 鈥
 for React, Next.js, Vue, Nuxt, Svelte, Solid, Angular, Astro, Remix, and web
 components.
 
-[Documentation](https://theme-kit-docs.vercel.app) 路
-[Playground](https://theme-kit-docs.vercel.app/playground) 路
+[Documentation](https://theme-kit-prods.vercel.app) 路
+[Playground](https://theme-kit-prods.vercel.app/playground) 路
 [npm](https://www.npmjs.com/org/theme-kit) 路
 [GitHub](https://github.com/themekit-dev/theme-kit)
 
@@ -107,17 +107,17 @@ theme-kit inspect themes/my-theme.json
 theme-kit migrate themes/
 ```
 
-See the [CLI documentation](https://theme-kit-docs.vercel.app/cli) for the
+See the [CLI documentation](https://theme-kit-prods.vercel.app/cli) for the
 full command reference.
 
 ## Documentation
 
-Full documentation: <https://theme-kit-docs.vercel.app>
+Full documentation: <https://theme-kit-prods.vercel.app>
 
-- [Frameworks](https://theme-kit-docs.vercel.app/framework-guides)
-- [API Reference](https://theme-kit-docs.vercel.app/api-reference)
-- [Playground](https://theme-kit-docs.vercel.app/playground)
-- [Known Limitations](https://theme-kit-docs.vercel.app/known-limitations)
+- [Frameworks](https://theme-kit-prods.vercel.app/framework-guides)
+- [API Reference](https://theme-kit-prods.vercel.app/api-reference)
+- [Playground](https://theme-kit-prods.vercel.app/playground)
+- [Known Limitations](https://theme-kit-prods.vercel.app/known-limitations)
 
 ## License
 

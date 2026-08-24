@@ -25,7 +25,7 @@ const REPO_URL = "https://github.com/themekit-dev/theme-kit";
 // TODO(1.0.0): after the first Vercel deployment, replace this with the real
 // .vercel.app URL (keep it in sync with apps/docs/lib/site.ts SITE_URL, and
 // the README). Set once — it becomes the `homepage` of every published package.
-const DOCS_URL = "https://theme-kit-docs.vercel.app";
+const DOCS_URL = "https://theme-kit-prods.vercel.app";
 
 const DESCRIPTIONS = {
   "@theme-kit/core":
@@ -223,7 +223,7 @@ for (const { dir, pkgPath, json } of packages) {
   if (!json.homepage) {
     json.homepage = DOCS_URL;
     dirty = true;
-  } else if (json.homepage === "https://theme-kit-docs.vercel.app") {
+  } else if (json.homepage === "https://thememk.dev" || json.homepage === "https://theme-kit-docs.vercel.app") {
     // old placeholder → replace with the current canonical docs URL
     json.homepage = DOCS_URL;
     dirty = true;

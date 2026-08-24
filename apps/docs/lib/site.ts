@@ -48,7 +48,7 @@ export const CONTACT_EMAIL = "thememkproductions@gmail.com";
 export const CONTACT_URL = `mailto:${CONTACT_EMAIL}`;
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://theme-kit-docs.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://theme-kit-prods.vercel.app";
 
 export const SITE_NAME = "Theme Kit";
 export const SITE_DESCRIPTION =

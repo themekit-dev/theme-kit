@@ -10,8 +10,11 @@ import {
   SITE_NAME,
 } from "../lib/site";
 
-const columns: { heading: string; links: { href: string; label: string }[] }[] =
-  [
+const columns: {
+  heading: string;
+  row?: boolean;
+  links: { href: string; label: string }[];
+}[] = [
     {
       heading: "Documentation",
       links: [
@@ -48,6 +51,7 @@ const columns: { heading: string; links: { href: string; label: string }[] }[] =
     },
     {
       heading: "Legal",
+      row: true,
       links: [
         { href: "/privacy", label: "Privacy" },
         { href: "/terms", label: "Terms" },
@@ -114,24 +118,40 @@ const socials = [
 function FooterColumn({
   heading,
   links,
+  row,
 }: {
   heading: string;
   links: { href: string; label: string }[];
+  row?: boolean;
 }) {
   return (
     <nav aria-label={heading} className="flex flex-col gap-2.5">
       <p className="text-[11px] font-semibold uppercase tracking-widest opacity-40">
         {heading}
       </p>
-      {links.map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          className="w-fit text-sm text-foreground/75 hover:text-primary transition-colors no-underline"
-        >
-          {link.label}
-        </Link>
-      ))}
+      {row ? (
+        <div className="flex flex-wrap gap-x-3 gap-y-1">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm text-foreground/75 hover:text-primary transition-colors no-underline"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      ) : (
+        links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="w-fit text-sm text-foreground/75 hover:text-primary transition-colors no-underline"
+          >
+            {link.label}
+          </Link>
+        ))
+      )}
     </nav>
   );
 }

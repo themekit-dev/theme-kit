@@ -5,6 +5,6 @@ Chakra UI adapter for Theme Kit.
 npm install @theme-kit/chakra
 ```
 ## Documentation
-Full API reference and guides: [Theme Kit docs](https://theme-kit-docs.vercel.app).
+Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
 ## License
 MIT

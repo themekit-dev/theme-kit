@@ -1,4 +1,4 @@
 {
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm -r --filter=!@theme-kit/docs build && pnpm --filter @theme-kit/docs build"
+  "buildCommand": "cd ../.. && pnpm -r --filter=!@theme-kit/docs build && cd apps/docs && pnpm next build"
 }
