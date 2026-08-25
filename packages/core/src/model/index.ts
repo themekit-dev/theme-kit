@@ -1,4 +1,4 @@
-export type { ThemeDefinition, ThemeMode, ThemeName } from "./theme";
+export type { ThemeDefinition, ThemeFamilies, ThemeModes, ThemeMode, ThemeName } from "./theme";
 export type { ThemeMeta } from "./meta";
 export type { CodeTokens, ThemeTokens } from "./tokens";
 export type { ThemeSelectionState } from "./selection";

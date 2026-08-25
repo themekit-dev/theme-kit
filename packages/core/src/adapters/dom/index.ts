@@ -3,6 +3,11 @@ import type { ThemeDefinition } from "../../model";
 import { applyDOMEffects } from "./effects";
 import type { DOMBindingOptions } from "./types";
 
+/**
+ * Create a binding that syncs the store theme to the DOM: `data-theme`,
+ *    `data-theme-mode`, `data-theme-family`, the `dark` class, and the
+ *    `color-scheme` style — with transition support.
+ */
 export function createDOMBinding(
   store: ThemeStore,
   options: DOMBindingOptions = {},

@@ -11,7 +11,7 @@ import { buildPageHeadings } from "../../lib/toc";
 export const metadata: Metadata = {
   title: "Vite Plugin",
   description:
-    "The Vite plugin for Theme Kit — zero-flash theme bootstrap injected at build time, with full SSR support and zero runtime cost.",
+    "Optional Vite plugin for Theme Kit — apply the persisted theme on the pre-bundle first frame. The providers are already flash-proof; use this for slow bundles or custom heads.",
 };
 
 const setupSnippet = {
@@ -172,15 +172,16 @@ export default function VitePluginPage() {
       <div className="max-w-3xl">
         <PageHeader
           eyebrow="Vite Plugin"
-          title="Zero-flash themes at build time"
+          title="Optional: zero-flash before the bundle loads"
           description={
             <>
               The{" "}
               <code className="mono text-[0.9em]">themeKitVitePlugin</code>{" "}
               injects a synchronous bootstrap script into your{" "}
               <code className="mono text-[0.9em]">index.html</code> at build
-              time so the persisted theme is applied before the first paint —
-              no flash-of-wrong-theme, zero runtime cost.
+              time so the persisted theme is applied on the{" "}
+              <strong>very first frame</strong> — before the JavaScript bundle
+              even loads.
             </>
           }
         />
@@ -188,15 +189,26 @@ export default function VitePluginPage() {
         <section id="why" className="scroll-mt-24 mb-10">
           <SectionHeading
             num={1}
-            desc="Build-time injection eliminates the flash-of-wrong-theme without client-side workarounds."
+            desc="Providers are already flash-proof; the plugin covers the pre-bundle frame."
           >
             Why a Vite Plugin?
           </SectionHeading>
+          <Callout variant="neutral" title="Do you still need this?">
+            <p className="text-sm leading-relaxed">
+              Since <code className="mono text-[0.9em]">@theme-kit/react</code>{" "}
+              (and Vue, Svelte, Solid) <strong>1.2.0</strong>, the providers are
+              flash-proof out of the box — they inject the blocking bootstrap
+              themselves before first paint. The vite plugin is only needed if
+              you want the theme applied on the absolute first frame{" "}
+              <em>before the bundle loads</em> (relevant for slow bundles or
+              network-sensitive previews).
+            </p>
+          </Callout>
           <ul className="text-sm opacity-80 leading-relaxed list-disc pl-5 space-y-1.5">
             <li>
-              <strong>Zero-flash guarantee</strong> — the bootstrap script runs
-              synchronously before the first paint, so the correct theme is
-              applied from the start.
+              <strong>Pre-bundle first frame</strong> — the bootstrap script
+              runs synchronously from <code className="mono text-[0.9em]">index.html</code>{" "}
+              before the bundle loads, so even the raw HTML frame is themed.
             </li>
             <li>
               <strong>No runtime overhead</strong> — the script is injected at

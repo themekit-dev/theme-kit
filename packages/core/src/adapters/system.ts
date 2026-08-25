@@ -13,6 +13,10 @@ type LegacyMediaQueryList = MediaQueryList & {
   removeListener?: (listener: (event: MediaQueryListEvent) => void) => void;
 };
 
+/**
+ * Create a binding that applies the theme for "system" mode, following
+ *    `prefers-color-scheme` live.
+ */
 export function createSystemThemeBinding<T extends ThemeDefinition>(
   store: ThemeStore<T>,
   options: SystemThemeBindingOptions<T>,

@@ -15,9 +15,12 @@ import {
   createCSSVariablesBinding,
   createDOMBinding,
   createThemeRuntime,
+  createThemeBootstrapScript,
   type CSSVariablesOptions,
   type DOMBindingOptions,
   type ThemeDefinition,
+  type ThemeFamilies,
+  type ThemeModes,
   type ThemeRuntime,
   type ThemeRuntimeOptions,
 } from "@theme-kit/core";
@@ -30,9 +33,20 @@ const ThemeKitContext = createContext<ThemeKitContextValue<any> | null>(null);
 
 export interface ThemeProviderProps<
   T extends ThemeDefinition,
-> extends ThemeRuntimeOptions<T> {
+> extends Omit<ThemeRuntimeOptions<T>, "initialFamily" | "initialMode"> {
   runtime?: ThemeRuntime<T>;
   children: ReactNode;
+  /**
+   * The family resolved on first load. When themes are defined with `as const`,
+   * this is constrained to the families defined in `themes` (autocomplete).
+   */
+  initialFamily?: ThemeFamilies<readonly T[]>;
+  /**
+   * The mode resolved on first load: `"light" | "dark" | "system"`.
+   * When themes are defined with `as const`, this is constrained to the
+   * modes defined in `themes` plus `"system"` (autocomplete).
+   */
+  initialMode?: ThemeModes<readonly T[]> | "system";
 }
 
 export function ThemeProvider<T extends ThemeDefinition>({
@@ -118,6 +132,39 @@ export function ThemeProvider<T extends ThemeDefinition>({
       return;
     }
 
+    // Flash-proofing for SPAs with zero setup: inject a blocking bootstrap
+    // <script> into <head> that reads the persisted selection (localStorage
+    // "theme-selection") and applies it before paint — no vite plugin or
+    // manual index.html script needed. Idempotent; skipped when persistence is
+    // disabled.
+    if (
+      ownsRuntime &&
+      typeof document !== "undefined" &&
+      document.head &&
+      coreOptions.persistence !== null &&
+      coreOptions.themes?.length &&
+      !document.getElementById("theme-kit-bootstrap")
+    ) {
+      const bootstrap = createThemeBootstrapScript({
+        themes: coreOptions.themes,
+        ...(coreOptions.defaultTheme !== undefined
+          ? { defaultTheme: coreOptions.defaultTheme as string }
+          : {}),
+        ...(coreOptions.initialMode !== undefined
+          ? { initialMode: coreOptions.initialMode }
+          : {}),
+        ...(coreOptions.initialFamily !== undefined
+          ? { initialFamily: coreOptions.initialFamily }
+          : {}),
+      });
+      if (bootstrap) {
+        const script = document.createElement("script");
+        script.id = "theme-kit-bootstrap";
+        script.text = bootstrap;
+        document.head.appendChild(script);
+      }
+    }
+
     const cssBindingDrivesDom =
       cssOptions !== false &&
       (cssOptions === undefined || cssOptions.styleSheet !== true);
@@ -184,6 +231,15 @@ export function ThemeProvider<T extends ThemeDefinition>({
   );
 }
 
+/**
+ * Get the active Theme Kit runtime from context. Throws when used outside a
+ * \`ThemeProvider\`. Pass the theme tuple element type to type the runtime's
+ * store/selection against your themes:
+ *
+ * \`\`\`ts
+ * const runtime = useThemeRuntime<typeof themes[number]>();
+ * \`\`\`
+ */
 export function useThemeRuntime<T extends ThemeDefinition>() {
   const context = useContext(ThemeKitContext);
 

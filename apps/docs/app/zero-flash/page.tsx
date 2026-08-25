@@ -96,24 +96,13 @@ const frameworkExamples = [
   {
     label: "React (SPA)",
     lang: "tsx",
-    code: `// index.html is static, so inline the bootstrap output at build time.
-import { createThemeBootstrapScript } from "@theme-kit/core";
-
-const bootstrap = createThemeBootstrapScript({
-  themes,
-  defaultTheme: "light",
-  initialMode: "system",
-});
-
-// → emit this into <head> as a blocking <script> in index.html:
-//   <script>${"${bootstrap}"}</script>
-//
-// It runs before your bundle, so the correct theme is painted on the
-// very first frame. Then the provider hydrates against those same vars.
-
+    code: `// Flash-proof out of the box. The provider reads the persisted selection,
+// applies it before first paint, and injects a blocking bootstrap <script>
+// into <head> — no vite plugin or manual index.html script required.
 import { ThemeProvider } from "@theme-kit/react";
+
 root.render(
-  <ThemeProvider themes={themes} defaultTheme="light">
+  <ThemeProvider themes={themes} defaultTheme="light" initialMode="system">
     <App />
   </ThemeProvider>,
 );`,
@@ -141,58 +130,42 @@ export default function RootLayout({ children }) {
   {
     label: "Vue / Nuxt",
     lang: "ts",
-    code: `// nuxt.config.ts
+    code: `// nuxt.config.ts — the module wires SSR persistence + bootstrap.
 export default defineNuxtConfig({
   modules: ["@theme-kit/nuxt"],
-  themeKit: {
-    themes,
-    defaultTheme: "light",
-    initialMode: "system",
-  },
+  themeKit: { themes, defaultTheme: "light", initialMode: "system" },
 });
 
-// The module's runtime plugin wires SSR-safe persistence, so the server
-// renders the persisted theme with inline CSS variables — the first paint
-// is already correct, and hydration keeps it.
-//
-// In a plain Vue SPA, inline createThemeBootstrapScript() into <head>
-// exactly like the React example.`,
+// In a plain Vue SPA the provider is flash-proof out of the box:
+//   <ThemeProvider themes={themes} defaultTheme="light"> ... </ThemeProvider>
+// It applies the persisted theme before first paint and injects the
+// blocking bootstrap automatically.`,
   },
   {
     label: "SvelteKit",
-    lang: "ts",
-    code: `// src/routes/+layout.ts (or inline in the static index.html)
-import { createThemeBootstrapScript } from "@theme-kit/core";
+    lang: "svelte",
+    code: `<script>
+  import { ThemeProvider } from "@theme-kit/svelte";
+  import { themes } from "$lib/themes";
+</script>
 
-export const load = () => {
-  // Return the blocking script to the +layout.svelte <svelte:head>.
-  return {
-    bootstrap: createThemeBootstrapScript({
-      themes,
-      defaultTheme: "light",
-    }),
-  };
-};`,
+<!-- Flash-proof out of the box — the provider injects the blocking
+     bootstrap and applies the persisted theme before first paint. -->
+<ThemeProvider themes={themes} defaultTheme="light">
+  <slot />
+</ThemeProvider>`,
   },
   {
     label: "Solid",
     lang: "tsx",
-    code: `// index.html — inline the bootstrap script before your entry bundle.
-import { createThemeBootstrapScript } from "@theme-kit/core";
-
-const bootstrap = createThemeBootstrapScript({
-  themes,
-  defaultTheme: "light",
-  initialMode: "system",
-});
-// <head> → <script>${"${bootstrap}"}</script>
-
+    code: `// Flash-proof out of the box — the provider injects the blocking bootstrap
+// and applies the persisted theme before first paint.
 import { render } from "solid-js/web";
 import { ThemeProvider } from "@theme-kit/solid";
 
 render(
   () => (
-    <ThemeProvider themes={themes} defaultTheme="light">
+    <ThemeProvider themes={themes} defaultTheme="light" initialMode="system">
       <App />
     </ThemeProvider>
   ),
@@ -529,15 +502,26 @@ export default function ZeroFlashPage() {
           >
             Every framework
           </SectionHeading>
+          <Callout variant="neutral" title="Flash-proof by default (1.2.0)">
+            <p className="text-sm leading-relaxed">
+              The React, Vue, Svelte and Solid providers now inject the blocking
+              bootstrap themselves — you just wrap your app in the provider and
+              the persisted theme is applied before first paint. The core{" "}
+              <code className="mono text-[0.9em]">createThemeBootstrapScript</code>{" "}
+              and the{" "}
+              <Link href="/vite-plugin" className="text-primary hover:underline">
+                Vite plugin
+              </Link>{" "}
+              remain available for custom heads and the pre-bundle first frame.
+            </p>
+          </Callout>
           <FrameworkTabs examples={frameworkExamplesWithHtml} />
           <p className="mt-4 text-sm opacity-70 leading-relaxed">
             SSR frameworks with dedicated server integration (Next, Nuxt, Astro,
-            Angular, Remix) resolve the theme on the server. Client-only apps
-            and frameworks without a server package (Svelte/SvelteKit, Solid,
-            Web Components) inline{" "}
-            <code className="mono text-[0.9em]">createThemeBootstrapScript</code>{" "}
-            into their static <code className="mono text-[0.9em]">&lt;head&gt;</code>.
-            Either way the bootstrap runs before the first paint.
+            Angular, Remix) resolve the theme on the server. Client providers
+            (React, Vue, Svelte, Solid) read the persisted selection and apply
+            it before first paint automatically. Either way the bootstrap runs
+            before the first paint.
           </p>
         </section>
 

@@ -260,6 +260,10 @@ export function resolveScopeTransition(
   return { ...parent, ...local };
 }
 
+/**
+ * Create a scoped-theme binding for an element: applies the scoped theme's
+ *    CSS variables inline on the element and cleans them up on destroy.
+ */
 export function createScopedThemeBinding<T extends ThemeDefinition>(
   themes: readonly T[],
   target: HTMLElement,

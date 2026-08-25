@@ -38,6 +38,11 @@ function prefersReducedMotion(): boolean {
   );
 }
 
+/**
+ * Create a binding that keeps CSS custom properties (`--theme-*`) on a
+ *    target element (default `<html>`) in sync with the store. Applies the
+ *    current theme immediately on creation and diffs updates.
+ */
 export function createCSSVariablesBinding(
   store: ThemeStore,
   options: CSSVariablesOptions = {},

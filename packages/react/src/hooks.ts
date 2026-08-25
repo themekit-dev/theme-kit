@@ -1,13 +1,18 @@
 "use client";
 
 import { useMemo, useSyncExternalStore, useCallback } from "react";
-import type { ThemeDefinition, ThemeTokens, ThemeRuntime, ThemeRuntimeSnapshot, ThemePack, ThemeLifecycleEventMap, ThemeSchedule } from "@theme-kit/core";
+import type { ThemeDefinition, ThemeFamilies, ThemeModes, ThemeTokens, ThemeRuntime, ThemeRuntimeSnapshot, ThemePack, ThemeLifecycleEventMap, ThemeSchedule } from "@theme-kit/core";
 
 import { useThemeRuntime as useProviderThemeRuntime } from "./provider";
 
 import { EMPTY_THEME_SCHEDULE_STATE } from "@theme-kit/core";
 
 type ThemeLifecycleEventName = keyof ThemeLifecycleEventMap;
+
+// Derive the literal family/mode unions from the theme definitions (T).
+// `"system"` is always a valid mode (follow the OS).
+type FamiliesOf<T extends ThemeDefinition> = ThemeFamilies<readonly T[]>;
+type ModesOf<T extends ThemeDefinition> = ThemeModes<readonly T[]> | "system";
 
 function useThemeSelector<T>(getSnapshot: () => T): T {
   const runtime = useProviderThemeRuntime();
@@ -29,21 +34,34 @@ function useThemeSelector<T>(getSnapshot: () => T): T {
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }
 
+/**
+ * Get a batch function that defers all selection changes and DOM writes
+ *    to a single flush.
+ */
 export function useThemeBatch() {
   const runtime = useProviderThemeRuntime();
   return useCallback((callback: () => void) => runtime.batch(callback), [runtime]);
 }
 
+/**
+ * Get a snapshot function that captures the full runtime state.
+ */
 export function useThemeSnapshot() {
   const runtime = useProviderThemeRuntime();
   return useCallback((): ThemeRuntimeSnapshot => runtime.snapshot(), [runtime]);
 }
 
+/**
+ * Get a restore function that re-applies a previously captured snapshot.
+ */
 export function useThemeRestore() {
   const runtime = useProviderThemeRuntime();
   return useCallback((snapshot: ThemeRuntimeSnapshot) => runtime.restore(snapshot), [runtime]);
 }
 
+/**
+ * Subscribe to the history timeline and get a `jump(index)` function.
+ */
 export function useThemeTimeTravel() {
   const runtime = useProviderThemeRuntime();
 
@@ -58,6 +76,9 @@ export function useThemeTimeTravel() {
   return { history, jump };
 }
 
+/**
+ * Subscribe to runtime lifecycle events (theme changed, mode changed, …).
+ */
 export function useThemeLifecycle() {
   const runtime = useProviderThemeRuntime();
 
@@ -72,54 +93,91 @@ export function useThemeLifecycle() {
   return { on: subscribe };
 }
 
+/**
+ * Get a function that applies a theme pack to the runtime.
+ */
 export function useThemePacks() {
   const runtime = useProviderThemeRuntime();
   return useCallback((pack: ThemePack<any>) => runtime.use(pack), [runtime]);
 }
 
+/**
+ * Subscribe to the current theme definition (re-renders on change).
+ */
 export function useThemeValue<T extends ThemeDefinition>() {
   const runtime = useProviderThemeRuntime<T>();
 
   return useThemeSelector(() => runtime.store.get());
 }
 
+/**
+ * Subscribe to the current theme's token groups.
+ */
 export function useThemeTokens<T extends ThemeDefinition>():
   ThemeTokens | undefined {
   return useThemeValue<T>().tokens;
 }
 
+/**
+ * Subscribe to the current selection mode ("light" | "dark" | "system").
+ */
 export function useThemeMode() {
   const runtime = useProviderThemeRuntime();
 
   return useThemeSelector(() => runtime.selection.getSelection().mode);
 }
 
+/**
+ * Subscribe to the current selection family.
+ */
 export function useThemeFamily() {
   const runtime = useProviderThemeRuntime();
 
   return useThemeSelector(() => runtime.selection.getSelection().family);
 }
 
-export function useSetThemeMode() {
-  const runtime = useProviderThemeRuntime();
-
-  return runtime.selection.setMode;
+/**
+ * Get a stable `setMode` function (does not re-render on change).
+ */
+export function useSetThemeMode<T extends ThemeDefinition = ThemeDefinition>() {
+  const runtime = useProviderThemeRuntime<T>();
+  return runtime.selection.setMode as (mode: ModesOf<T>) => void;
 }
 
-export function useSetThemeFamily() {
-  const runtime = useProviderThemeRuntime();
-
-  return runtime.selection.setFamily;
+/**
+ * Get a stable `setFamily` function (does not re-render on change).
+ */
+export function useSetThemeFamily<T extends ThemeDefinition = ThemeDefinition>() {
+  const runtime = useProviderThemeRuntime<T>();
+  return runtime.selection.setFamily as (family: FamiliesOf<T>) => void;
 }
 
+/**
+ * Get a stable `toggleTheme` function (flips light ⇄ dark).
+ */
 export function useToggleTheme() {
   const runtime = useProviderThemeRuntime();
 
   return runtime.selection.toggleTheme;
 }
 
-export function useTheme<T extends ThemeDefinition>() {
+/**
+ * The primary Theme Kit hook. Returns the current theme, mode, family and
+ *    the selection controls.
+ * 
+ *    When you pass the theme tuple element type, `setFamily` and `setMode`
+ *    are constrained to the families/modes defined in your themes:
+ * 
+ *    ```ts
+ *    const { theme, mode, family, setMode, setFamily, toggleTheme } = useTheme<typeof themes[number]>();
+ *    setFamily("mint");   // autocomplete suggests your families
+ *    setMode("dark");
+ *    ```
+ */
+export function useTheme<T extends ThemeDefinition = ThemeDefinition>() {
   const runtime = useProviderThemeRuntime<T>();
+  type F = FamiliesOf<T>;
+  type M = ModesOf<T>;
 
   const theme = useThemeValue<T>();
   const mode = useThemeMode();
@@ -130,14 +188,17 @@ export function useTheme<T extends ThemeDefinition>() {
       theme,
       mode,
       family,
-      setMode: runtime.selection.setMode,
-      setFamily: runtime.selection.setFamily,
+      setMode: runtime.selection.setMode as (mode: M) => void,
+      setFamily: runtime.selection.setFamily as (family: F) => void,
       toggleTheme: runtime.selection.toggleTheme,
     }),
     [runtime, theme, mode, family],
   );
 }
 
+/**
+ * Subscribe to the runtime history (undo/redo/canUndo/canRedo/clear).
+ */
 export function useThemeHistory() {
   const runtime = useProviderThemeRuntime();
 

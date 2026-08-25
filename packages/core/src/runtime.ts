@@ -184,6 +184,22 @@ function createDefaultBroadcast(): ThemeSelectionBroadcastAdapter | null {
   return createThemeSelectionBroadcast({ channelName: "theme-selection" });
 }
 
+/**
+ * Create a Theme Kit runtime — the single entry point for theming.
+ *    The runtime wires together the theme store, selection controller
+ *    (mode/family/system binding), persistence, broadcast (cross-tab sync),
+ *    history, scheduling, the DOM + CSS-variable bindings, and the adapter
+ *    registry.
+ * 
+ *    ```ts
+ *    const runtime = createThemeRuntime({
+ *      themes: [lightTheme, darkTheme],
+ *      defaultTheme: "light",
+ *      initialMode: "system",
+ *    });
+ *    runtime.selection.setMode("dark");
+ *    ```
+ */
 export function createThemeRuntime<T extends ThemeDefinition>(
   options: ThemeRuntimeOptions<T>,
 ): ThemeRuntime<T> {

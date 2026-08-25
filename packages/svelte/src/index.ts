@@ -584,6 +584,29 @@ export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
       const domOpts = runtimeOptions.dom;
       const cssOpts = runtimeOptions.cssVariables;
 
+      // Flash-proofing: inject a blocking bootstrap script that reads the
+      // persisted selection and applies the theme before first paint.
+      if (
+        ownsRuntime &&
+        document.head &&
+        runtimeOptions.persistence !== null &&
+        runtimeOptions.themes?.length &&
+        !document.getElementById("theme-kit-bootstrap")
+      ) {
+        const bootstrap = createThemeBootstrapScript({
+          themes: runtimeOptions.themes as any,
+          ...(runtimeOptions.defaultTheme !== undefined ? { defaultTheme: runtimeOptions.defaultTheme as string } : {}),
+          ...(runtimeOptions.initialMode !== undefined ? { initialMode: runtimeOptions.initialMode } : {}),
+          ...(runtimeOptions.initialFamily !== undefined ? { initialFamily: runtimeOptions.initialFamily } : {}),
+        });
+        if (bootstrap) {
+          const script = document.createElement("script");
+          script.id = "theme-kit-bootstrap";
+          script.textContent = bootstrap;
+          document.head.appendChild(script);
+        }
+      }
+
       if (domOpts !== false) {
         domBinding = createDOMBinding(
           runtimeInstance!.store,

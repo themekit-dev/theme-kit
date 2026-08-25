@@ -60,6 +60,11 @@ export interface ValidateThemeOptions {
   themes?: readonly ThemeDefinition[];
 }
 
+/**
+ * Validate a theme definition against the Theme Kit schema: required
+ *    semantic tokens, valid references, and contrast ratios. Returns a list
+ *    of issues (empty when valid).
+ */
 export function validateTheme(
   theme: ThemeDefinition,
   options: ValidateThemeOptions = {},

@@ -83,6 +83,10 @@ export interface ThemeSelectionBroadcastOptions {
   channel?: BroadcastChannelLike<ThemeSelectionState>;
 }
 
+/**
+ * Create a broadcast adapter that publishes selection changes to other
+ *    tabs/windows and applies incoming changes.
+ */
 export function createThemeSelectionBroadcast(
   options: ThemeSelectionBroadcastOptions = {},
 ): ThemeSelectionBroadcastAdapter | null {

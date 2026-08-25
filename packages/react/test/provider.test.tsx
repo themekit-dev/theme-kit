@@ -198,4 +198,43 @@ describe("ThemeProvider", () => {
 
     document.body.removeChild(container);
   });
+
+  // Regression: the provider injects a blocking bootstrap <script> into <head>
+  // (flash-proofing) and applies the defined theme's variables on mount.
+  it("injects the blocking bootstrap script", () => {
+    localStorage.clear();
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+
+    const root = createRoot(container);
+
+    act(() => {
+      root.render(
+        <ThemeProvider
+          themes={[
+            defineTheme({ name: "light", meta: { mode: "light" }, tokens: {} }),
+            defineTheme({ name: "dark", meta: { mode: "dark" }, tokens: {} }),
+          ]}
+          defaultTheme="light"
+          initialMode="light"
+          broadcast={null}
+        >
+          <Demo />
+        </ThemeProvider>,
+      );
+    });
+
+    const script = document.getElementById("theme-kit-bootstrap");
+    expect(script).toBeTruthy();
+    expect(script?.textContent ?? "").toContain("colorScheme");
+    // Injecting twice (e.g. StrictMode remount) must not duplicate
+    const count = [...document.querySelectorAll("script#theme-kit-bootstrap")].length;
+    expect(count).toBe(1);
+
+    act(() => {
+      root.unmount();
+    });
+
+    document.body.removeChild(container);
+  });
 });

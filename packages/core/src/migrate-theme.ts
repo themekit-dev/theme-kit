@@ -34,6 +34,9 @@ function applyRemap(
   return result;
 }
 
+/**
+ * Register a migration for the theme migration system.
+ */
 export function registerMigration(step: MigrationStep): void {
   const existing = migrations.findIndex((m) => m.from === step.from);
   if (existing >= 0) {
@@ -51,6 +54,10 @@ export interface MigrateOptions {
   targetVersion?: string;
 }
 
+/**
+ * Migrate a legacy theme to the current Theme Kit format using registered
+ *    migrations.
+ */
 export function migrateTheme(
   theme: ThemeDefinition,
   options: MigrateOptions = {},

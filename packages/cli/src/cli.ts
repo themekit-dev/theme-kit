@@ -28,6 +28,7 @@ Options:
   --seed <color>       Source hex color (#rrggbb)    [default #6366f1]
   --family <name>      Family name for the theme name [default "default"]
   --mode <mode>        light | dark | both             [default both]
+  --code               Also generate a tokens.code syntax palette (opt-in)
   --output <file>      Write JSON to a file instead of stdout
 `,
   validate: `

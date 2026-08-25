@@ -37,6 +37,16 @@ function addEntries(
   }
 }
 
+/**
+ * Flatten a theme's semantic tokens into CSS custom properties
+ *    (`--theme-*`), optionally filtered by token group.
+ * 
+ *    ```ts
+ *    const vars = themeToCSSVariables(theme); // { "--theme-color-background": "#fff", ... }
+ *    ```
+ * 
+ *    Pass `{ groups: ["colors"] }` to emit only specific token groups.
+ */
 export function themeToCSSVariables(
   theme: ThemeDefinition,
   options: ThemeToCSSVariablesOptions = {},

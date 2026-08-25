@@ -9,6 +9,10 @@ export interface MultiWindowSyncOptions {
   onFallback?: (strategy: string) => void;
 }
 
+/**
+ * Sync theme selection across browser tabs/windows via BroadcastChannel
+ *    (with a SharedWorker + storage fallback).
+ */
 export function createMultiWindowSync(
   options: MultiWindowSyncOptions = {},
 ): ThemeSelectionBroadcastAdapter {

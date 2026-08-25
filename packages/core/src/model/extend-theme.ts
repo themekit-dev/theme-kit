@@ -36,6 +36,10 @@ function toTokens(overrides: TokenOverrides): ThemeTokens | undefined {
   return Object.keys(tokens).length > 0 ? tokens : undefined;
 }
 
+/**
+ * Create a new theme by extending a base theme with overrides, merging
+ *    token groups recursively.
+ */
 export function extendTheme<TName extends string, TBase extends ThemeDefinition>(
   name: TName,
   base: TBase,

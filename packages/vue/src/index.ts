@@ -484,6 +484,30 @@ const ThemeProvider = defineComponent({
       const domOpts = props.dom;
       const cssOpts = props.cssVariables;
 
+      // Flash-proofing: inject a blocking bootstrap script that reads the
+      // persisted selection and applies the theme before first paint.
+      if (
+        ownsRuntime &&
+        typeof document !== "undefined" &&
+        document.head &&
+        props.persistence !== null &&
+        props.themes?.length &&
+        !document.getElementById("theme-kit-bootstrap")
+      ) {
+        const bootstrap = createThemeBootstrapScript({
+          themes: props.themes as any,
+          ...(props.defaultTheme !== undefined ? { defaultTheme: props.defaultTheme } : {}),
+          ...(props.initialMode !== undefined ? { initialMode: props.initialMode } : {}),
+          ...(props.initialFamily !== undefined ? { initialFamily: props.initialFamily } : {}),
+        });
+        if (bootstrap) {
+          const script = document.createElement("script");
+          script.id = "theme-kit-bootstrap";
+          script.textContent = bootstrap;
+          document.head.appendChild(script);
+        }
+      }
+
       if (domOpts !== false) {
         domBinding = createDOMBinding(
           resolvedRuntime.store,

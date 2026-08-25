@@ -1,6 +1,6 @@
 {
   "@theme-kit/angular": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\angular\\dist\\types\\theme-kit-angular.d.ts",
     "exports": {
       "values": [
@@ -48,7 +48,7 @@
     }
   },
   "@theme-kit/astro": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\astro\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -99,7 +99,7 @@
     }
   },
   "@theme-kit/cli": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\cli\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -125,7 +125,7 @@
     }
   },
   "@theme-kit/core": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\core\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -311,6 +311,7 @@
         "ThemeDefinition",
         "ThemeDiff",
         "ThemeError",
+        "ThemeFamilies",
         "ThemeHistory",
         "ThemeHistoryOptions",
         "ThemeLifecycle",
@@ -319,6 +320,7 @@
         "ThemeMeta",
         "ThemeMode",
         "ThemeModeControllerOptions",
+        "ThemeModes",
         "ThemeName",
         "ThemePack",
         "ThemePersistenceAdapter",
@@ -389,7 +391,7 @@
     }
   },
   "@theme-kit/devtools": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\devtools\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -412,7 +414,7 @@
     }
   },
   "@theme-kit/mantine": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\mantine\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -431,7 +433,7 @@
     }
   },
   "@theme-kit/next": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\next\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -456,7 +458,7 @@
     }
   },
   "@theme-kit/nuxt": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\nuxt\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -667,6 +669,7 @@
         "ThemeDefinition",
         "ThemeDiff",
         "ThemeError",
+        "ThemeFamilies",
         "ThemeHistory",
         "ThemeHistoryOptions",
         "ThemeInspectorProps",
@@ -676,6 +679,7 @@
         "ThemeMeta",
         "ThemeMode",
         "ThemeModeControllerOptions",
+        "ThemeModes",
         "ThemeName",
         "ThemePack",
         "ThemePersistenceAdapter",
@@ -745,7 +749,7 @@
     }
   },
   "@theme-kit/react": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\react\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -790,7 +794,7 @@
     }
   },
   "@theme-kit/remix": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\remix\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -851,7 +855,7 @@
     }
   },
   "@theme-kit/solid": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\solid\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -893,7 +897,7 @@
     }
   },
   "@theme-kit/svelte": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\svelte\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -938,7 +942,7 @@
     }
   },
   "@theme-kit/tailwind": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\tailwind\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -961,7 +965,7 @@
     }
   },
   "@theme-kit/vue": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\vue\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1006,7 +1010,7 @@
     }
   },
   "@theme-kit/web": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\web\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1042,7 +1046,7 @@
     }
   },
   "@theme-kit/antd": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\adapters\\antd\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1068,7 +1072,7 @@
     }
   },
   "@theme-kit/bootstrap": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\adapters\\bootstrap\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1092,7 +1096,7 @@
     }
   },
   "@theme-kit/chakra": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\adapters\\chakra\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1118,7 +1122,7 @@
     }
   },
   "@theme-kit/daisyui": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\adapters\\daisyui\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1142,7 +1146,7 @@
     }
   },
   "@theme-kit/mui": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\adapters\\mui\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1168,7 +1172,7 @@
     }
   },
   "@theme-kit/open-props": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\adapters\\open-props\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1192,7 +1196,7 @@
     }
   },
   "@theme-kit/shadcn": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\adapters\\shadcn\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1216,7 +1220,7 @@
     }
   },
   "@theme-kit/adapters": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\adapters\\shared\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1251,7 +1255,7 @@
     }
   },
   "@theme-kit/unocss": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "dts": "packages\\adapters\\unocss\\dist\\index.d.ts",
     "exports": {
       "values": [

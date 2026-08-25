@@ -35,7 +35,7 @@ export const DOCS_ROUTES: DocsRoute[] = [
   { href: "/plugins", label: "Plugins", hint: "Extend the runtime" },
   { href: "/dom-adapters", label: "DOM Adapters", hint: "Apply themes to elements" },
   { href: "/vanilla", label: "Framework-Free", hint: "No framework required" },
-  { href: "/vite-plugin", label: "Vite Plugin", hint: "Zero-config builds" },
+  { href: "/vite-plugin", label: "Vite Plugin", hint: "Optional; pre-bundle first frame" },
   { href: "/adapters", label: "Adapters", hint: "Bridge to UI libraries" },
   { href: "/libraries", label: "Libraries", hint: "Library integrations" },
   { href: "/libraries/shadcn", label: "shadcn/ui" },

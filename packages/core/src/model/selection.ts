@@ -5,6 +5,10 @@ export interface ThemeSelectionState {
   mode: ThemeMode;
 }
 
+/**
+ * Get a theme's family. Themes without `meta.family` belong to the
+ *    "default" family.
+ */
 export function getThemeFamily(theme: ThemeDefinition): string {
   return theme.meta?.family ?? "default";
 }
