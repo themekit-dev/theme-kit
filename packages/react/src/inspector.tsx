@@ -12,9 +12,6 @@ import { useThemeRuntime } from "./provider";
 import { useThemeValue } from "./hooks";
 
 const DEFAULT_DURATION = 300;
-// Default toggle placement (used when no props are passed). The panel always
-// opens ABOVE the toggle (never covering it): toggle height + a small gap, so
-// the toggle stays clickable to dismiss the panel.
 const DEFAULT_BOTTOM_OFFSET = 104;
 const DEFAULT_RIGHT_OFFSET = 32;
 const DEFAULT_SIZE = 40;
@@ -257,7 +254,7 @@ export function ThemeInspector({
   bottom = DEFAULT_BOTTOM_OFFSET,
   right = DEFAULT_RIGHT_OFFSET,
   size = DEFAULT_SIZE,
-  zIndex = 9999,
+  zIndex = 1000,
 }: ThemeInspectorProps = {}) {
   const runtime = useThemeRuntime();
 
@@ -353,7 +350,11 @@ export function ThemeInspector({
           zIndex,
         }}
       >
-        {isOpen ? <XIcon size={Math.round(size * 0.4)} /> : <EyeIcon size={Math.round(size * 0.45)} />}
+        {isOpen ? (
+          <XIcon size={Math.round(size * 0.4)} />
+        ) : (
+          <EyeIcon size={Math.round(size * 0.45)} />
+        )}
       </button>
 
       <InspectorPanel

@@ -1,4 +1,5 @@
 import type { ThemeDefinition } from "../model/theme";
+import { getThemeFamily, getThemeMode } from "../model";
 import type { ThemeStore } from "../types";
 import {
   calculateSunTimes,
@@ -156,8 +157,9 @@ export function resolveScheduledThemePair<T extends ThemeDefinition>(
   ): T | null => {
     if (!family) return null;
     return (
-      themes.find((t) => t.meta?.family === family && t.meta?.mode === mode) ??
-      null
+      themes.find(
+        (t) => getThemeFamily(t) === family && getThemeMode(t) === mode,
+      ) ?? null
     );
   };
 

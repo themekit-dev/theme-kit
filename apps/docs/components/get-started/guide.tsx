@@ -76,9 +76,15 @@ export const themes = [
   }),
 ];`;
 
+const minimalThemeCode = `// themes.ts — meta.mode is optional; the mode is inferred from the name.
+// Families: themes without meta.family belong to the "default" family.
+export const themes = [
+  { name: "light", tokens: { colors: { background: "#ffffff", primary: "#6366f1" } } },
+  { name: "dark", tokens: { colors: { background: "#0a0a0a", primary: "#818cf8" } } },
+];`;
+
 const customizeLinks = [
-  { href: "/tokens", label: "Tokens & typography" },
-  { href: "/custom-themes", label: "Custom themes" },
+  { href: "/tokens", label: "Tokens & typography" },  { href: "/custom-themes", label: "Custom themes" },
   { href: "/animation", label: "Transitions" },
   { href: "/advanced-features", label: "Advanced features" },
 ];
@@ -152,9 +158,11 @@ function Step({
 export function GetStartedGuide({
   frameworkHtml,
   defineThemeHtml,
+  minimalThemeHtml,
 }: {
   frameworkHtml: Record<string, FrameworkHtml>;
   defineThemeHtml: string;
+  minimalThemeHtml: string;
 }) {
   const [slug, setSlug] = useState("next");
   const fw = frameworks.find((f) => f.slug === slug) ?? frameworks[0]!;
@@ -228,6 +236,28 @@ export function GetStartedGuide({
             filename="themes.ts"
             className="rounded-lg m-0"
           />
+          <Callout variant="neutral" title="Two ways to define themes">
+            <p className="text-sm leading-relaxed">
+              The snippet above sets <span className="mono">meta.mode</span>{" "}
+              explicitly. That&apos;s the recommended form, but you can also
+              define themes without it — the mode is then inferred from the
+              theme name:
+            </p>
+            <CodeBlock
+              html={minimalThemeHtml}
+              code={minimalThemeCode}
+              language="ts"
+              filename="themes.ts (minimal)"
+              className="rounded-lg m-0 mt-2"
+            />
+            <p className="text-sm leading-relaxed mt-2">
+              Both forms support <span className="mono">setMode("dark")</span>{" "}
+              and <span className="mono">toggleTheme()</span> the same way. The{" "}
+              <span className="mono">meta.family</span> field groups themes into
+              families; without it every theme belongs to the{" "}
+              <span className="mono">default</span> family.
+            </p>
+          </Callout>
         </Step>
 
         <Step step="3" title={`Add the ${fw.name} provider`}>

@@ -1,5 +1,6 @@
 import {
   getThemeFamily,
+  getThemeMode,
   resolveTheme,
   type ThemeDefinition,
 } from "../model";
@@ -105,9 +106,11 @@ export function resolveScopedTheme<T extends ThemeDefinition>(
       : [];
 
   if (familyMatch.length > 0) {
-    const byMode = familyMatch.find((t) => t.meta?.mode === effectiveMode);
+    const byMode = familyMatch.find((t) => getThemeMode(t) === effectiveMode);
     const selected =
-      byMode ?? familyMatch.find((t) => t.meta?.mode === "light") ?? familyMatch[0];
+      byMode ??
+      familyMatch.find((t) => getThemeMode(t) === "light") ??
+      familyMatch[0];
     if (selected) {
       return resolveTheme(themes as unknown as readonly ThemeDefinition[], String(selected.name)) as T;
     }
@@ -209,7 +212,7 @@ export function resolveScopedThemePrePaint<T extends ThemeDefinition>(
   const base = {
     lightVariables,
     name: String(lightTheme.name),
-    isDark: lightTheme.meta?.mode === "dark",
+    isDark: getThemeMode(lightTheme) === "dark",
   };
 
   if (!systemBased) {
@@ -276,7 +279,7 @@ export function createScopedThemeBinding<T extends ThemeDefinition>(
   let currentTheme: T;
 
   function updateStateAttributes(theme: T) {
-    const isDark = theme.meta?.mode === "dark";
+    const isDark = getThemeMode(theme) === "dark";
     target.classList.toggle("dark", isDark);
     target.setAttribute("data-theme", String(theme.name));
     target.setAttribute("data-mode", isDark ? "dark" : "light");

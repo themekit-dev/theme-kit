@@ -1,5 +1,5 @@
 import type { ThemeDefinition, ThemeMode } from "./theme";
-import { getThemeFamily } from "./selection";
+import { getThemeFamily, getThemeMode } from "./selection";
 
 export interface ThemeSelection {
   family: string;
@@ -13,7 +13,7 @@ export function resolveSelectedTheme<T extends ThemeDefinition>(
   const exact = themes.find(
     (theme) =>
       getThemeFamily(theme) === selection.family &&
-      theme.meta?.mode === selection.mode,
+      getThemeMode(theme) === selection.mode,
   );
 
   if (exact) {

@@ -78,7 +78,11 @@ export function ThemeQuickSwitcher({
   // lives inside the mobile menu's own focus-managed nav. Click-outside and
   // Escape-to-close apply to both.
   useFocusTrap(panelRef, isPopover && open);
-  useClickOutside({ rootRef, open, setOpen });
+  // Click-outside only applies to the desktop popover. In the mobile list
+  // variant the panel lives inside the mobile menu's own scroll container, so
+  // click-outside would close the dropdown on the very taps meant to select an
+  // option.
+  useClickOutside({ rootRef, open: isPopover ? open : false, setOpen });
 
   const families = useMemo<{
     builtIn: FamilyOption[];
@@ -229,7 +233,7 @@ export function ThemeQuickSwitcher({
           >
             {families.builtIn.length > 0 && (
               <>
-                <div className="sticky top-0 z-10 border-b border-border bg-card/95 px-3 py-2 text-[10px] font-semibold uppercase tracking-widest opacity-40 backdrop-blur">
+                <div className="border-b border-border bg-card px-3 py-2 text-[10px] font-semibold uppercase tracking-widest opacity-40">
                   Theme family
                 </div>
                 <div className="grid grid-cols-2 gap-1 p-1.5">
@@ -241,7 +245,7 @@ export function ThemeQuickSwitcher({
             )}
             {families.site.length > 0 && (
               <>
-                <div className="sticky top-0 z-10 border-b border-border bg-card/95 px-3 py-2 text-[10px] font-semibold uppercase tracking-widest opacity-40 backdrop-blur">
+                <div className="border-b border-border bg-card px-3 py-2 text-[10px] font-semibold uppercase tracking-widest opacity-40">
                   Theme Kit Site Family
                 </div>
                 <div className="grid grid-cols-2 gap-1 p-1.5">

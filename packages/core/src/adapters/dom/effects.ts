@@ -1,4 +1,5 @@
 import type { ThemeDefinition } from "../../model";
+import { getThemeMode } from "../../model";
 import type { ThemeTransitionOptions } from "../../transition";
 import { createDOMWriteBatch } from "./batch";
 
@@ -46,9 +47,9 @@ export function applyDOMEffects(options: DOMEffectsOptions) {
     batch.setAttribute("data-theme-mode", null);
   }
 
-  batch.toggleClass("dark", theme.meta?.mode === "dark");
+  batch.toggleClass("dark", getThemeMode(theme) === "dark");
 
-  const mode = theme.meta?.mode;
+  const mode = getThemeMode(theme);
   if (mode === "light" || mode === "dark") {
     batch.setStyle("color-scheme", mode);
   } else {

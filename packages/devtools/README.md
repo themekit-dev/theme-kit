@@ -5,7 +5,7 @@ Development tools and runtime inspector for Theme Kit.
 npm install @theme-kit/devtools
 ```
 ## Documentation
-Full API reference and guides: [Theme Kit docs](https://theme-kit-prods.vercel.app).
+Full API reference and guides: [Theme Kit docs](https://theme-kit-dev.vercel.app).
 All packages: [npm](https://www.npmjs.com/org/theme-kit).
 ## License
 MIT

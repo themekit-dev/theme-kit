@@ -2,64 +2,59 @@ import Link from "next/link";
 import ThemeKitLogo from "./ui/logo";
 import { Badge } from "./ui/badge";
 import { PKG_VERSION_BADGE } from "../lib/version";
-import {
-  GITHUB_URL,
-  NPM_ORG_URL,
-  CONTACT_URL,
-  SITE_NAME,
-} from "../lib/site";
+import { GITHUB_URL, NPM_ORG_URL, CONTACT_URL, SITE_NAME } from "../lib/site";
 
 const columns: {
   heading: string;
   row?: boolean;
   links: { href: string; label: string }[];
 }[] = [
-    {
-      heading: "Documentation",
-      links: [
-        { href: "/", label: "Home" },
-        { href: "/get-started", label: "Get Started" },
-        { href: "/core-concepts", label: "Core Concepts" },
-        { href: "/packages", label: "Packages" },
-        { href: "/framework-guides", label: "Framework Guides" },
-        { href: "/api-reference", label: "API Reference" },
-      ],
-    },
-    {
-      heading: "Resources",
-      links: [
-        { href: "/playground", label: "Playground" },
-        { href: "/adapters", label: "Adapters" },
-        { href: "/presets/default", label: "Presets" },
-        { href: "/custom-themes", label: "Custom Themes" },
-        { href: "/custom-scrollbar", label: "Custom Scrollbar" },
-        { href: "/showcase", label: "Showcase" },
-      ],
-    },
-    {
-      heading: "Ecosystem",
-      links: [
-        { href: "/framework-guides/react", label: "React" },
-        { href: "/framework-guides/next", label: "Next.js" },
-        { href: "/framework-guides/vue", label: "Vue" },
-        { href: "/framework-guides/svelte", label: "Svelte" },
-        { href: "/framework-guides/solid", label: "Solid" },
-        { href: GITHUB_URL, label: "GitHub ↗" },
-        { href: NPM_ORG_URL, label: "npm ↗" },
-      ],
-    },
-    {
-      heading: "Legal",
-      row: true,
-      links: [
-        { href: "/privacy", label: "Privacy" },
-        { href: "/terms", label: "Terms" },
-        { href: "/security", label: "Security" },
-        { href: "/license", label: "License" },
-        { href: CONTACT_URL, label: "Contact" },
-      ],
-    },
-  ];
+  {
+    heading: "Documentation",
+    links: [
+      { href: "/", label: "Home" },
+      { href: "/get-started", label: "Get Started" },
+      { href: "/core-concepts", label: "Core Concepts" },
+      { href: "/packages", label: "Packages" },
+      { href: "/framework-guides", label: "Framework Guides" },
+      { href: "/api-reference", label: "API Reference" },
+    ],
+  },
+  {
+    heading: "Resources",
+    links: [
+      { href: "/playground", label: "Playground" },
+      { href: "/adapters", label: "Adapters" },
+      { href: "/presets/default", label: "Presets" },
+      { href: "/custom-themes", label: "Custom Themes" },
+      { href: "/custom-scrollbar", label: "Custom Scrollbar" },
+      { href: "/showcase", label: "Showcase" },
+    ],
+  },
+  {
+    heading: "Ecosystem",
+    links: [
+      { href: "/framework-guides/react", label: "React" },
+      { href: "/framework-guides/next", label: "Next.js" },
+      { href: "/framework-guides/vue", label: "Vue" },
+      { href: "/framework-guides/svelte", label: "Svelte" },
+      { href: "/framework-guides/solid", label: "Solid" },
+      { href: GITHUB_URL, label: "GitHub ↗" },
+      { href: NPM_ORG_URL, label: "npm ↗" },
+    ],
+  },
+  {
+    heading: "Legal",
+    row: true,
+    links: [
+      { href: "/privacy", label: "Privacy" },
+      { href: "/terms", label: "Terms" },
+      { href: "/security", label: "Security" },
+      { href: "/license", label: "License" },
+      { href: CONTACT_URL, label: "Contact" },
+    ],
+  },
+];
 
 const socials = [
   {
@@ -114,6 +109,43 @@ const socials = [
   },
 ];
 
+function FooterLink({
+  href,
+  className,
+  label,
+}: {
+  href: string;
+  className: string;
+  label: string;
+}) {
+  // External links (https://…) open in a new tab; mailto: stays in place;
+  // everything else is an internal docs route via next/link.
+  if (href.startsWith("http")) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
+        {label}
+      </a>
+    );
+  }
+  if (href.startsWith("mailto:")) {
+    return (
+      <a href={href} className={className}>
+        {label}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={className}>
+      {label}
+    </Link>
+  );
+}
+
 function FooterColumn({
   heading,
   links,
@@ -131,24 +163,22 @@ function FooterColumn({
       {row ? (
         <div className="flex flex-wrap gap-x-3 gap-y-1">
           {links.map((link) => (
-            <Link
+            <FooterLink
               key={link.href}
               href={link.href}
+              label={link.label}
               className="text-sm text-foreground/75 hover:text-primary transition-colors no-underline"
-            >
-              {link.label}
-            </Link>
+            />
           ))}
         </div>
       ) : (
         links.map((link) => (
-          <Link
+          <FooterLink
             key={link.href}
             href={link.href}
+            label={link.label}
             className="w-fit text-sm text-foreground/75 hover:text-primary transition-colors no-underline"
-          >
-            {link.label}
-          </Link>
+          />
         ))
       )}
     </nav>

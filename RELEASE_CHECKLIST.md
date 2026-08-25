@@ -145,7 +145,7 @@ Status: **1.0.0 release-ready** — all items verified. See sections below for e
 - [x] Hero: `npm install @theme-kit/core @theme-kit/react` install line + CLI callout.
 - [x] Package pages: "View on npm ↗" + "Source ↗" derived from the central config.
 - [x] Root metadata: `metadataBase`, canonical, OpenGraph, and Twitter URLs tied to `SITE_URL`.
-- [x] Legal pages: no hardcoded `theme-kit-prods.vercel.app`/GitHub URLs — all from the config; contact via `thememkproductions@gmail.com`.
+- [x] Legal pages: no hardcoded `theme-kit-dev.vercel.app`/GitHub URLs — all from the config; contact via `thememkproductions@gmail.com`.
 - [x] `scripts/release/publish.mjs` — order-aware npm publish (topological: core → web → adapters → react → adapters → frameworks), `--access public`, `--dry-run` verified (24 packages, correct order), `npm whoami` gate, supports `--tag`.
 - [x] README rewritten for launch: Documentation/Playground/npm/GitHub links, install commands, quick start, CLI section, ecosystem map.
 - [x] Package metadata `homepage` for all 24 packages now points at the canonical docs URL placeholder.

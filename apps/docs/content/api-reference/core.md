@@ -720,6 +720,21 @@ Look up the reference coordinates for an IANA timezone. Returns `null`
 ---
 
 
+### `getThemeMode(theme): ThemeMode`
+The color mode of a theme. Uses `meta.mode` when present; otherwise infers
+it from the theme name (e.g. `"mint-dark"` → "dark"). This keeps simple
+theme definitions working: `[{ name: "light", ... }, { name: "dark", ... }]`
+resolve and toggle correctly without requiring `meta.mode`.
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `theme` | `ThemeDefinition` | — |
+
+**Returns** `ThemeMode`
+
+---
+
+
 ### `getTimeZoneList(): string[]`
 All known timezone ids, sorted alphabetically. Useful for building pickers
  (the docs site uses it for its timezone selector).

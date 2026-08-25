@@ -58,33 +58,6 @@ const MOBILE_MODES = [
   { mode: "system", label: "System" },
 ] as const;
 
-function MobileModeRow() {
-  const mode = useThemeMode();
-  const setMode = useSetThemeMode();
-  return (
-    <div className="grid grid-cols-3 gap-1 px-1 pb-2">
-      {MOBILE_MODES.map((m) => {
-        const active = mode === m.mode;
-        return (
-          <button
-            key={m.mode}
-            type="button"
-            onClick={() => setMode(m.mode)}
-            aria-pressed={active}
-            className={`flex items-center justify-center rounded-lg px-3 py-2 text-[13px] font-medium cursor-pointer ${
-              active
-                ? "bg-primary text-primary-foreground"
-                : "text-foreground/80 hover:bg-muted"
-            }`}
-          >
-            {m.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -138,10 +111,7 @@ export function SiteHeader() {
     // Skip scrollTop 0 — a close/navigation can reset the menu's scroll to 0
     // and fire a scroll event while `open` is still true in this closure.
     if (nav && open && nav.scrollTop > 0) {
-      sessionStorage.setItem(
-        MOBILE_MENU_SCROLL_KEY,
-        String(nav.scrollTop),
-      );
+      sessionStorage.setItem(MOBILE_MENU_SCROLL_KEY, String(nav.scrollTop));
     }
   };
 
@@ -270,21 +240,21 @@ export function SiteHeader() {
               aria-label={open ? "Close navigation" : "Open navigation"}
               aria-expanded={open}
               aria-controls="mobile-menu"
-              className="lg:hidden relative inline-flex items-center justify-center w-9 h-9 rounded-md border border-border bg-card cursor-pointer transition-colors hover:border-ring"
+              className="lg:hidden relative inline-flex items-center justify-center w-9 h-9 rounded-md border border-border bg-card cursor-pointer hover:border-ring"
             >
               <span className="relative block w-4 h-3.5">
                 <span
-                  className={`absolute left-0 top-0 h-0.5 w-full rounded-full bg-current transition-[transform,top,opacity] duration-300 ${
+                  className={`absolute left-0 top-0 h-0.5 w-full rounded-full bg-current transition-[transform,top,opacity] duration-400 ease ${
                     open ? "top-1.5 rotate-45" : ""
                   }`}
                 />
                 <span
-                  className={`absolute left-0 top-1.5 h-0.5 w-full rounded-full bg-current transition-[opacity,transform] duration-200 ${
+                  className={`absolute left-0 top-1.5 h-0.5 w-full rounded-full bg-current transition-[opacity,transform] duration-300 ease ${
                     open ? "opacity-0 scale-x-0" : ""
                   }`}
                 />
                 <span
-                  className={`absolute left-0 bottom-0 h-0.5 w-full rounded-full bg-current transition-[transform,top,opacity] duration-300 ${
+                  className={`absolute left-0 bottom-0 h-0.5 w-full rounded-full bg-current transition-[transform,top,opacity] duration-400 ease ${
                     open ? "bottom-1.5 -rotate-45" : ""
                   }`}
                 />
@@ -305,7 +275,7 @@ export function SiteHeader() {
       >
         {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-400 ${
             open ? "opacity-100" : "opacity-0"
           }`}
           onClick={() => setOpen(false)}
@@ -319,10 +289,8 @@ export function SiteHeader() {
           ref={menuNavRef}
           onScroll={saveMobileMenuScroll}
           aria-label="Mobile"
-          className={`absolute inset-y-0 left-0 right-0 flex flex-col overflow-y-auto overscroll-contain bg-background/95 backdrop-blur-xl border-b border-border shadow-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:left-auto md:right-0 md:w-[26rem] md:max-w-[85vw] md:border-l md:border-border md:shadow-2xl ${
-            open
-              ? "opacity-100 translate-x-0"
-              : "opacity-0 translate-x-full"
+          className={`absolute inset-y-0 left-0 right-0 flex flex-col overflow-y-auto overscroll-contain bg-background border-b border-border shadow-2xl transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] md:left-auto md:right-0 md:w-104 md:max-w-[85vw] md:border-l md:border-border md:shadow-2xl ${
+            open ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full"
           }`}
         >
           <div className="flex-1 px-3 py-4 flex flex-col gap-4">
@@ -363,11 +331,9 @@ export function SiteHeader() {
             </div>
 
             <div
-              style={{ transitionDelay: open ? "300ms" : "0ms" }}
+              style={{ transitionDelay: open ? "400ms" : "0ms" }}
               className={`transition-[opacity,transform] duration-300 ${
-                open
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 -translate-x-3"
+                open ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-3"
               }`}
             >
               {/* — Guides & Presets — */}
@@ -401,7 +367,7 @@ export function SiteHeader() {
                   </svg>
                 </button>
                 <div
-                  className={`overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
+                  className={`overflow-hidden transition-[max-height,opacity] duration-400 ease-out ${
                     openGuide ? "max-h-130" : "max-h-0"
                   }`}
                 >
@@ -482,9 +448,7 @@ export function SiteHeader() {
             <div
               style={{ transitionDelay: open ? "500ms" : "0ms" }}
               className={`transition-[opacity,transform] duration-300 ${
-                open
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 -translate-x-3"
+                open ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-3"
               }`}
             >
               <div className="flex flex-col gap-2">
@@ -492,7 +456,6 @@ export function SiteHeader() {
                   Appearance
                 </div>
                 <ThemeQuickSwitcher variant="list" />
-                <MobileModeRow />
               </div>
             </div>
           </div>

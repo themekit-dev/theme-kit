@@ -1,5 +1,5 @@
 import type { ThemeDefinition, ThemeMode } from "../model/theme";
-import { getThemeFamily, type ThemeSelectionState } from "../model";
+import { getThemeFamily, getThemeMode, type ThemeSelectionState } from "../model";
 
 export interface ResolveSelectionOptions<T extends ThemeDefinition> {
   themes: readonly T[];
@@ -10,14 +10,6 @@ export interface ResolveSelectionOptions<T extends ThemeDefinition> {
   initialFamily?: string;
 
   persistedSelection?: ThemeSelectionState | null;
-}
-
-function getThemeMode(theme: ThemeDefinition): ThemeMode {
-  const mode = theme.meta?.mode;
-
-  return mode === "light" || mode === "dark" || mode === "system"
-    ? mode
-    : "light";
 }
 
 export function resolveSelection<T extends ThemeDefinition>(

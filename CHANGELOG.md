@@ -5,7 +5,7 @@
 The initial public release of Theme Kit — a framework-agnostic theming runtime with semantic tokens,
 theme families, SSR-safe hydration, smooth transitions, scoped themes, and ecosystem adapters.
 
-Available on [npm](https://www.npmjs.com/org/theme-kit) · [GitHub](https://github.com/themekit-dev/theme-kit) · [Documentation](https://theme-kit-prods.vercel.app)
+Available on [npm](https://www.npmjs.com/org/theme-kit) · [GitHub](https://github.com/themekit-dev/theme-kit) · [Documentation](https://theme-kit-dev.vercel.app)
 
 ### Highlights
 

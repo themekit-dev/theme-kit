@@ -1,4 +1,4 @@
 {
   "installCommand": "pnpm install",
-  "buildCommand": "cd ../.. && pnpm -r --filter=!@theme-kit/docs build && cd apps/docs && pnpm next build"
+  "buildCommand": "cd ../.. && pnpm -r --workspace-concurrency=1 --filter=!@theme-kit/docs build && cd apps/docs && pnpm next build"
 }

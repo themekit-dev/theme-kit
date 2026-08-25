@@ -104,6 +104,13 @@ export const themes = [
   }),
 ];`;
 
+const minimalThemeCode = `// themes.ts — meta.mode is optional; the mode is inferred from the name.
+// Families: themes without meta.family belong to the "default" family.
+export const themes = [
+  { name: "light", tokens: { colors: { background: "#ffffff", primary: "#6366f1" } } },
+  { name: "dark", tokens: { colors: { background: "#0a0a0a", primary: "#818cf8" } } },
+];`;
+
 // The guide is a client component, so its headings are invisible to the
 // server-side TOC collector (RSC serializes the subtree as a template).
 // Provide them here so the rail is visible from the initial HTML. The client
@@ -135,6 +142,7 @@ export default function GetStartedPage() {
         <GetStartedGuide
           frameworkHtml={frameworkHtml}
           defineThemeHtml={highlightCode(defineThemeCode, "tsx")}
+          minimalThemeHtml={highlightCode(minimalThemeCode, "ts")}
         />
       </div>
     </DocsLayout>

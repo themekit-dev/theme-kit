@@ -572,10 +572,7 @@ export function DocsLayout({
     // and fire a scroll event while `open` is still true in this closure; only
     // persist real, positive scroll positions.
     if (panel && open && panel.scrollTop > 0) {
-      sessionStorage.setItem(
-        DRAWER_SCROLL_KEY,
-        String(panel.scrollTop),
-      );
+      sessionStorage.setItem(DRAWER_SCROLL_KEY, String(panel.scrollTop));
     }
   };
 
@@ -648,7 +645,7 @@ export function DocsLayout({
               ref={drawerPanelRef}
               onScroll={onDrawerScroll}
               tabIndex={open ? -1 : undefined}
-              className={`absolute inset-y-0 left-0 w-72.5 max-w-[85vw] bg-background/98 backdrop-blur-xl border-r border-border overflow-y-auto transition-transform duration-300 ease-out ${
+              className={`absolute inset-y-0 left-0 w-72.5 max-w-[85vw] bg-background/98 backdrop-blur-xl border-r border-border overflow-y-auto transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                 open ? "translate-x-0" : "-translate-x-full"
               }`}
             >
@@ -660,7 +657,7 @@ export function DocsLayout({
                   type="button"
                   onClick={() => setOpen(false)}
                   aria-label="Close documentation menu"
-                  className="w-8 h-8 grid place-items-center rounded-md border border-border cursor-pointer hover:bg-muted transition-colors"
+                  className="w-8 h-8 grid place-items-center rounded-md border border-border cursor-pointer hover:bg-muted"
                 >
                   <svg
                     width="14"

@@ -1,5 +1,5 @@
 import type { ThemeDefinition, ThemeMode } from "../model";
-import { getThemeFamily, type ThemeSelectionState } from "../model";
+import { getThemeFamily, getThemeMode, type ThemeSelectionState } from "../model";
 import { resolveSelectionTheme } from "../resolver";
 import { createSystemThemeBinding } from "./system";
 import type { ThemeStore } from "../types";
@@ -154,7 +154,7 @@ export function createThemeSelectionController<T extends ThemeDefinition>(
   }
 
   function getAppliedMode(): "light" | "dark" {
-    return options.store.get().meta?.mode === "dark" ? "dark" : "light";
+    return getThemeMode(options.store.get()) === "dark" ? "dark" : "light";
   }
 
   function toggleTheme() {
