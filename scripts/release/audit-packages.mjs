@@ -98,6 +98,7 @@ const REQUIRED_METADATA = [
 ];
 
 const report = [];
+let firstPkgVersion = null;
 
 function check(rel, label, ok, detail = "") {
   report.push({ package: rel, check: label, ok, detail });
@@ -124,7 +125,12 @@ for (const pkg of packages) {
   // --- identity ---
   check(rel, "name", Boolean(json.name), json.name ?? "MISSING");
   check(rel, "version", Boolean(json.version), json.version ?? "MISSING");
-  check(rel, "version=1.0.0", json.version === "1.0.0", json.version ?? "MISSING");
+  // All publishable packages must share the same version (coherent release).
+  if (publishable) {
+    const firstVersion = firstPkgVersion ?? json.version;
+    firstPkgVersion = firstPkgVersion ?? json.version;
+    check(rel, "version:coherent", json.version === firstVersion, `version ${json.version} != ${firstVersion}`);
+  }
 
   // CLI version constant must match the package version (theme-kit --version)
   if (rel === "packages\\cli" || rel === "packages/cli") {

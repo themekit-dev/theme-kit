@@ -332,6 +332,7 @@ for (const pkg of PACKAGES) {
     name,
     rel: pkg.rel,
     dts: relative(repoRoot, entryDts),
+    version: pkg.json.version,
     exports: {
       values: dist.values,
       types: dist.types,
@@ -377,7 +378,7 @@ const manifest = {};
 for (const r of results) {
   if (r.error) continue;
   manifest[r.name] = {
-    version: "1.0.0",
+    version: r.version,
     dts: r.dts,
     exports: r.exports,
   };
