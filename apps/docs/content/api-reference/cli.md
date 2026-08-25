@@ -121,6 +121,6 @@ The @theme-kit/cli package version, surfaced by `theme-kit --version`.
 Must stay in sync with the `"version"` field in `packages/cli/package.json`;
 `scripts/release/audit-packages.mjs` fails the release gate if they drift.
 
-`"1.0.0"`
+`"1.0.2"`
 
 ---

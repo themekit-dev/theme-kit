@@ -4,6 +4,24 @@
 
 ## Functions
 
+### `createVueThemeBootstrapScript<T extends ThemeDefinition<string>>(options): string`
+Build the blocking zero-flash `<head>` script for a Vue app (SSR or SPA).
+
+Inlines core's `createThemeBootstrapScript` with the Vue defaults
+(`storageKey: "theme-selection"`, `prefix: "theme-"` — the same values the
+Vue `ThemeProvider` persistence and CSS variables use), so the persisted
+theme is applied before first paint. Emit the returned string as a
+blocking `<script>` inside `<head>`.
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `options` | `ThemeBootstrapScriptOptions<T>` | — |
+
+**Returns** `string`
+
+---
+
+
 ### `provideThemeRuntime<T extends ThemeDefinition<string>>(runtime): void`
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |

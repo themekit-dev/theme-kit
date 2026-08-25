@@ -7,6 +7,7 @@ import {
   resolveScopeTransition,
   themeToCSSVariables,
   createScopedThemeBinding,
+  createThemeBootstrapScript,
   EMPTY_THEME_SCHEDULE_STATE,
   type OverlayScrollbarOptions,
   type ThemeRuntime,
@@ -24,6 +25,7 @@ import {
   type ThemeSchedule,
   type ThemeScheduleState,
   type ThemeScheduleSetOptions,
+  type ThemeBootstrapScriptOptions,
 } from "@theme-kit/core";
 import {
   createComponent,
@@ -654,6 +656,21 @@ export function ThemeScrollbar(props: ThemeScrollbarProps) {
 // -- ThemeInspector ---------------------------------------------------------
 
 import { ThemeKitInspector } from "@theme-kit/web";
+
+/**
+ * Build the blocking zero-flash `<head>` script for a SolidJS app (SSR or SPA).
+ *
+ * Inlines core's `createThemeBootstrapScript` with the Solid defaults
+ * (`storageKey: "theme-selection"`, `prefix: "theme-"` — the same values the
+ * Solid `ThemeProvider` persistence and CSS variables use), so the persisted
+ * theme is applied before first paint. Emit the returned string as a
+ * blocking `<script>` inside `<head>`.
+ */
+export function createSolidThemeBootstrapScript<T extends ThemeDefinition>(
+  options: ThemeBootstrapScriptOptions<T>,
+): string {
+  return createThemeBootstrapScript(options);
+}
 
 declare module "solid-js" {
   namespace JSX {

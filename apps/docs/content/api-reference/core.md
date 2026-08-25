@@ -1265,6 +1265,32 @@ handle.dispose();
 ---
 
 
+### `CodeTokens`
+| Member | Type | Description |
+| ------ | ---- | ----------- |
+| `attribute` (optional) | `string` | — |
+| `background` (optional) | `string` | — |
+| `border` (optional) | `string` | — |
+| `comment` (optional) | `string` | — |
+| `foreground` (optional) | `string` | — |
+| `function` (optional) | `string` | — |
+| `gutter` (optional) | `string` | — |
+| `highlight` (optional) | `string` | — |
+| `keyword` (optional) | `string` | — |
+| `lineNumber` (optional) | `string` | — |
+| `number` (optional) | `string` | — |
+| `operator` (optional) | `string` | — |
+| `property` (optional) | `string` | — |
+| `punctuation` (optional) | `string` | — |
+| `selection` (optional) | `string` | — |
+| `string` (optional) | `string` | — |
+| `tag` (optional) | `string` | — |
+| `type` (optional) | `string` | — |
+| `variable` (optional) | `string` | — |
+
+---
+
+
 ### `ContrastCheck`
 | Member | Type | Description |
 | ------ | ---- | ----------- |
@@ -1354,6 +1380,8 @@ handle.dispose();
 | ------ | ---- | ----------- |
 | `family` (optional) | `string` | — |
 | `seed` | `string` | — |
+| `withCode` (optional) | `boolean` | Also generate a `tokens.code` block (syntax-highlighting colors) alongside
+the color tokens. Opt-in — most themes don't need code tokens. |
 
 ---
 

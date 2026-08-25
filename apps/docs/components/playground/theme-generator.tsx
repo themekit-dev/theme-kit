@@ -55,6 +55,7 @@ function CSSVarsPreview({ vars }: { vars: Record<string, string> }) {
 export function ThemeGenerator() {
   const [seed, setSeed] = useState("#3b82f6");
   const [family, setFamily] = useState("custom");
+  const [withCode, setWithCode] = useState(false);
   const [result, setResult] = useState<{
     light: ThemeDefinition;
     dark: ThemeDefinition;
@@ -62,9 +63,9 @@ export function ThemeGenerator() {
   const [activeTab, setActiveTab] = useState<"json" | "css">("json");
 
   const handleGenerate = useCallback(() => {
-    const generated = generateTheme({ seed, family });
+    const generated = generateTheme({ seed, family, withCode });
     setResult(generated);
-  }, [seed, family]);
+  }, [seed, family, withCode]);
 
   const lightCSS = result
     ? themeToCSSVariables(result.light)
@@ -115,6 +116,7 @@ export function ThemeGenerator() {
       </h2>
       <p className="text-sm opacity-60 mb-5">
         Pick a seed color and generate a matching light/dark theme pair.
+        Optional syntax-highlighting code tokens are generated on request.
       </p>
 
       <div className="flex flex-wrap items-end gap-4 mb-5">
@@ -158,6 +160,16 @@ export function ThemeGenerator() {
             className="w-32 px-2 py-1.5 rounded-md border border-border bg-card text-sm font-mono outline-none focus:border-ring transition-colors"
           />
         </div>
+
+        <label className="flex items-center gap-2 pb-2 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={withCode}
+            onChange={(e) => setWithCode(e.target.checked)}
+            className="h-4 w-4 rounded border-border accent-(--theme-color-primary) cursor-pointer"
+          />
+          <span className="text-sm opacity-70">Include code tokens</span>
+        </label>
 
         <button
           type="button"

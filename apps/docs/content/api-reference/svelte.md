@@ -4,6 +4,24 @@
 
 ## Functions
 
+### `createSvelteThemeBootstrapScript<T extends ThemeDefinition<string>>(options): string`
+Build the blocking zero-flash `<head>` script for a Svelte app (SSR or SPA).
+
+Inlines core's `createThemeBootstrapScript` with the Svelte defaults
+(`storageKey: "theme-selection"`, `prefix: "theme-"` — the same values the
+Svelte `ThemeProvider` persistence and CSS variables use), so the persisted
+theme is applied before first paint. Emit the returned string as a
+blocking `<script>` inside `<head>` (e.g. a `<svelte:head>` slot).
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `options` | `ThemeBootstrapScriptOptions<T>` | — |
+
+**Returns** `string`
+
+---
+
+
 ### `getThemeRuntime<T extends ThemeDefinition<string>>(): ThemeRuntime<T>`
 **Returns** `ThemeRuntime<T>`
 

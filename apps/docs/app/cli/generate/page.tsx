@@ -3,7 +3,7 @@ import { CliDocPage } from "../../../components/cli/cli-doc-page";
 
 export const metadata: Metadata = {
   title: "CLI generate",
-  description: "Generate a theme from a seed color with the theme-kit CLI: --seed, --family, --mode, and --output.",
+  description: "Generate a theme from a seed color with the theme-kit CLI: --seed, --family, --mode, --code, and --output.",
 };
 
 export default function Page() {

@@ -7,6 +7,7 @@ import {
   resolveScopedThemePrePaint,
   resolveScopeTransition,
   createOverlayScrollbar,
+  createThemeBootstrapScript,
   EMPTY_THEME_SCHEDULE_STATE,
   type OverlayScrollbarOptions,
   type ThemeRuntime,
@@ -21,6 +22,7 @@ import {
   type ThemeSchedule,
   type ThemeScheduleState,
   type ThemeScheduleSetOptions,
+  type ThemeBootstrapScriptOptions,
 } from "@theme-kit/core";
 import {
   provide,
@@ -423,6 +425,21 @@ interface Props extends Record<string, any> {
   cssVariables?: false | CSSVariablesOptions;
   transition?: boolean | ThemeTransitionOptions;
   scheduled?: false | import("@theme-kit/core").ScheduledThemeOptions<ThemeDefinition>;
+}
+
+/**
+ * Build the blocking zero-flash `<head>` script for a Vue app (SSR or SPA).
+ *
+ * Inlines core's `createThemeBootstrapScript` with the Vue defaults
+ * (`storageKey: "theme-selection"`, `prefix: "theme-"` — the same values the
+ * Vue `ThemeProvider` persistence and CSS variables use), so the persisted
+ * theme is applied before first paint. Emit the returned string as a
+ * blocking `<script>` inside `<head>`.
+ */
+export function createVueThemeBootstrapScript<T extends ThemeDefinition>(
+  options: ThemeBootstrapScriptOptions<T>,
+): string {
+  return createThemeBootstrapScript(options);
 }
 
 const ThemeProvider = defineComponent({

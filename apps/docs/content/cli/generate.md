@@ -14,6 +14,7 @@ theme-kit generate [options]
 | `--seed <color>`    | Source color in hex (`#rrggbb`). The CLI checks this. | `#6366f1` |
 | `--family <name>`   | Family name; becomes the theme name and label prefix. | `default` |
 | `--mode <mode>`     | `light`, `dark`, or `both` (a pair). | `both` |
+| `--code`    | Also generate a `tokens.code` syntax-highlighting palette (opt-in). | off |
 | `--output <file>` | Write JSON to a file. Omit to print to stdin. | — |
 
 > The CLI requires a hex seed (`#rrggbb`), e.g. `#6366f1`. In bash, zsh, and
@@ -124,6 +125,35 @@ Writes:
 theme-kit generate --seed "#6366f1" --family indigo --mode light \
   --output indigo-light.json
 ```
+
+## Code tokens (opt-in)
+
+Not every theme needs a syntax-highlighting palette. Pass `--code` to also
+generate a `tokens.code` block — a cohesive set of `--theme-code-*` variables
+(keyword, string, number, function, type, comment, …) derived from the seed
+hue, with distinguishable light/dark variants:
+
+```bash
+theme-kit generate --seed "#6366f1" --family indigo --code \
+  --output indigo.json
+```
+
+The generated `light.tokens.code` (dark mirrors it with inverted colors):
+
+```json
+"code": {
+  "background": "#ffffff",
+  "foreground": "#0f172a",
+  "keyword": "#1b1ebc",
+  "string": "#1c7d33",
+  "number": "#a04a00",
+  "function": "#1641d0",
+  "type": "#0e6f73",
+  "comment": "#64748b"
+}
+```
+
+Without `--code` no `code` block is emitted, so themes stay lean.
 
 ## Print to stdout
 

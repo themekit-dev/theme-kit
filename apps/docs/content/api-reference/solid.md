@@ -4,6 +4,24 @@
 
 ## Functions
 
+### `createSolidThemeBootstrapScript<T extends ThemeDefinition<string>>(options): string`
+Build the blocking zero-flash `<head>` script for a SolidJS app (SSR or SPA).
+
+Inlines core's `createThemeBootstrapScript` with the Solid defaults
+(`storageKey: "theme-selection"`, `prefix: "theme-"` — the same values the
+Solid `ThemeProvider` persistence and CSS variables use), so the persisted
+theme is applied before first paint. Emit the returned string as a
+blocking `<script>` inside `<head>`.
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `options` | `ThemeBootstrapScriptOptions<T>` | — |
+
+**Returns** `string`
+
+---
+
+
 ### `ThemeInspector(props): Element`
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |

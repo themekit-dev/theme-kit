@@ -654,18 +654,29 @@ body {
   is set on <html> by the theme-kit provider.
 */
 html.dark {
-  --tk-syntax-plain: var(--theme-code-foreground, var(--theme-color-foreground));
+  --tk-syntax-plain: var(
+    --theme-code-foreground,
+    var(--theme-color-foreground)
+  );
   --tk-syntax-comment: var(
     --theme-code-comment,
     color-mix(in srgb, var(--theme-color-foreground) 62%, transparent)
   );
   --tk-syntax-keyword: var(
     --theme-code-keyword,
-    color-mix(in srgb, var(--theme-color-primary) 88%, var(--theme-color-foreground))
+    color-mix(
+      in srgb,
+      var(--theme-color-primary) 88%,
+      var(--theme-color-foreground)
+    )
   );
   --tk-syntax-operator: var(
     --theme-code-operator,
-    color-mix(in srgb, var(--theme-color-primary) 80%, var(--theme-color-foreground))
+    color-mix(
+      in srgb,
+      var(--theme-color-primary) 80%,
+      var(--theme-color-foreground)
+    )
   );
   --tk-syntax-string: var(
     --theme-code-string,
@@ -685,7 +696,11 @@ html.dark {
   );
   --tk-syntax-attr: var(
     --theme-code-attribute,
-    color-mix(in srgb, var(--theme-color-foreground) 88%, var(--theme-color-primary))
+    color-mix(
+      in srgb,
+      var(--theme-color-foreground) 88%,
+      var(--theme-color-primary)
+    )
   );
   --tk-syntax-variable: var(
     --theme-code-variable,
@@ -693,7 +708,11 @@ html.dark {
   );
   --tk-syntax-property: var(
     --theme-code-property,
-    color-mix(in srgb, var(--theme-color-foreground) 90%, var(--theme-color-primary))
+    color-mix(
+      in srgb,
+      var(--theme-color-foreground) 90%,
+      var(--theme-color-primary)
+    )
   );
   --tk-syntax-number: var(
     --theme-code-number,

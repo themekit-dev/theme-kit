@@ -210,6 +210,12 @@ export function createCSSVariablesBinding(
     registerThemeProperties(element, initialVariables, prefix);
   }
 
+  // Apply the current theme immediately — otherwise `--theme-*` variables are
+  // unset until the first store *change*, so the initial background/content
+  // uses the default instead of the defined theme (and html/body background
+  // rules flicker on first paint).
+  applyTheme(store.get(), { suppressTransition: true });
+
   const unsubscribe = store.subscribe(applyTheme);
 
   return {

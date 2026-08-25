@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { themeToCSSVariables } from "../src/css";
+import { generateTheme } from "../src/generate-theme";
 
 const plainTheme = {
   name: "plain",
@@ -66,5 +67,31 @@ describe("code token system (tokens.code — opt-in)", () => {
       tokens: { code: {} },
     });
     expect(Object.keys(variables).some((k) => k.includes("code"))).toBe(false);
+  });
+});
+
+describe("generateTheme code tokens (opt-in)", () => {
+  it("emits no code tokens unless withCode is set", () => {
+    const pair = generateTheme({ seed: "#6366f1", family: "indigo" });
+    expect(pair.light.tokens.code).toBeUndefined();
+    expect(pair.dark.tokens.code).toBeUndefined();
+  });
+
+  it("emits distinguishable light/dark code blocks with withCode", () => {
+    const pair = generateTheme({ seed: "#6366f1", family: "indigo", withCode: true });
+    expect(pair.light.tokens.code).toBeDefined();
+    expect(pair.dark.tokens.code).toBeDefined();
+
+    const lightVars = themeToCSSVariables(pair.light);
+    const darkVars = themeToCSSVariables(pair.dark);
+    expect(lightVars["--theme-code-background"]).toBe("#ffffff");
+    expect(darkVars["--theme-code-background"]).toBe("#0f172a");
+    // Light and dark must be distinguishable (different keyword + bg)
+    expect(lightVars["--theme-code-background"]).not.toBe(darkVars["--theme-code-background"]);
+    expect(lightVars["--theme-code-keyword"]).not.toBe(darkVars["--theme-code-keyword"]);
+    // Full syntax-role set is present
+    for (const key of ["keyword", "string", "number", "comment", "function", "type", "operator"]) {
+      expect(lightVars[`--theme-code-${key}`]).toBeTruthy();
+    }
   });
 });

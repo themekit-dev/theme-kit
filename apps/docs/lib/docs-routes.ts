@@ -23,6 +23,7 @@ export const DOCS_ROUTES: DocsRoute[] = [
   { href: "/presets/default", label: "Default Presets", hint: "Nine signature families" },
   { href: "/presets/brand", label: "Brand Presets", hint: "Real-world palettes" },
   { href: "/zero-flash", label: "Zero Flash", hint: "SSR-first, no flicker" },
+  { href: "/no-flash-ssr", label: "No Flash SSR", hint: "Vue, Svelte, Solid & SPAs" },
   { href: "/animation", label: "Animation & Transition", hint: "Live transition lab" },
   { href: "/advanced-features", label: "Advanced Features", hint: "Scopes, history, plugins" },
   { href: "/custom-scrollbar", label: "Custom Scrollbar", hint: "Theme-aware overlay" },

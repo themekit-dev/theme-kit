@@ -4,8 +4,10 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
+  useState,
   type ReactNode,
 } from "react";
 
@@ -42,6 +44,9 @@ export function ThemeProvider<T extends ThemeDefinition>({
 
   const runtimeRef = useRef<ThemeRuntime<T> | null>(null);
   const prevInitialRef = useRef<object | null>(null);
+  // StrictMode remount signal: the destroy effect sets the ref to null, and
+  // this state bump forces the render body to recreate the runtime.
+  const [, setRuntimeTick] = useState(0);
 
   const { dom: domOptions, cssVariables: cssOptions, transition: transitionOptions, ...coreOptions } = runtimeOptions;
 
@@ -103,7 +108,12 @@ export function ThemeProvider<T extends ThemeDefinition>({
     }
   }, [ownsRuntime, resolvedRuntime, coreOptions.initial]);
 
-  useEffect(() => {
+  // useLayoutEffect (not useEffect): the CSS variables + DOM attributes must be
+  // applied synchronously after the DOM is committed but BEFORE the browser
+  // paints, so the first frame already shows the resolved theme — no flash of
+  // an unthemed html/body background. The runtime already read the persisted
+  // selection during creation, so this paints the persisted theme.
+  useLayoutEffect(() => {
     if (!resolvedRuntime) {
       return;
     }
@@ -148,6 +158,17 @@ export function ThemeProvider<T extends ThemeDefinition>({
       }
     };
   }, [ownsRuntime, resolvedRuntime]);
+
+  // React StrictMode (dev) mounts → unmounts → remounts effects. The cleanup
+  // above destroys the runtime and nulls the ref, but the remount does not
+  // re-render the component, so the render body would keep using the destroyed
+  // runtime and every selection change would silently no-op. Force a re-render
+  // so the render body recreates a fresh runtime for the remounted effects.
+  useEffect(() => {
+    if (ownsRuntime && runtimeRef.current === null) {
+      setRuntimeTick((t) => t + 1);
+    }
+  }, [ownsRuntime, setRuntimeTick]);
 
   const value = useMemo(
     () => ({

@@ -66,6 +66,8 @@ kit.on("themeChange", (theme) => console.log(theme.name));
 | ------ | ---- | ----------- |
 | `family` (optional) | `string` | — |
 | `seed` | `string` | — |
+| `withCode` (optional) | `boolean` | Also generate a `tokens.code` block (syntax-highlighting colors) alongside
+the color tokens. Opt-in — most themes don't need code tokens. |
 
 ---
 

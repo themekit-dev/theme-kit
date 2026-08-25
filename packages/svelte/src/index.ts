@@ -5,6 +5,7 @@ import {
   createOverlayScrollbar,
   resolveScopeTransition,
   createScopedThemeBinding,
+  createThemeBootstrapScript,
   EMPTY_THEME_SCHEDULE_STATE,
   type OverlayScrollbarOptions,
   type ThemeRuntime,
@@ -21,6 +22,7 @@ import {
   type ThemeSchedule,
   type ThemeScheduleState,
   type ThemeScheduleSetOptions,
+  type ThemeBootstrapScriptOptions,
 } from "@theme-kit/core";
 import { getContext, setContext, onMount, onDestroy } from "svelte";
 import type { AdapterStrategy } from "@theme-kit/core";
@@ -611,6 +613,21 @@ export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
 // -- ThemeInspector action ---------------------------------------------------
 
 import { ThemeKitInspector } from "@theme-kit/web";
+
+/**
+ * Build the blocking zero-flash `<head>` script for a Svelte app (SSR or SPA).
+ *
+ * Inlines core's `createThemeBootstrapScript` with the Svelte defaults
+ * (`storageKey: "theme-selection"`, `prefix: "theme-"` — the same values the
+ * Svelte `ThemeProvider` persistence and CSS variables use), so the persisted
+ * theme is applied before first paint. Emit the returned string as a
+ * blocking `<script>` inside `<head>` (e.g. a `<svelte:head>` slot).
+ */
+export function createSvelteThemeBootstrapScript<T extends ThemeDefinition>(
+  options: ThemeBootstrapScriptOptions<T>,
+): string {
+  return createThemeBootstrapScript(options);
+}
 
 export interface ThemeInspectorProps {
   /** Distance from the bottom of the viewport, in px. Default 104. */

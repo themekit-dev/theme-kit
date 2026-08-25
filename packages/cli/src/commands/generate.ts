@@ -7,6 +7,7 @@ export async function cmdGenerate(args: ParsedArgs) {
   const seed = getString(args, "seed") || getString(args, "s") || args._[1] || "#6366f1";
   const family = getString(args, "family") || getString(args, "f") || "default";
   const mode = (getString(args, "mode") || getString(args, "m") || "both").toLowerCase();
+  const withCode = args.code === true || args["with-code"] === true;
   const output = getString(args, "output") || getString(args, "o") || null;
 
   if (!seed.startsWith("#") || seed.length !== 7) {
@@ -17,7 +18,7 @@ export async function cmdGenerate(args: ParsedArgs) {
     throw new UsageError(`invalid mode "${mode}" — use "light", "dark", or "both"`);
   }
 
-  const pair = generateTheme({ seed, family });
+  const pair = generateTheme({ seed, family, withCode });
   const json = JSON.stringify(
     mode === "both" ? pair : mode === "dark" ? pair.dark : pair.light,
     null,
