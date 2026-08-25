@@ -44,6 +44,20 @@ for (const base of ["packages", join("packages", "adapters")]) {
 
 const byName = new Map(packages.map((p) => [p.name, p]));
 
+/** True when `name@version` is already on the npm registry. */
+async function isPublished(name, version) {
+  try {
+    const res = await fetch(
+      `https://registry.npmjs.org/${encodeURIComponent(name)}/${version}`,
+    );
+    return res.ok;
+  } catch {
+    // Registry unreachable — assume not published so publish proceeds and the
+    // error surfaces from pnpm itself.
+    return false;
+  }
+}
+
 // --- topological sort by workspace dependencies ---
 const visited = new Set();
 const order = [];
@@ -80,8 +94,20 @@ if (isDryRun) {
 
 console.log("\nPublishing...\n");
 let ok = 0;
+let skipped = 0;
 for (const name of order) {
   const pkg = byName.get(name);
+
+  // Skip versions already on the registry. A partially-completed publish (or
+  // an interrupted run) can leave some packages at the target version while
+  // others lag — re-publishing an existing version returns 403.
+  const published = await isPublished(pkg.name, pkg.json.version);
+  if (published) {
+    console.log(`— ${name}@${pkg.json.version} already published, skipping`);
+    skipped++;
+    continue;
+  }
+
   // `pnpm publish` (not `npm publish`): pnpm rewrites workspace:* dependencies
   // to the actual version in the published package.json; npm would ship the
   // literal "workspace:*" specifier and break every dependent package.
@@ -102,7 +128,7 @@ for (const name of order) {
   }
 }
 
-console.log(`\nPublished ${ok}/${order.length} packages.`);
+console.log(`\nPublished ${ok} new, skipped ${skipped} already-published.`);
 console.log("\nNext steps:");
 console.log("  npm install -g @theme-kit/cli && theme-kit --version");
 console.log("  cd <clean dir> && npm install @theme-kit/core @theme-kit/react");
