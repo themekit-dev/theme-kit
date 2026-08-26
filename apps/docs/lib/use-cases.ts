@@ -392,7 +392,7 @@ const svelte: UseCase[] = [
     title: "Smooth theme transitions",
     desc: "Enable CSS transitions on theme changes for a polished user experience.",
     lang: "svelte",
-    code: `<script>
+code: `<script>
   import { ThemeProvider } from "@theme-kit/svelte";
 </script>
 
@@ -400,7 +400,7 @@ const svelte: UseCase[] = [
   themes={themes}
   transition={{ enabled: true, duration: 300, easing: "ease-in-out" }}
 >
-  <slot />
+  {@render children()}
 </ThemeProvider>`,
   },
 ];

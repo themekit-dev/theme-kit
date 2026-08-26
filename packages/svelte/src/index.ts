@@ -24,7 +24,7 @@ import {
   type ThemeScheduleSetOptions,
   type ThemeBootstrapScriptOptions,
 } from "@theme-kit/core";
-import { getContext, setContext, onMount, onDestroy } from "svelte";
+import { getContext, setContext, onMount } from "svelte";
 import type { AdapterStrategy } from "@theme-kit/core";
 import { createShadcnAdapter } from "@theme-kit/shadcn/factory";
 import { createBootstrapAdapter } from "@theme-kit/bootstrap/factory";
@@ -291,13 +291,22 @@ function installAdapter<T extends ThemeDefinition>(
   const runtime = getThemeRuntime<T>();
   const adapter = create();
   let handle: import("@theme-kit/core").AdapterRegistration | null = null;
-  onMount(() => {
+
+  // Install synchronously (not inside `onMount`) so library adapters work even
+  // when the parent is a legacy-mode Svelte component that never emits
+  // `$.init()` and therefore never flushes `onMount`. `adapter.install` guards
+  // on `document`, so this is SSR-safe.
+  if (typeof window !== "undefined") {
     handle = runtime.adapters.use(adapter);
-  });
-  onDestroy(() => {
+  }
+
+  // Teardown via `onMount` so Svelte's effect tree disposes the adapter in
+  // runes mode and in legacy mode (when the parent emits `$.init()`).
+  onMount(() => () => {
     handle?.dispose();
     handle = null;
   });
+
   return adapter;
 }
 
@@ -492,7 +501,12 @@ export function ThemeScope(anchor: Node, scopeProps: ThemeScopeProps) {
     binding.update(withGlobalMode(baseSelection, runtime.selection.getMode()));
   });
 
-  onDestroy(() => {
+  // Teardown via `onMount` (instead of `onDestroy`) so it runs through
+  // Svelte's effect tree in runes mode and in legacy mode when the parent
+  // emits `$.init()`. The scope itself is created synchronously above, so the
+  // scoping works even in the legacy-no-`$.init()` edge case; only the
+  // cleanup is skipped there.
+  onMount(() => () => {
     destroyed = true;
     unsubscribeStore();
     binding.destroy();
@@ -500,14 +514,13 @@ export function ThemeScope(anchor: Node, scopeProps: ThemeScopeProps) {
   });
 }
 
-export interface ThemeScrollbarProps extends OverlayScrollbarOptions {
-  children?: import("svelte").Snippet;
-}
+export interface ThemeScrollbarProps extends OverlayScrollbarOptions {}
 
 function pickOptions(props?: ThemeScrollbarProps): OverlayScrollbarOptions {
   const opts: OverlayScrollbarOptions = {};
   if (!props) return opts;
   if (props.autoHide !== undefined) opts.autoHide = props.autoHide;
+  if (props.autoHideDelay !== undefined) opts.autoHideDelay = props.autoHideDelay;
   if (props.hoverExpand !== undefined) opts.hoverExpand = props.hoverExpand;
   if (props.draggable !== undefined) opts.draggable = props.draggable;
   if (props.clickToJump !== undefined) opts.clickToJump = props.clickToJump;
@@ -527,10 +540,19 @@ function pickOptions(props?: ThemeScrollbarProps): OverlayScrollbarOptions {
   if (props.offset !== undefined) opts.offset = props.offset;
   if (props.trackOpacity !== undefined) opts.trackOpacity = props.trackOpacity;
   if (props.thumbOpacity !== undefined) opts.thumbOpacity = props.thumbOpacity;
+  if (props.thumbColor !== undefined) opts.thumbColor = props.thumbColor;
+  if (props.trackColor !== undefined) opts.trackColor = props.trackColor;
+  if (props.activeThumbColor !== undefined)
+    opts.activeThumbColor = props.activeThumbColor;
+  if (props.thumbHoverColor !== undefined)
+    opts.thumbHoverColor = props.thumbHoverColor;
+  if (props.zIndex !== undefined) opts.zIndex = props.zIndex;
   if (props.duration !== undefined) opts.duration = props.duration;
   if (props.animationDuration !== undefined)
     opts.animationDuration = props.animationDuration;
   if (props.axes !== undefined) opts.axes = props.axes;
+  if (props.include !== undefined) opts.include = props.include;
+  if (props.exclude !== undefined) opts.exclude = props.exclude;
   if (props.touch !== undefined) opts.touch = props.touch;
   if (props.dir !== undefined) opts.dir = props.dir;
   return opts;
@@ -540,10 +562,23 @@ export function ThemeScrollbar(anchor: Node, props?: ThemeScrollbarProps) {
   const runtime = getThemeRuntime();
   let handle: { destroy(): void } | null = null;
 
-  onMount(() => {
-    if (typeof window === "undefined") return;
+  // Side-effect-only overlay: like the React/Next.js versions, this component
+  // renders nothing itself — it just creates the overlay engine and tears it
+  // down on unmount.
+
+  // Create synchronously (not inside `onMount`) so the overlay scrollbar works
+  // even when the parent is a legacy-mode component that never emits
+  // `$.init()`. The manager self-heals via MutationObserver + periodic scans,
+  // so running before children are fully painted is fine.
+  if (typeof window !== "undefined") {
     handle = createOverlayScrollbar(runtime.store as any, pickOptions(props));
-    onDestroy(() => handle?.destroy());
+  }
+
+  // Teardown via `onMount` so Svelte's effect tree destroys the overlay in
+  // runes mode and in legacy mode (when the parent emits `$.init()`).
+  onMount(() => () => {
+    handle?.destroy();
+    handle = null;
   });
 }
 
@@ -579,51 +614,62 @@ export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
 
   renderSnippet(children, anchor);
 
-  onMount(() => {
-    if (typeof window !== "undefined") {
-      const domOpts = runtimeOptions.dom;
-      const cssOpts = runtimeOptions.cssVariables;
+  // IMPORTANT: The DOM/CSS bindings and the bootstrap script must be created
+  // SYNCHRONOUSLY during component init, NOT inside `onMount`. Svelte 5 only
+  // flushes legacy-mode `onMount` callbacks when the parent component is
+  // compiled with `analysis.needs_context` (which emits `$.init()`). A plain
+  // Svelte app that just renders `<ThemeProvider/>` without its own lifecycle
+  // hooks never gets `$.init()` emitted, so `onMount` callbacks would be
+  // silently dropped and the theme would never be applied to the DOM.
+  if (typeof window !== "undefined") {
+    const domOpts = runtimeOptions.dom;
+    const cssOpts = runtimeOptions.cssVariables;
 
-      // Flash-proofing: inject a blocking bootstrap script that reads the
-      // persisted selection and applies the theme before first paint.
-      if (
-        ownsRuntime &&
-        document.head &&
-        runtimeOptions.persistence !== null &&
-        runtimeOptions.themes?.length &&
-        !document.getElementById("theme-kit-bootstrap")
-      ) {
-        const bootstrap = createThemeBootstrapScript({
-          themes: runtimeOptions.themes as any,
-          ...(runtimeOptions.defaultTheme !== undefined ? { defaultTheme: runtimeOptions.defaultTheme as string } : {}),
-          ...(runtimeOptions.initialMode !== undefined ? { initialMode: runtimeOptions.initialMode } : {}),
-          ...(runtimeOptions.initialFamily !== undefined ? { initialFamily: runtimeOptions.initialFamily } : {}),
-        });
-        if (bootstrap) {
-          const script = document.createElement("script");
-          script.id = "theme-kit-bootstrap";
-          script.textContent = bootstrap;
-          document.head.appendChild(script);
-        }
-      }
-
-      if (domOpts !== false) {
-        domBinding = createDOMBinding(
-          runtimeInstance!.store,
-          domOpts !== undefined ? (domOpts as DOMBindingOptions) : undefined,
-        );
-      }
-
-      if (cssOpts !== false) {
-        cssBinding = createCSSVariablesBinding(
-          runtimeInstance!.store,
-          cssOpts !== undefined ? (cssOpts as CSSVariablesOptions) : undefined,
-        );
+    // Flash-proofing: inject a blocking bootstrap script that reads the
+    // persisted selection and applies the theme before first paint.
+    if (
+      ownsRuntime &&
+      document.head &&
+      runtimeOptions.persistence !== null &&
+      runtimeOptions.themes?.length &&
+      !document.getElementById("theme-kit-bootstrap")
+    ) {
+      const bootstrap = createThemeBootstrapScript({
+        themes: runtimeOptions.themes as any,
+        ...(runtimeOptions.defaultTheme !== undefined ? { defaultTheme: runtimeOptions.defaultTheme as string } : {}),
+        ...(runtimeOptions.initialMode !== undefined ? { initialMode: runtimeOptions.initialMode } : {}),
+        ...(runtimeOptions.initialFamily !== undefined ? { initialFamily: runtimeOptions.initialFamily } : {}),
+      });
+      if (bootstrap) {
+        const script = document.createElement("script");
+        script.id = "theme-kit-bootstrap";
+        script.textContent = bootstrap;
+        document.head.appendChild(script);
       }
     }
-  });
 
-  onDestroy(() => {
+    if (domOpts !== false) {
+      domBinding = createDOMBinding(
+        runtimeInstance!.store,
+        domOpts !== undefined ? (domOpts as DOMBindingOptions) : undefined,
+      );
+    }
+
+    if (cssOpts !== false) {
+      cssBinding = createCSSVariablesBinding(
+        runtimeInstance!.store,
+        cssOpts !== undefined ? (cssOpts as CSSVariablesOptions) : undefined,
+      );
+    }
+  }
+
+  // Register teardown via `onMount` (not a returned destroy function — Svelte 5
+  // does not invoke the return value of a plain function component). `onMount`
+  // runs cleanup through Svelte's effect tree in runes mode, and in legacy mode
+  // when the parent emits `$.init()`. In the legacy-no-`$.init()` edge case the
+  // theme still applies (bindings are created synchronously above); only the
+  // teardown is skipped there.
+  onMount(() => () => {
     domBinding?.destroy();
     cssBinding?.destroy();
     if (ownsRuntime && runtimeInstance) {

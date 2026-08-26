@@ -355,7 +355,6 @@ const schedule = useThemeSchedule(); // `$schedule.enabled` …
  is revealed, then it fades after idle; other scrollbars stay hidden.
  Default `900`. Only takes effect when `autoHide` is `true`. |
 | `axes` (optional) | `ScrollbarAxis[]` | Which axes to render. Defaults to both. |
-| `children` (optional) | `Snippet<[]>` | — |
 | `clickToJump` (optional) | `boolean` | Clicking the empty track scrolls smoothly to that position. Default `true`. |
 | `dir` (optional) | `"ltr" | "rtl" | "auto"` | Text direction. Defaults to the resolved `dir` / CSS `direction`. |
 | `draggable` (optional) | `boolean` | Allow dragging the thumb to scroll. Default `true`. |

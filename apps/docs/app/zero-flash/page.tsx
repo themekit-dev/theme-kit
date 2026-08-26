@@ -152,7 +152,7 @@ export default defineNuxtConfig({
 <!-- Flash-proof out of the box — the provider injects the blocking
      bootstrap and applies the persisted theme before first paint. -->
 <ThemeProvider themes={themes} defaultTheme="light">
-  <slot />
+  {@render children()}
 </ThemeProvider>`,
   },
   {

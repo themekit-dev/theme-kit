@@ -242,7 +242,7 @@ const themes = [oceanLight, oceanDark];
 </template>`,
   },
   svelte: {
-    title: "+layout.svelte",
+    title: "App.svelte",
     lang: "svelte",
     code: `<script>
   import { ThemeProvider } from "@theme-kit/svelte";
@@ -252,7 +252,7 @@ const themes = [oceanLight, oceanDark];
 </script>
 
 <ThemeProvider {themes} defaultTheme="ocean-light">
-  <slot />
+  {@render children()}
 </ThemeProvider>`,
   },
   solid: {

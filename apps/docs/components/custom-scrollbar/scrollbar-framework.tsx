@@ -185,8 +185,8 @@ import { ThemeProvider, ThemeScrollbar } from "@theme-kit/vue";
 </script>
 
 <ThemeProvider {themes} defaultTheme="light">
-  <ThemeScrollbar />
-  <slot />
+  <ThemeScrollbar autoHide />
+  {@render children()}
 </ThemeProvider>`,
   },
   solid: {

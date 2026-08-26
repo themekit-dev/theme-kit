@@ -94,7 +94,7 @@ export default defineNuxtConfig({
     // auto-detect from the visitor's timezone.
   }}
 >
-  <slot />
+  {@render children()}
 </ThemeProvider>`),
   solid: frameworkSnippet("tsx", "App.tsx", `import { ThemeProvider } from "@theme-kit/solid";
 

@@ -683,7 +683,7 @@ import { ThemeProvider } from "@theme-kit/vue";
       },
     ],
     quickStart: {
-      title: "+layout.svelte",
+      title: "App.svelte",
       lang: "svelte",
       code: `<script>
   import { ThemeProvider } from "@theme-kit/svelte";
@@ -691,7 +691,7 @@ import { ThemeProvider } from "@theme-kit/vue";
 </script>
 
 <ThemeProvider themes={themes} defaultTheme="mint-light">
-  <slot />
+  {@render children()}
 </ThemeProvider>`,
     },
     snippet: {
@@ -707,24 +707,29 @@ import { ThemeProvider } from "@theme-kit/vue";
 </button>`,
     },
     snippet2: {
-      title: "history + scope",
+      title: "App.svelte",
       lang: "svelte",
       code: `<script>
-  import { useThemeHistory, ThemeScope, type ThemeTransitionOptions } from "@theme-kit/svelte";
-  const { undo, redo, canUndo, canRedo } = useThemeHistory();
+  import { ThemeProvider, ThemeScope, useThemeHistory, type ThemeTransitionOptions } from "@theme-kit/svelte";
+  import ThemeSwitcher from "./ThemeSwitcher.svelte";
 
+  const { undo, redo, canUndo, canRedo } = useThemeHistory();
   const transition: ThemeTransitionOptions = { duration: 300, easing: "ease" };
 </script>
 
-<button onclick={undo} disabled={!$canUndo}>Undo</button>
-<button onclick={redo} disabled={!$canRedo}>Redo</button>
+<ThemeProvider themes={themes}>
+  <ThemeScope theme="forest" {transition}>
+    <p>Scoped to forest</p>
+  </ThemeScope>
 
-<ThemeScope theme="forest" {transition}>
-  <p>Scoped to forest</p>
-</ThemeScope>`,
+  <button onclick={undo} disabled={!$canUndo}>Undo</button>
+  <button onclick={redo} disabled={!$canRedo}>Redo</button>
+
+  <ThemeSwitcher />
+</ThemeProvider>`,
     },
     noTheme: {
-      title: "+layout.svelte",
+      title: "App.svelte",
       lang: "svelte",
       code: `<script>
   import { ThemeProvider } from "@theme-kit/svelte";
@@ -733,7 +738,7 @@ import { ThemeProvider } from "@theme-kit/vue";
 <!-- No \`themes\` prop → built-in neutral theme.
      Pick the variant: "light" | "dark" (or omit → system). -->
 <ThemeProvider defaultTheme="light">
-  <slot />
+  {@render children()}
 </ThemeProvider>`,
     },
   },

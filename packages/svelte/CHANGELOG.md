@@ -1,5 +1,13 @@
 # @theme-kit/svelte
 
+## 1.2.1
+
+### Patch Changes
+
+- Fix Svelte 5 legacy-mode theming: `ThemeProvider`, `ThemeScope`, `ThemeScrollbar`, and the library-adapter hooks (`useShadcnTheme`, `useBootstrapTheme`, `useDaisyTheme`, `useOpenPropsTheme`) relied on `onMount`/`onDestroy`, which Svelte 5 only flushes when the parent component emits `$.init()`. In a plain legacy-mode Svelte app that renders `<ThemeProvider/>` without its own lifecycle hooks, the callbacks were silently dropped and the theme was never applied to the DOM (no `data-theme`, no `.dark` class, no `--theme-*` CSS variables).
+
+  All components now create their DOM/CSS bindings **synchronously during component init** and register teardown through `onMount`, so theming works in both runes mode and legacy mode. `ThemeScrollbar` is now a side-effect-only overlay (matching the React/Next.js versions) and forwards the full `OverlayScrollbarOptions` set (previously `autoHideDelay`, `thumbColor`, `trackColor`, `activeThumbColor`, `thumbHoverColor`, `zIndex`, `include`, and `exclude` were silently dropped).
+
 ## 1.0.0
 
 ### Major Changes

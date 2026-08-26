@@ -79,6 +79,29 @@ const { theme, mode, toggleTheme } = useTheme();
 - `useThemeHistory`, `useThemeBatch`, `useThemeSnapshot`, `useThemeRestore`, `useThemeLifecycle`, `useThemePacks`.
 - `ThemeScope` — scoped theming.
 
+### 1 · Wrap your app
+
+Mount `ThemeProvider` at the root and render your app through it.
+
+- **Vite + Svelte SPA** → wrap in `App.svelte`.
+- **SvelteKit** → wrap in `+layout.svelte` (and render the page via `{@render children()}`).
+
+```svelte
+<!-- App.svelte (Vite SPA) or +layout.svelte (SvelteKit) -->
+<script>
+  import { ThemeProvider } from "@theme-kit/svelte";
+  import { themes } from "./themes";
+</script>
+
+<ThemeProvider themes={themes} defaultTheme="mint-light">
+  {@render children()}
+</ThemeProvider>
+```
+
+### 2 · Use the theme
+
+Any component inside the provider can read the theme through `useTheme()`:
+
 ```svelte
 <script>
   import { useTheme } from "@theme-kit/svelte";
