@@ -133,11 +133,11 @@ export interface ScrollbarOptionsResolved {
   smooth: boolean;
   overscroll: boolean;
   arrows: boolean;
-  arrowIcon: ArrowIcon;
-  arrowUpIcon: ArrowIcon;
-  arrowDownIcon: ArrowIcon;
-  arrowLeftIcon: ArrowIcon;
-  arrowRightIcon: ArrowIcon;
+  arrowIcon: ArrowIcon | undefined;
+  arrowUpIcon: ArrowIcon | undefined;
+  arrowDownIcon: ArrowIcon | undefined;
+  arrowLeftIcon: ArrowIcon | undefined;
+  arrowRightIcon: ArrowIcon | undefined;
   arrowIconRenderer: ((button: HTMLDivElement, dir: ScrollbarArrowDir) => void) | undefined;
   thickness: number;
   hoverThickness: number;

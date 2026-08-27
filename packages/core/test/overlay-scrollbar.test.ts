@@ -15,6 +15,11 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
 } as any;
 
+// The engine also adds the `tk-scrollbar` class to <html> (native-bar hiding),
+// so `.tk-scrollbar` alone matches the document root too. Target strip roots
+// explicitly (they carry `data-theme-kit-host`).
+const STRIP_SELECTOR = ".tk-scrollbar[data-theme-kit-host]";
+
 const theme = defineTheme({
   name: "test-theme",
   meta: { family: "test", mode: "light" },
@@ -75,18 +80,18 @@ describe("createOverlayScrollbar", () => {
     handle!.destroy();
   });
 
-  it("does not inject any hiding CSS (bootstrap owns it)", () => {
+  it("injects native-scrollbar hiding CSS + adds tk-scrollbar (bootstrap), so mounting the overlay alone hides native bars", () => {
     const store = createThemeStore({ initialTheme: theme });
     const handle = createOverlayScrollbar(store, {});
     expect(handle).not.toBeNull();
 
-    // The overlay no longer injects any CSS — the bootstrap script
-    // handles all native scrollbar hiding.
-    expect(
-      document.querySelectorAll(
-        'style[data-theme-kit-overlay-scrollbar],style#tk-scrollbar-style',
-      ).length,
-    ).toBe(0);
+    // Phase 1 bootstrap is now applied by the engine itself — mounting
+    // ThemeScrollbar / createOverlayScrollbar hides native scrollbars even
+    // when no pre-paint script or provider `scrollbar` prop is present.
+    expect(document.documentElement.classList.contains("tk-scrollbar")).toBe(true);
+    const style = document.getElementById("tk-scrollbar-style");
+    expect(style).not.toBeNull();
+    expect(style!.textContent).toContain("scrollbar-width:none");
 
     handle!.destroy();
   });
@@ -125,13 +130,13 @@ describe("createOverlayScrollbar", () => {
     const store = createThemeStore({ initialTheme: theme });
     const handle = createOverlayScrollbar(store, {});
 
-    const strips = document.querySelectorAll(".tk-scrollbar");
+    const strips = document.querySelectorAll(STRIP_SELECTOR);
     expect(strips.length).toBeGreaterThan(0);
 
     handle!.destroy();
 
     // All overlay strips are removed.
-    expect(document.querySelectorAll(".tk-scrollbar").length).toBe(0);
+    expect(document.querySelectorAll(STRIP_SELECTOR).length).toBe(0);
   });
 
   it("renders a .tk-scrollbar strip with track and thumb children", () => {
@@ -148,7 +153,7 @@ describe("createOverlayScrollbar", () => {
     const handle = createOverlayScrollbar(store, { thickness: 10 });
     handle!.update();
 
-    const strips = Array.from(document.querySelectorAll<HTMLElement>(".tk-scrollbar"));
+    const strips = Array.from(document.querySelectorAll<HTMLElement>(STRIP_SELECTOR));
     expect(strips.length).toBeGreaterThan(0);
     for (const strip of strips) {
       expect(strip.querySelector(".tk-track")).not.toBeNull();
@@ -182,9 +187,9 @@ describe("createOverlayScrollbar", () => {
     const store = createThemeStore({ initialTheme: theme });
     const handle = createThemeScrollbar(store, { autoHide: false });
     expect(handle).not.toBeNull();
-    expect(document.querySelectorAll(".tk-scrollbar").length).toBeGreaterThan(0);
+    expect(document.querySelectorAll(STRIP_SELECTOR).length).toBeGreaterThan(0);
     handle!.destroy();
-    expect(document.querySelectorAll(".tk-scrollbar").length).toBe(0);
+    expect(document.querySelectorAll(STRIP_SELECTOR).length).toBe(0);
   });
 
   it("overlays the document AND every scrollable element by default", async () => {
@@ -215,7 +220,7 @@ describe("createOverlayScrollbar", () => {
     // scrollables are overlaid anywhere a native scrollbar would appear.
     // The overlay may create additional strips for the same inner element
     // during rescan cycles; allow up to 6.
-    const strips = Array.from(document.querySelectorAll<HTMLElement>(".tk-scrollbar"));
+    const strips = Array.from(document.querySelectorAll<HTMLElement>(STRIP_SELECTOR));
     expect(strips.length).toBeGreaterThanOrEqual(4);
 
     // The native track of the inner container is hidden automatically.
@@ -251,7 +256,7 @@ describe("createOverlayScrollbar", () => {
 
     // root (2) + inner vertical + inner horizontal = 4 strips minimum;
     // additional strips may appear during rescan cycles.
-    let strips = Array.from(document.querySelectorAll<HTMLElement>(".tk-scrollbar"));
+    let strips = Array.from(document.querySelectorAll<HTMLElement>(STRIP_SELECTOR));
     expect(strips.length).toBeGreaterThanOrEqual(4);
 
     handle!.destroy();
@@ -262,7 +267,7 @@ describe("createOverlayScrollbar", () => {
     });
     handle2!.update();
     await new Promise((r) => requestAnimationFrame(() => r(undefined)));
-    strips = Array.from(document.querySelectorAll<HTMLElement>(".tk-scrollbar"));
+    strips = Array.from(document.querySelectorAll<HTMLElement>(STRIP_SELECTOR));
     expect(strips.length).toBe(2);
 
     handle2!.destroy();
@@ -357,7 +362,7 @@ describe("createOverlayScrollbar", () => {
     handle!.update();
     await new Promise((r) => requestAnimationFrame(() => r(undefined)));
 
-    const strips = Array.from(document.querySelectorAll<HTMLElement>(".tk-scrollbar"));
+    const strips = Array.from(document.querySelectorAll<HTMLElement>(STRIP_SELECTOR));
     // The hidden scrollable should still be detected as a host (4 total),
     // but its overlay strips must be hidden so they don't appear on screen.
     expect(strips.length).toBe(4);
@@ -734,7 +739,7 @@ describe("createOverlayScrollbar", () => {
     // Document scrollbar: above sticky headers so the page's own scrollbar
     // stays visible over them (but below full-screen overlay backdrops).
     const rootStrips = Array.from(
-      document.querySelectorAll<HTMLElement>(".tk-scrollbar:not([data-overlay])"),
+      document.querySelectorAll<HTMLElement>(`${STRIP_SELECTOR}:not([data-overlay])`),
     );
     expect(rootStrips.length).toBeGreaterThan(0);
     for (const strip of rootStrips) {
@@ -743,7 +748,7 @@ describe("createOverlayScrollbar", () => {
 
     // Inner scrollbar: adopts the container's declared z-index (15).
     const overlayStrips = Array.from(
-      document.querySelectorAll<HTMLElement>(".tk-scrollbar[data-overlay]"),
+      document.querySelectorAll<HTMLElement>(`${STRIP_SELECTOR}[data-overlay]`),
     );
     expect(overlayStrips.length).toBeGreaterThan(0);
     for (const strip of overlayStrips) {
@@ -770,7 +775,7 @@ describe("createOverlayScrollbar", () => {
     await new Promise((r) => requestAnimationFrame(() => r(undefined)));
 
     const strips = Array.from(
-      document.querySelectorAll<HTMLElement>(".tk-scrollbar:not([data-overlay])"),
+      document.querySelectorAll<HTMLElement>(`${STRIP_SELECTOR}:not([data-overlay])`),
     );
     expect(strips.length).toBeGreaterThan(0);
     for (const strip of strips) {
@@ -804,9 +809,7 @@ describe("createOverlayScrollbar", () => {
     handle!.update();
     await new Promise((r) => requestAnimationFrame(() => r(undefined)));
 
-    const overlaysBefore = document.querySelectorAll<HTMLElement>(
-      ".tk-scrollbar[data-overlay]",
-    );
+    const overlaysBefore = document.querySelectorAll<HTMLElement>(`${STRIP_SELECTOR}[data-overlay]`);
     expect(overlaysBefore.length).toBe(0);
 
     // Simulate a navigation: new content makes the container overflow. No
@@ -820,7 +823,7 @@ describe("createOverlayScrollbar", () => {
     // The overlay must appear immediately from the mutation-triggered rescan,
     // not only after the 4s periodic full recompute.
     const visibleOverlays = Array.from(
-      document.querySelectorAll<HTMLElement>(".tk-scrollbar[data-overlay]"),
+      document.querySelectorAll<HTMLElement>(`${STRIP_SELECTOR}[data-overlay]`),
     ).filter((s) => s.style.display !== "none");
     expect(visibleOverlays.length).toBe(1);
     expect(visibleOverlays[0].classList.contains("tk-v")).toBe(true);

@@ -433,7 +433,8 @@ export interface ThemeScopeProps {
  * `theme`/`family`/`mode` are read at mount. Family-based and boundary scopes
  * keep following the provider's light/dark/system mode while mounted.
  */
-export function ThemeScope(anchor: Node, scopeProps: ThemeScopeProps) {
+function ThemeScopeFn(anchor: SvelteAnchor, scopeProps: ThemeScopeProps) {
+  const anchorNode = asNode(anchor);
   const runtime = getThemeRuntime();
   const {
     theme,
@@ -464,7 +465,7 @@ export function ThemeScope(anchor: Node, scopeProps: ThemeScopeProps) {
   if (typeof document === "undefined") {
     // SSR: no wrapper/variables are rendered; the subtree still mounts so the
     // initial data-* attributes on the provider's `:root` apply client-side.
-    renderSnippet(children, anchor);
+    renderSnippet(children, anchorNode);
     return;
   }
 
@@ -476,7 +477,7 @@ export function ThemeScope(anchor: Node, scopeProps: ThemeScopeProps) {
     if (key === "class") continue;
     wrapper.setAttribute(key, String(value));
   }
-  (anchor as ChildNode).before(wrapper);
+  (anchorNode as ChildNode).before(wrapper);
 
   // Render the snippet inside the wrapper. The text anchor keeps the children
   // relative to the wrapper, and Svelte removes those nodes on unmount.
@@ -513,6 +514,9 @@ export function ThemeScope(anchor: Node, scopeProps: ThemeScopeProps) {
     wrapper.remove();
   });
 }
+
+/** The scoped theming component. See {@link ThemeScopeProps}. */
+export const ThemeScope = ThemeScopeFn as unknown as Component<ThemeScopeProps>;
 
 export interface ThemeScrollbarProps extends OverlayScrollbarOptions {}
 
@@ -558,7 +562,10 @@ function pickOptions(props?: ThemeScrollbarProps): OverlayScrollbarOptions {
   return opts;
 }
 
-export function ThemeScrollbar(anchor: Node, props?: ThemeScrollbarProps) {
+function ThemeScrollbarFn(
+  anchor: SvelteAnchor,
+  props?: ThemeScrollbarProps,
+) {
   const runtime = getThemeRuntime();
   let handle: { destroy(): void } | null = null;
 
@@ -582,10 +589,31 @@ export function ThemeScrollbar(anchor: Node, props?: ThemeScrollbarProps) {
   });
 }
 
-export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
-  anchor: Node,
+/** The overlay scrollbar component. See {@link ThemeScrollbarProps}. */
+export const ThemeScrollbar = ThemeScrollbarFn as unknown as Component<
+  ThemeScrollbarProps
+>;
+
+/**
+ * Svelte 5 mounts function components with `(internals, props)`. The type is
+ * `ComponentInternals` (a branded type), but the runtime actually receives the
+ * anchor `Node`. We keep the branded type on the signature so the exported
+ * component is assignable to Svelte's `Component` interface (svelte-check), and
+ * cast back to `Node` internally where it is used as the mount anchor.
+ */
+type SvelteAnchor = import("svelte").ComponentInternals;
+
+function asNode(anchor: SvelteAnchor): Node {
+  return anchor as unknown as Node;
+}
+
+import type { Component } from "svelte";
+
+function ThemeProviderImpl<T extends ThemeDefinition = ThemeDefinition>(
+  anchor: SvelteAnchor,
   props: ThemeProviderProps<T>,
 ) {
+  const anchorNode = asNode(anchor);
   const { runtime, children, ...runtimeOptions } = props ?? {};
   const ownsRuntime = !runtime;
   let domBinding: { destroy(): void } | null = null;
@@ -608,11 +636,11 @@ export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
   setContext(ThemeKitKey, runtimeInstance);
 
   if (typeof document === "undefined") {
-    renderSnippet(children, anchor);
+    renderSnippet(children, anchorNode);
     return;
   }
 
-  renderSnippet(children, anchor);
+  renderSnippet(children, anchorNode);
 
   // IMPORTANT: The DOM/CSS bindings and the bootstrap script must be created
   // SYNCHRONOUSLY during component init, NOT inside `onMount`. Svelte 5 only
@@ -677,6 +705,16 @@ export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
     }
   });
 }
+
+/**
+ * The Theme Kit provider component. Cast to Svelte's `Component` type so
+ * `svelte-check` recognizes it as a component (Svelte 5 components have the
+ * `(internals, props) => { $on?, $set? }` shape; the runtime only needs the
+ * anchor, which is passed as the first argument).
+ */
+export const ThemeProvider = ThemeProviderImpl as unknown as Component<
+  ThemeProviderProps<ThemeDefinition>
+>;
 
 
 // -- ThemeInspector action ---------------------------------------------------

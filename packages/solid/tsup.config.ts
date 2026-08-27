@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup";
+import { solidPlugin } from "esbuild-plugin-solid";
 
 export default defineConfig({
   entry: ["src/index.tsx"],
@@ -8,8 +9,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: ["solid-js"],
-  esbuildOptions: (options) => {
-    options.jsx = "automatic";
-    options.jsxImportSource = "solid-js";
-  },
+  esbuildPlugins: [solidPlugin()],
 });

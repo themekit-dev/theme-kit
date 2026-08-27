@@ -101,7 +101,6 @@ html.tk-scrollbar {
    These can be overridden by users in their CSS. */
 [data-theme-kit-host] {
   --tk-scrollbar-thumb: var(--theme-color-accent, var(--theme-color-primary, #737373));
-  --tk-scrollbar-track: transparent;
   --tk-scrollbar-thumb-hover: var(--theme-color-accent, var(--theme-color-primary, #737373));
   --tk-scrollbar-thumb-active: var(--theme-color-accent, var(--theme-color-primary, #737373));
 }

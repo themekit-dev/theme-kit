@@ -52,3 +52,6 @@ release-test/vanilla-app/package.json
 release-test/react-app/package.json
 release-test/cli-app/package.json
 release-test/clean-app/package.json
+
+# Examples (local playgrounds — not part of the published packages)
+/examples/

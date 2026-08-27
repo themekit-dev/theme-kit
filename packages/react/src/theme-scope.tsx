@@ -144,6 +144,13 @@ export function ThemeScope({
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // React StrictMode (dev) unmounts/remounts effects. The provider's cleanup
+    // destroys the runtime (its registry is cleared), so on the simulated
+    // remount this layout effect runs against a destroyed runtime with no
+    // themes — before the provider's re-render effect recreates it. Skip
+    // binding in that window; the forced re-render swaps in a fresh runtime and
+    // re-runs this effect with the real theme list.
+    if (runtime.themes.length === 0) return;
     const binding = createScopedThemeBinding(
       runtime.themes,
       el,
@@ -253,6 +260,8 @@ export function useScopedTheme(
       bindingRef.current = null;
       return;
     }
+    // Same StrictMode guard as ThemeScope: a destroyed runtime has no themes.
+    if (runtime.themes.length === 0) return;
     if (!bindingRef.current) {
       bindingRef.current = createScopedThemeBinding(
         runtime.themes,

@@ -2,6 +2,13 @@
 
 Theme Kit provides a first-class transition system that animates every CSS property when themes change. Use the animations plugin for zero-config CSS transitions, or the View Transitions API for page-level animations.
 
+> **Transitions are enabled by default.** The runtime ships with
+> `DEFAULT_THEME_TRANSITION` — `enabled: true`, `300ms`,
+> `cubic-bezier(0.4, 0, 0.2, 1)`, `preset: "smooth"`. You only need to pass a
+> `transition` prop when you want to **change** the defaults. To turn them off
+> entirely, pass `transition={{ enabled: false }}` (or `transition={false}` in
+> React/Vue/Svelte/Solid).
+
 ## Quick start
 
 ```ts
@@ -17,33 +24,125 @@ const runtime = createThemeRuntime({
 });
 ```
 
+## Page-level transitions
+
+To make theme changes visible across the whole page, paint the page background
+with the theme's background token. The runtime animates the `--theme-color-*`
+custom properties on `<html>`, so any element that reads them transitions
+automatically:
+
+```css
+html,
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--theme-color-background);
+  color: var(--theme-color-foreground);
+}
+```
+
+Add this to your global CSS (`index.css`, `App.css`, `globals.css`, …) once, and
+every light↔dark switch cross-fades the entire page.
+
 ## Transition options
 
 Every property in `ThemeTransitionOptions` is fully typed and configurable.
 
 | Property | Type | Default | Description |
 |---|---|---|---|
-| `enabled` | `boolean` | `false` | Whether transitions are active |
-| `duration` | `number` | `200` | Duration in milliseconds |
-| `easing` | `string` | `"ease"` | CSS easing function |
+| `enabled` | `boolean` | `true` | Whether transitions are active |
+| `duration` | `number` | `300` | Duration in milliseconds |
+| `easing` | `string` | `"cubic-bezier(0.4, 0, 0.2, 1)"` | CSS easing function |
+| `preset` | `"smooth" \| "subtle" \| "instant" \| string[]` | `"smooth"` | Property filter — see below |
 | `useViewTransition` | `boolean` | `false` | Use the View Transitions API |
 | `properties` | `string[]` | [see below](#default-properties) | CSS properties to animate |
 
+## Choosing what animates — `preset` vs `properties`
+
+Transitions run on the properties that actually changed between the old and new
+theme. Two fields control which of those changed properties are allowed to
+animate:
+
+- **`preset`** — a named, curated list. `"smooth"` (default) covers colors +
+  radius + shadows + opacity; `"subtle"` is a quieter color-only set;
+  `"instant"` disables interpolation.
+- **`properties`** — an exact `string[]` of CSS properties to allow, e.g.
+  `["color", "background-color"]`. When provided, **only** those properties
+  animate (a filter on the changed set, not a full list of everything to
+  animate).
+
+```tsx
+// React / Next / Svelte / Solid / Remix / Astro
+<ThemeProvider
+  themes={themes}
+  transition={{
+    enabled: true,
+    // Animate only text and background colors — radius/shadow/opacity snap.
+    properties: ["color", "background-color"],
+  }}
+>
+  <App />
+</ThemeProvider>
+```
+
+```vue
+<!-- Vue / Nuxt -->
+<ThemeProvider :transition="{ enabled: true, properties: ['color', 'background-color'] }">
+  <App />
+</ThemeProvider>
+```
+
+```ts
+// Angular — provideThemeKit options
+provideThemeKit({
+  themes,
+  transition: { enabled: true, properties: ["color", "background-color"] },
+});
+```
+
+```ts
+// Vanilla runtime
+createThemeRuntime({
+  themes,
+  transition: { enabled: true, properties: ["color", "background-color"] },
+});
+```
+
+### Which properties can you pass?
+
+Any CSS property that participates in the diff is animatable. The grouped token
+categories map to these concrete properties:
+
+| Token group | CSS properties |
+|---|---|
+| **colors** | `color`, `background`, `background-color`, `border-color`, `outline-color`, `fill`, `stroke`, `text-decoration-color` |
+| **radius** | `border-radius` |
+| **spacing** | `padding`, `padding-*`, `margin`, `margin-*`, `gap`, `inset`, `inset-*`, `top/right/bottom/left` |
+| **typography** | `font-size`, `font-weight`, `line-height`, `letter-spacing` |
+| **shadows** | `box-shadow`, `text-shadow` |
+| **borders** | `border-width`, `border-style` |
+| **transforms** | `transform`, `scale`, `rotate`, `translate` |
+| **opacity** | `opacity` |
+
+Use the preset names for common combinations, or pass a raw array:
+
+```tsx
+transition={{ enabled: true, properties: ["color", "background-color", "border-radius", "box-shadow"] }}
+```
+
+### Presets
+
+| Preset | Properties allowed to animate | When to use |
+|---|---|---|
+| `"smooth"` | color, background(-color), border-color, outline-color, fill, stroke, border-radius, box-shadow, text-shadow, opacity | Default — full, rich cross-fade |
+| `"subtle"` | color, background(-color), border-color, outline-color, fill, stroke, background, box-shadow, opacity | Lower-motion profile |
+| `"instant"` | opacity only (interpolation disabled) | Hard, instant switch |
+| `string[]` | exactly the properties you list | Fine-grained control |
+
 ## Default properties
 
-The following CSS properties are animated by default when a theme changes:
-
-- `color`, `background-color`, `border-color`, `outline-color`
-- `fill`, `stroke`
-- `border-radius`, `width`, `min-width`, `max-width`
-- `height`, `min-height`, `max-height`
-- `padding`, `padding-top`, `padding-right`, `padding-bottom`, `padding-left`
-- `margin`, `margin-top`, `margin-right`, `margin-bottom`, `margin-left`
-- `gap`, `inset`, `inset-block`, `inset-inline`
-- `top`, `right`, `bottom`, `left`
-- `font-size`, `font-weight`, `font-family`, `line-height`, `letter-spacing`
-- `box-shadow`, `text-shadow`
-- `opacity`, `z-index`
+When no `preset` or `properties` is given, the `"smooth"` preset list is used
+(see above). Everything that changed and is in that list animates.
 
 ## Animations plugin
 
@@ -68,6 +167,22 @@ const plugin = createAnimationsPlugin({
 - **`onBeforeThemeChange`** — Applies the transition CSS to the target element.
 - **`onAfterThemeChange`** — No-op (transition cleanup is handled by the browser).
 - **`onDestroy`** — Removes the transition CSS from the target element.
+
+## Disabling transitions
+
+Transitions are **on by default**. To disable them app-wide:
+
+```tsx
+<ThemeProvider themes={themes} transition={{ enabled: false }}>
+  <App />
+</ThemeProvider>
+```
+
+For a single switch, pass `suppressTransition` to the store set:
+
+```ts
+runtime.store.set(theme, { suppressTransition: true });
+```
 
 ## View Transitions API
 

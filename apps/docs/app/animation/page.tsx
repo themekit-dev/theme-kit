@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 // RSC walk), so provide them here for the TOC rail.
 const animationHeadings = buildPageHeadings([
   { text: "Enable it", level: 2 },
+  { text: "What animates — presets & properties", level: 2 },
   { text: "Same prop on every framework", level: 3 },
   { text: "Enable transitions in your framework", level: 2 },
   { text: "View Transitions API", level: 2 },

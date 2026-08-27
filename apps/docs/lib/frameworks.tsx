@@ -185,11 +185,11 @@ export const rawFrameworks: RawFramework[] = [
         features: [
           {
             name: "transition prop",
-            desc: "Built-in runtime transition support. Configure duration/easing once on the provider; Theme Kit generates the transition styles at runtime, so applications do not need to maintain theme-transition rules in global CSS.",
+            desc: "Transitions are enabled by default (300ms, smooth). Pass `transition` to tune duration/easing/preset/properties, or `transition={{ enabled: false }}` to disable.",
           },
           {
             name: "runtime.store.set(theme, { suppressTransition: true })",
-            desc: "Per-update escape hatch: `runtime.store.set(theme, { suppressTransition: true })` skips the configured animation. For custom animation orchestration, compose the core diff/plan/runner APIs.",
+            desc: "Per-update escape hatch: `runtime.store.set(theme, { suppressTransition: true })` skips the configured animation for a single switch. For custom animation orchestration, compose the core diff/plan/runner APIs.",
           },
         ],
       },
@@ -687,11 +687,12 @@ import { ThemeProvider } from "@theme-kit/vue";
       lang: "svelte",
       code: `<script>
   import { ThemeProvider } from "@theme-kit/svelte";
+  import ThemeSwitcher from "./ThemeSwitcher.svelte";
   import { themes } from "./themes";
 </script>
 
 <ThemeProvider themes={themes} defaultTheme="mint-light">
-  {@render children()}
+  <ThemeSwitcher />
 </ThemeProvider>`,
     },
     snippet: {
@@ -733,12 +734,13 @@ import { ThemeProvider } from "@theme-kit/vue";
       lang: "svelte",
       code: `<script>
   import { ThemeProvider } from "@theme-kit/svelte";
+  import { themes } from "./themes";
 </script>
 
 <!-- No \`themes\` prop → built-in neutral theme.
-     Pick the variant: "light" | "dark" (or omit → system). -->
+     Pick the variant: defaultTheme="light" | "dark" (or omit → system). -->
 <ThemeProvider defaultTheme="light">
-  {@render children()}
+  <YourView />
 </ThemeProvider>`,
     },
   },
@@ -1023,18 +1025,29 @@ bootstrapApplication(AppComponent, {
 });`,
     },
     snippet: {
-      title: "app.config.ts",
+      title: "theme-switcher.ts",
       lang: "ts",
-      code: `import { provideThemeKit, injectTheme } from "@theme-kit/angular";
+      code: `import { Component } from "@angular/core";
+import { provideThemeKit, injectTheme } from "@theme-kit/angular";
 
 bootstrapApplication(AppComponent, {
   providers: [provideThemeKit({ themes })],
 });
 
-@Component({ ... })
+@Component({
+  selector: "theme-switcher",
+  template: \`
+    <button (click)="toggle()">
+      {{ state().theme.name }} · {{ state().mode }}
+    </button>
+  \`,
+})
 export class ThemeSwitcher {
-  private theme = injectTheme();
-  // theme().theme() · theme().mode() · theme().setMode("dark")
+  // Must be public — Angular templates cannot access private members.
+  state = injectTheme();
+  toggle() {
+    this.state().toggleTheme();
+  }
 }`,
     },
     snippet2: {

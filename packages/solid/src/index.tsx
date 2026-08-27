@@ -32,6 +32,7 @@ import {
   createContext,
   useContext,
   createSignal,
+  createMemo,
   createEffect,
   onMount,
   onCleanup,
@@ -381,22 +382,40 @@ export function useOpenPropsTheme<T extends ThemeDefinition = ThemeDefinition>(
 export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
   props: ThemeProviderProps<T>,
 ) {
-  const { runtime: extRuntime, children, ...runtimeOptions } = props;
-
+  // NOTE: we deliberately do NOT destructure `children` out of `props`. In JSX,
+  // `children` is a getter that instantiates the child subtree the moment it is
+  // read; reading it during setup (e.g. via rest destructuring or a spread)
+  // would render the children BEFORE the ThemeKit context exists, making
+  // `useTheme`/`useContext` fail with "must be used within a ThemeProvider".
+  const extRuntime = props.runtime;
   const ownsRuntime = !extRuntime;
-  const [runtimeInstance] = createSignal<ThemeRuntime<T> | null>(
-    extRuntime ?? null,
-  );
 
-  if (ownsRuntime && !runtimeInstance()) {
+  // Build the runtime options by copying prop-by-prop, skipping `runtime` and
+  // `children` so the children getter is never evaluated during setup. (A rest
+  // destructure or object spread would read the `children` getter, which
+  // instantiates the child subtree before the ThemeKit context exists.)
+  const runtimeOptions = {} as Omit<ThemeProviderProps<T>, "runtime" | "children">;
+  const propsRecord = props as unknown as Record<string, unknown>;
+  for (const key of Object.keys(props)) {
+    if (key === "runtime" || key === "children") continue;
+    (runtimeOptions as Record<string, unknown>)[key] = propsRecord[key];
+  }
+
+  // `createMemo` (not `createSignal`): the runtime must be created synchronously
+  // and be available on the very first render pass, because children read it via
+  // `useContext` during that same render. A signal setter only takes effect after
+  // the current computation completes, which would render children with a `null`
+  // runtime (throwing "useThemeRuntime must be used within a ThemeProvider").
+  const runtimeInstance = createMemo<ThemeRuntime<T> | null>(() => {
+    if (!ownsRuntime) return extRuntime ?? null;
+
     const { dom, cssVariables, ...coreOptions } = runtimeOptions as any;
-    const created = createThemeRuntime({
+    return createThemeRuntime({
       ...coreOptions,
       dom: false,
       cssVariables: false,
     } as any) as ThemeRuntime<T>;
-    (runtimeInstance as any)(() => created);
-  }
+  });
 
   const resolvedRuntime = runtimeInstance()!;
 
@@ -457,7 +476,12 @@ export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
 
   return createComponent(ThemeKitContext.Provider, {
     value: { runtime: resolvedRuntime },
-    children,
+    // Lazy getter: the Provider (Solid's createProvider) resolves children
+    // inside `children(() => props.children)` — i.e. AFTER the context value
+    // is attached to the current owner — so reading it there is safe.
+    get children() {
+      return props.children;
+    },
   });
 }
 

@@ -455,10 +455,10 @@ const ThemeProvider = defineComponent({
     broadcast: { type: Object, required: false },
     view: { type: Object, required: false },
     readPersistenceOnInit: { type: Boolean, required: false },
-    dom: { type: [Boolean, Object], required: false },
-    cssVariables: { type: [Boolean, Object], required: false },
-    transition: { type: [Boolean, Object], required: false },
-    scheduled: { type: [Boolean, Object], required: false },
+    dom: { type: [Boolean, Object], required: false, default: undefined },
+    cssVariables: { type: [Boolean, Object], required: false, default: undefined },
+    transition: { type: [Boolean, Object], required: false, default: undefined },
+    scheduled: { type: [Boolean, Object], required: false, default: undefined },
   },
   setup(props: Props, { slots }) {
     const ownsRuntime = !props.runtime;
@@ -477,7 +477,7 @@ const ThemeProvider = defineComponent({
 
     provide(ThemeKitSymbol, resolvedRuntime);
 
-    let domBinding: { destroy(): void } | null = null;
+    let domBinding: { apply(theme: any, emitOptions?: any): void; destroy(): void } | null = null;
     let cssBinding: { destroy(): void } | null = null;
 
     onMounted(() => {
@@ -508,18 +508,44 @@ const ThemeProvider = defineComponent({
         }
       }
 
+      // Resolve the transition config the same way the React provider does.
+      const transitionOption = props.transition;
+      const resolvedTransition =
+        transitionOption === undefined
+          ? undefined
+          : typeof transitionOption === "object"
+            ? transitionOption
+            : transitionOption === true
+              ? {}
+              : { enabled: false };
+
+      const cssBindingDrivesDom =
+        cssOpts !== false &&
+        (cssOpts === undefined || cssOpts.styleSheet !== true);
+
       if (domOpts !== false) {
-        domBinding = createDOMBinding(
-          resolvedRuntime.store,
-          domOpts !== undefined ? (domOpts as DOMBindingOptions) : undefined,
-        );
+        domBinding = createDOMBinding(resolvedRuntime.store, {
+          ...(domOpts !== undefined ? (domOpts as DOMBindingOptions) : {}),
+          // When the CSS binding is present and applying inline variables, it
+          // drives the DOM updates inside its single View Transition lightswitch
+          // via `onBeforeSwap`. Subscribing here too would fire a second,
+          // competing `startViewTransition`. Otherwise the DOM binding owns its
+          // updates.
+          subscribe: !cssBindingDrivesDom,
+          ...(resolvedTransition !== undefined
+            ? { transition: resolvedTransition }
+            : {}),
+        });
       }
 
       if (cssOpts !== false) {
-        cssBinding = createCSSVariablesBinding(
-          resolvedRuntime.store,
-          cssOpts !== undefined ? (cssOpts as CSSVariablesOptions) : undefined,
-        );
+        cssBinding = createCSSVariablesBinding(resolvedRuntime.store, {
+          ...(cssOpts !== undefined ? (cssOpts as CSSVariablesOptions) : {}),
+          ...(resolvedTransition !== undefined
+            ? { transition: resolvedTransition }
+            : {}),
+          ...(domBinding ? { onBeforeSwap: domBinding.apply } : {}),
+        });
       }
     });
 
@@ -606,9 +632,15 @@ export const ThemeScope = defineComponent({
       });
     }
 
-    // Run after mount so `elRef.value` is available. Selection changes run
-    // through the binding's diff → plan → animate pipeline (no rebuild), while
+    // Create the binding once mounted so `elRef.value` is available — a watch
+    // with `immediate: true` runs during setup, before the element exists, and
+    // would never create the binding. Selection changes run through the
+    // binding's diff → plan → animate pipeline (no rebuild), while
     // transition/local-theme config changes are swapped on the live binding.
+    onMounted(() => {
+      if (binding == null) createBinding();
+    });
+
     watch(
       () => [props.theme, props.family, props.mode, props.transition, props.themes] as const,
       () => {
@@ -621,7 +653,7 @@ export const ThemeScope = defineComponent({
         binding.setLocalThemes(props.themes);
         binding.update(toSelection());
       },
-      { immediate: true, flush: "post" },
+      { flush: "post" },
     );
 
     // Follow the provider's mode for family/boundary scopes.

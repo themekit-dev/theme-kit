@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "esbuild-plugin-solid": "^0.6.0",
     "solid-js": "^1.8.0",
     "typescript": "^5.9.3",
     "vitest": "^4.1.10"

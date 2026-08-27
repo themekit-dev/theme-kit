@@ -8,6 +8,7 @@ import {
 } from "./calculations";
 import { easeAlpha, isSettled, lerp, prefersReducedMotion, FRAME_MS } from "./physics";
 import { observeScrollbarSizing } from "./observers";
+import { PRE_PAINT_SCROLLBAR_CSS } from "./pre-paint";
 import type {
   ArrowIcon,
   AxisState,
@@ -32,11 +33,11 @@ function resolveOptions(options: OverlayScrollbarOptions): ScrollbarOptionsResol
     smooth: options.smooth ?? false,
     overscroll: options.overscroll ?? true,
     arrows: options.arrows ?? true,
-    arrowIcon: options.arrowIcon ?? "",
-    arrowUpIcon: options.arrowUpIcon ?? "",
-    arrowDownIcon: options.arrowDownIcon ?? "",
-    arrowLeftIcon: options.arrowLeftIcon ?? "",
-    arrowRightIcon: options.arrowRightIcon ?? "",
+    arrowIcon: options.arrowIcon ?? undefined,
+    arrowUpIcon: options.arrowUpIcon ?? undefined,
+    arrowDownIcon: options.arrowDownIcon ?? undefined,
+    arrowLeftIcon: options.arrowLeftIcon ?? undefined,
+    arrowRightIcon: options.arrowRightIcon ?? undefined,
     arrowIconRenderer: options.arrowIconRenderer,
     thickness,
     hoverThickness: options.hoverThickness ?? thickness + 4,
@@ -159,20 +160,38 @@ export function createOverlayScrollbar(
   if (typeof window === "undefined" || typeof document === "undefined") {
     return null;
   }
+
+  // Phase 1 — Bootstrap: hide the native scrollbar before the overlay mounts.
+  // This is normally done by a blocking `<script>` (createPrePaintScrollbarScript)
+  // or by the Next.js server. When only `<ThemeScrollbar />` is mounted (no
+  // provider scrollbar prop, no pre-paint script), we apply it here idempotently
+  // so the native scrollbar is hidden and the overlay renders thumb + arrows.
+  const docEl = document.documentElement;
+  if (!docEl.classList.contains("tk-scrollbar")) {
+    try {
+      docEl.classList.add("tk-scrollbar");
+      if (!document.getElementById("tk-scrollbar-style")) {
+        const s = document.createElement("style");
+        s.id = "tk-scrollbar-style";
+        s.textContent = PRE_PAINT_SCROLLBAR_CSS;
+        document.head.appendChild(s);
+      }
+    } catch { /* ignore */ }
+  }
+
   // Touch devices already have excellent native scrollbars. Desktop first.
   if (isCoarsePointer() && !options.touch) {
     // Restore the platform's native scrollbars: undo the bootstrap's
     // `tk-scrollbar` hiding (SSR'd or injected) so coarse-pointer devices keep
     // their native bars when the overlay is intentionally skipped.
     try {
-      document.documentElement.classList.remove("tk-scrollbar");
+      docEl.classList.remove("tk-scrollbar");
       document.getElementById("tk-scrollbar-style")?.remove();
     } catch { /* ignore */ }
     return null;
   }
 
   const opts = resolveOptions(options);
-  const docEl = document.documentElement;
   const scrollingEl: HTMLElement = (document.scrollingElement as HTMLElement | null) || docEl;
 
   const reduced = () => prefersReducedMotion();
@@ -347,6 +366,60 @@ export function createOverlayScrollbar(
     }
   }
 
+  /** The host's resolved border-radius on each corner (px, `0` when none).
+   *  The document scroller is never rounded, so it returns all `0`. */
+  function hostCornerRadius(host: Host): { tl: number; tr: number; br: number; bl: number } {
+    if (host.isRoot) return { tl: 0, tr: 0, br: 0, bl: 0 };
+    try {
+      const cs = getComputedStyle(host.target);
+      const px = (v: string): number => {
+        const n = parseFloat(v);
+        return Number.isFinite(n) && n > 0 ? n : 0;
+      };
+      return {
+        tl: px(cs.borderTopLeftRadius),
+        tr: px(cs.borderTopRightRadius),
+        br: px(cs.borderBottomRightRadius),
+        bl: px(cs.borderBottomLeftRadius),
+      };
+    } catch {
+      return { tl: 0, tr: 0, br: 0, bl: 0 };
+    }
+  }
+
+  /** The strip is appended to `<body>` as `position: fixed`, so its host's
+   *  `overflow` / `border-radius` never clips it. A thin bar laid along a
+   *  rounded container therefore pokes out past the corners — unlike the
+   *  native scrollbar it replaces, which is clipped by the container itself.
+   *  Clip the strip to the host's rounded rectangle: the clip rect is the
+   *  host's border box (the strip sits just inside it, so the insets expand
+   *  back toward the host's own edges — negative `inset()` values) rounded by
+   *  the host's own radii. This reproduces exactly what the container's
+   *  `overflow` would have done, on every corner independently. */
+  function applyHostClip(
+    host: Host,
+    state: AxisState,
+    rect: { left: number; top: number; width: number; height: number },
+    stripLeft: number,
+    stripTop: number,
+    stripWidth: number,
+    stripHeight: number,
+  ) {
+    if (host.isRoot) return;
+    const r = hostCornerRadius(host);
+    if (!r.tl && !r.tr && !r.br && !r.bl) {
+      if (state.root.style.clipPath) state.root.style.clipPath = "";
+      return;
+    }
+    const insetTop = rect.top - stripTop;
+    const insetRight = stripLeft + stripWidth - (rect.left + rect.width);
+    const insetBottom = stripTop + stripHeight - (rect.top + rect.height);
+    const insetLeft = rect.left - stripLeft;
+    state.root.style.clipPath =
+      `inset(${insetTop}px ${insetRight}px ${insetBottom}px ${insetLeft}px ` +
+      `round ${r.tl}px ${r.tr}px ${r.br}px ${r.bl}px)`;
+  }
+
   // Force an *exact* scroll write. Browsers apply an element's CSS
   // `scroll-behavior: smooth` even to direct scrollTop/scrollLeft assignments,
   // which would make drag/arrow scrolling lag behind the pointer. We pin
@@ -399,17 +472,18 @@ export function createOverlayScrollbar(
    *  horizontal arrow (and vice-versa) — keeps the whole scrollbar consistent
    *  when the user customizes only the up/down icons, like a native bar whose
    *  four buttons share one glyph family. */
-  function rotatedIcon(icon: ArrowIcon, deg: number): ArrowIcon | undefined {
+  function rotatedIcon(icon: ArrowIcon | undefined, deg: number): ArrowIcon | undefined {
     const items = Array.isArray(icon) ? icon : [icon];
-    if (items.length === 0) return undefined;
-    if (items.every((i) => i == null)) return undefined;
+    // Skip null AND empty-string icons — an empty string is "no icon", not a
+    // real glyph, so it must not suppress the CSS-triangle fallback.
+    const meaningful = items.filter((i): i is string | Node => i != null && i !== "");
+    if (meaningful.length === 0) return undefined;
     const wrap = document.createElement("span");
     wrap.className = "tk-arrow-glyph-rot";
     wrap.style.cssText =
       "display:flex;align-items:center;justify-content:center;" +
       "width:100%;height:100%;transform:rotate(" + deg + "deg)";
-    for (const item of items) {
-      if (item == null) continue;
+    for (const item of meaningful) {
       if (typeof item === "string") wrap.insertAdjacentHTML("beforeend", item);
       else wrap.appendChild(item.cloneNode(true) as Node);
     }
@@ -470,7 +544,7 @@ export function createOverlayScrollbar(
       el.className = "tk-thumb";
       return el;
     });
-    const allRotated = (main: ArrowIcon, ...alts: Array<[ArrowIcon, number]>) =>
+    const allRotated = (main: ArrowIcon | undefined, ...alts: Array<[ArrowIcon | undefined, number]>) =>
       main || alts.reduce<ArrowIcon | undefined>((acc, [icon, deg]) => acc || rotatedIcon(icon, deg), undefined) || "";
     const topIcon = vertical
       ? allRotated(opts.arrowUpIcon || opts.arrowIcon, [opts.arrowRightIcon, -90], [opts.arrowLeftIcon, 90])
@@ -1096,6 +1170,7 @@ function concealStripImmediate(state: AxisState) {
       state.btnTop.style.height = `${btn}px`;
       state.btnBottom.style.width = `${thickness}px`;
       state.btnBottom.style.height = `${btn}px`;
+      applyHostClip(host, state, rect, stripLeft, stripTop, thickness, stripHeight);
       nextGeometry.left = stripLeft;
       nextGeometry.top = stripTop;
       nextGeometry.width = thickness;
@@ -1134,6 +1209,7 @@ function concealStripImmediate(state: AxisState) {
       state.btnTop.style.width = `${btn}px`;
       state.btnBottom.style.height = `${thickness}px`;
       state.btnBottom.style.width = `${btn}px`;
+      applyHostClip(host, state, rect, stripLeft, stripTop, stripWidth, thickness);
       nextGeometry.left = stripLeft;
       nextGeometry.top = stripTop;
       nextGeometry.width = stripWidth;

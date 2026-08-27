@@ -13,11 +13,16 @@ export interface ThemeKitVitePluginOptions<T extends ThemeDefinition> {
   prefix?: string;
 }
 
+/**
+ * Structural twin of Vite's `HtmlTagDescriptor`. Kept local so the plugin does
+ * not need a hard dependency on `vite` types; the shape is assignable to
+ * Vite's `IndexHtmlTransformResult` in Vite 4 through 8.
+ */
 export interface ThemeKitViteInjectedTag {
   tag: string;
-  attrs: Record<string, string>;
+  attrs?: Record<string, string | boolean | undefined>;
   children?: string;
-  injectTo: string;
+  injectTo?: "head" | "body" | "head-prepend" | "body-prepend";
 }
 
 export interface ThemeKitVitePlugin {
@@ -26,10 +31,7 @@ export interface ThemeKitVitePlugin {
   transformIndexHtml(
     html: string,
     ctx?: unknown,
-  ):
-    | string
-    | { tags: ThemeKitViteInjectedTag[]; order?: "pre" | "post" }
-    | ThemeKitViteInjectedTag[];
+  ): string | ThemeKitViteInjectedTag[];
 }
 
 /**
@@ -63,16 +65,17 @@ export function themeKitVitePlugin<T extends ThemeDefinition>(
     name,
     enforce: "pre",
     transformIndexHtml() {
-      return {
-        tags: [
-          {
-            tag: "script",
-            attrs: {},
-            children: getScript(),
-            injectTo: "head-prepend",
-          },
-        ],
-      };
+      // Return the plain `HtmlTagDescriptor[]` form of `transformIndexHtml`,
+      // which is valid across Vite 4–8. (The old `{ tags, order }` object form
+      // was dropped in Vite 6, where the object result requires `html`.)
+      return [
+        {
+          tag: "script",
+          attrs: {},
+          children: getScript(),
+          injectTo: "head-prepend",
+        },
+      ];
     },
   };
 }

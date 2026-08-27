@@ -622,10 +622,23 @@ export function AnimationGuide() {
       <section id="enable" className="scroll-mt-24 mb-10">
         <SectionHeading
           num={1}
-          desc="One prop on the provider — pick a preset, done."
+          desc="Transitions are ON by default — pass a transition prop only to change the defaults."
         >
           Enable it
         </SectionHeading>
+        <Callout className="mb-4" title="Enabled by default">
+          <p className="text-sm">
+            Theme Kit ships with{" "}
+            <code className="mono text-[0.9em]">enabled: true</code>,{" "}
+            <code className="mono text-[0.9em]">300ms</code>,{" "}
+            <code className="mono text-[0.9em]">cubic-bezier(0.4, 0, 0.2, 1)</code>,
+            and <code className="mono text-[0.9em]">preset: "smooth"</code>. You
+            don&apos;t need to pass anything to get animated theme changes. Pass{" "}
+            <code className="mono text-[0.9em]">{`transition={{ enabled: false }}`}</code>{" "}
+            (or <code className="mono text-[0.9em]">transition={false}</code>) to
+            turn them off.
+          </p>
+        </Callout>
         {snippetBlock(enableExample)}
         <div className="mt-4 rounded-lg border border-border bg-muted/30 p-4">
           <h3 className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-3">
@@ -649,11 +662,93 @@ export function AnimationGuide() {
             ))}
           </div>
         </div>
+
+        <div className="mt-4">
+          <h3 className="text-xs font-semibold uppercase tracking-widest opacity-50 mb-3">
+            Paint the page with the theme so transitions are visible
+          </h3>
+          <CodeBlock
+            html={highlightCode(
+              `html,\nbody {\n  margin: 0;\n  min-height: 100vh;\n  background: var(--theme-color-background);\n  color: var(--theme-color-foreground);\n}`,
+              "css",
+            )}
+            code={`html,
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--theme-color-background);
+  color: var(--theme-color-foreground);
+}`}
+            language="css"
+            filename="global.css"
+            className="rounded-lg"
+          />
+          <p className="text-sm opacity-70 mt-2 leading-relaxed">
+            The runtime animates the <code className="mono text-xs">--theme-color-*</code>{" "}
+            custom properties on <code className="mono text-xs">&lt;html&gt;</code>.
+            Any element that reads them (including the page background above)
+            cross-fades automatically on every theme change.
+          </p>
+        </div>
+      </section>
+
+      <section id="properties" className="scroll-mt-24 mb-10">
+        <SectionHeading
+          num={2}
+          desc="Control exactly which properties animate with preset or properties."
+        >
+          What animates — presets & properties
+        </SectionHeading>
+        <p className="text-sm opacity-70 leading-relaxed mb-3">
+          Transitions run on the properties that actually changed between themes.
+          <code className="mono text-xs">preset</code> selects a curated list, or
+          pass an exact <code className="mono text-xs">properties</code> array to
+          allow only those CSS properties to animate:
+        </p>
+        <CodeBlock
+          html={highlightCode(
+            `transition={{ enabled: true, properties: ["color", "background-color"] }}`,
+            "tsx",
+          )}
+          code={`transition={{ enabled: true, properties: ["color", "background-color"] }}`}
+          language="tsx"
+          filename="React / Next / Svelte / Solid — ThemeProvider"
+          className="rounded-lg"
+        />
+        <div className="mt-4 overflow-hidden rounded-xl border border-border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider">Preset</th>
+                <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider">Properties allowed to animate</th>
+                <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider">When to use</th>
+              </tr>
+            </thead>
+            <tbody>
+              {presetTable.map((p) => (
+                <tr key={p.name} className="border-b border-border last:border-0 align-top">
+                  <td className="px-4 py-3"><code className="mono text-[0.85em] font-semibold">{p.name}</code></td>
+                  <td className="px-4 py-3 mono text-xs opacity-70">{p.props}</td>
+                  <td className="px-4 py-3 text-sm opacity-70 leading-relaxed">{p.when}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Callout className="mt-3">
+          <strong>properties</strong> is a <em>filter</em> on the changed set, not
+          a full list of everything to animate. Passing{" "}
+          <code className="mono text-[0.9em]">properties: ["color", "background-color"]</code>{" "}
+          animates those properties when they change and leaves everything else to
+          snap. Omit both <code className="mono text-[0.9em]">preset</code> and{" "}
+          <code className="mono text-[0.9em]">properties</code> for the default{" "}
+          <code className="mono text-[0.9em]">"smooth"</code> set.
+        </Callout>
       </section>
 
       <section id="frameworks" className="scroll-mt-24 mb-10">
         <SectionHeading
-          num={2}
+          num={3}
           desc="Step-by-step examples for every supported framework."
         >
           Enable transitions in your framework
@@ -700,7 +795,7 @@ export function AnimationGuide() {
 
       <section id="view-transitions" className="scroll-mt-24 mb-10">
         <SectionHeading
-          num={3}
+          num={4}
           desc="The cleanest cross-fade — no white intermediates, ever."
         >
           View Transitions API
@@ -719,7 +814,7 @@ export function AnimationGuide() {
 
       <section id="things-to-avoid" className="scroll-mt-24 mb-10">
         <SectionHeading
-          num={4}
+          num={5}
           desc="Theme colors animate through the provider — adding your own color transition on top re-eases the same value and lags. Everything else (hover, transform, opacity, shadow) is yours to animate freely."
         >
           Things to avoid
@@ -806,7 +901,7 @@ export function AnimationGuide() {
 
       <section id="api-reference" className="scroll-mt-24">
         <SectionHeading
-          num={5}
+          num={6}
           desc="Exports from the transition and animation modules."
         >
           API Reference

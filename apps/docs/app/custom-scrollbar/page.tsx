@@ -341,6 +341,26 @@ export default function CustomScrollbarPage() {
             <code className="mono text-[0.9em]">tk-scrollbar</code> class during
             SSR (no blocking script, no hydration mismatch).
           </Callout>
+          <Callout className="mt-3">
+            <strong>No pre-paint script needed</strong>
+            <span className="mx-1 opacity-40">|</span>
+            Mounting <code className="mono text-[0.9em]">ThemeScrollbar</code>{" "}
+            (or calling <code className="mono text-[0.9em]">createOverlayScrollbar</code>)
+            automatically applies the <code className="mono text-[0.9em]">tk-scrollbar</code>{" "}
+            class + hiding CSS if none is present. The engine is self-sufficient;
+            you only need the pre-paint script when you want to prevent the
+            initial flash on a server-rendered page.
+          </Callout>
+          <Callout className="mt-3">
+            <strong>Built-in arrow icons</strong>
+            <span className="mx-1 opacity-40">|</span>
+            When no custom arrow icons are passed, the engine renders CSS
+            triangle glyphs via <code className="mono text-[0.9em]">::before</code>{" "}
+            pseudo-elements. Pass <code className="mono text-[0.9em]">icons</code>{" "}
+            (or flat <code className="mono text-[0.9em]">arrowUpIcon</code> /{" "}
+            <code className="mono text-[0.9em]">arrowDownIcon</code>) to replace
+            them with your own SVG / HTML.
+          </Callout>
         </section>
 
         <section id="options" className="scroll-mt-24 mb-10">
