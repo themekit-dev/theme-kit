@@ -454,7 +454,12 @@ const ThemeProvider = defineComponent({
     persistence: { type: Object, required: false },
     broadcast: { type: Object, required: false },
     view: { type: Object, required: false },
-    readPersistenceOnInit: { type: Boolean, required: false },
+    // `default: undefined` (not Vue's implicit `false` for Boolean props) is
+    // deliberate: an absent prop must stay `undefined` so `createThemeRuntime`
+    // falls back to its own `readPersistenceOnInit ?? true` default and reads
+    // the persisted selection on init. Without this, Vue coerces the absent
+    // Boolean prop to `false`, silently disabling on-init persistence restore.
+    readPersistenceOnInit: { type: Boolean, required: false, default: undefined },
     dom: { type: [Boolean, Object], required: false, default: undefined },
     cssVariables: { type: [Boolean, Object], required: false, default: undefined },
     transition: { type: [Boolean, Object], required: false, default: undefined },

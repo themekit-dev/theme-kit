@@ -207,18 +207,25 @@ export function createCSSVariablesBinding(
     appliedVariables = new Map(Object.entries(variables));
   }
 
-  applyTheme(store.get());
-
-  // Register @property for all color variables ONCE at initialization
+  // Register @property for all color variables ONCE at initialization.
+  // This must happen before the first apply so the `@property` syntax is in
+  // place, even though the first apply is suppressed (no animation on mount).
   if (element) {
     const initialVariables = themeToCSSVariables(store.get(), { prefix });
     registerThemeProperties(element, initialVariables, prefix);
   }
 
-  // Apply the current theme immediately — otherwise `--theme-*` variables are
-  // unset until the first store *change*, so the initial background/content
-  // uses the default instead of the defined theme (and html/body background
-  // rules flicker on first paint).
+  // Apply the current theme immediately — no animation on first paint. Without
+  // this the `--theme-*` variables are unset when the browser renders the
+  // initial HTML, so the background/color rules fall back to the default
+  // (white canvas / black text) — the classic "flash of unthemed content".
+  //
+  // The suppressTransition flag is essential: with `useViewTransition: true`
+  // (the default), an unsuppressed apply would call `startViewTransition`,
+  // capturing a snapshot of the page before React components are painted
+  // (useLayoutEffect runs before paint). The crossfade would then fade the
+  // React UI in, causing a visible flash on components like the theme
+  // switcher button and scoped regions.
   applyTheme(store.get(), { suppressTransition: true });
 
   const unsubscribe = store.subscribe(applyTheme);

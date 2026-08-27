@@ -41,6 +41,7 @@ export interface ThemeScopeProps {
    *  an object is merged over the provider's config (local keys win). */
   transition?: boolean | ThemeTransitionOptions;
   className?: string;
+  style?: CSSProperties;
   children: ReactNode;
   /** Any additional attributes (e.g. `data-testid`) forwarded to the wrapper. */
   [key: string]: unknown;
@@ -62,6 +63,7 @@ export function ThemeScope({
   themes,
   transition,
   className,
+  style: styleProp,
   children,
   ...rest
 }: ThemeScopeProps) {
@@ -144,12 +146,10 @@ export function ThemeScope({
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    // React StrictMode (dev) unmounts/remounts effects. The provider's cleanup
-    // destroys the runtime (its registry is cleared), so on the simulated
-    // remount this layout effect runs against a destroyed runtime with no
-    // themes — before the provider's re-render effect recreates it. Skip
-    // binding in that window; the forced re-render swaps in a fresh runtime and
-    // re-runs this effect with the real theme list.
+    // Safety net: skip binding when the runtime's registry is empty (e.g. a
+    // provider runtime that has been destroyed, or a pack that cleared the
+    // registry). The provider keeps its runtime alive across React StrictMode
+    // remounts, so this normally only matters for genuinely empty runtimes.
     if (runtime.themes.length === 0) return;
     const binding = createScopedThemeBinding(
       runtime.themes,
@@ -210,10 +210,21 @@ export function ThemeScope({
     .filter(Boolean)
     .join(" ");
 
+  // The prepaint variables define the scoped theme (e.g. `--theme-color-card`)
+  // and the Tailwind-style aliases (`--color-*` / `--radius-*`). They must
+  // survive on the element alongside any user-supplied `style` — Vue merges
+  // these automatically via attribute fallthrough, so React must merge them
+  // explicitly. Otherwise a `style` prop would *replace* the scoped theme and
+  // the region would render with the page theme until the live binding takes
+  // over (a visible flash on the scoped content).
+  const combinedStyle: CSSProperties | undefined = initial.current.systemBased
+    ? styleProp
+    : { ...initial.current.style, ...styleProp };
+
   return (
     <div
       ref={ref}
-      style={initial.current.systemBased ? undefined : initial.current.style}
+      style={combinedStyle}
       className={combinedClassName || undefined}
       data-theme={initial.current.name}
       data-mode={initial.current.isDark ? "dark" : "light"}

@@ -15,6 +15,9 @@ export function createAnimationsPlugin<T extends ThemeDefinition>(
     duration: 300,
     easing: "ease-in-out",
     property: "all",
+    // Explicitly opt out of View Transitions — this plugin provides CSS
+    // transition properties, not page-level crossfades.
+    useViewTransition: false,
   };
   const element = options?.element ?? (typeof document !== "undefined" ? document.documentElement : null);
 

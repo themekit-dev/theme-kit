@@ -54,7 +54,7 @@ Every property in `ThemeTransitionOptions` is fully typed and configurable.
 | `duration` | `number` | `300` | Duration in milliseconds |
 | `easing` | `string` | `"cubic-bezier(0.4, 0, 0.2, 1)"` | CSS easing function |
 | `preset` | `"smooth" \| "subtle" \| "instant" \| string[]` | `"smooth"` | Property filter — see below |
-| `useViewTransition` | `boolean` | `false` | Use the View Transitions API |
+| `useViewTransition` | `boolean` | `true` | Use the View Transitions API (falls back to CSS-property interpolation when unsupported or on reduced-motion) |
 | `properties` | `string[]` | [see below](#default-properties) | CSS properties to animate |
 
 ## Choosing what animates — `preset` vs `properties`
@@ -186,14 +186,20 @@ runtime.store.set(theme, { suppressTransition: true });
 
 ## View Transitions API
 
-For page-level transitions, set `useViewTransition: true`:
+`useViewTransition` is enabled by default. When the browser supports
+`document.startViewTransition()`, a theme change captures a snapshot of the old
+page and cross-fades to the new one — a light↔dark switch never washes through
+bright intermediate colors. It falls back to CSS-property interpolation when the
+API is unavailable or the user prefers reduced motion.
+
+To opt out (back to the CSS-property interpolation) or tune the crossfade:
 
 ```ts
 const runtime = createThemeRuntime({
   themes,
   transition: {
     enabled: true,
-    useViewTransition: true,
+    useViewTransition: false,
     duration: 400,
     easing: "ease",
   },

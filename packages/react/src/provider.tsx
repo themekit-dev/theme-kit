@@ -7,7 +7,6 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
   type ReactNode,
 } from "react";
 
@@ -58,9 +57,12 @@ export function ThemeProvider<T extends ThemeDefinition>({
 
   const runtimeRef = useRef<ThemeRuntime<T> | null>(null);
   const prevInitialRef = useRef<object | null>(null);
-  // StrictMode remount signal: the destroy effect sets the ref to null, and
-  // this state bump forces the render body to recreate the runtime.
-  const [, setRuntimeTick] = useState(0);
+  // Holds the pending runtime-destroy timer left by a cleanup. React
+  // StrictMode (dev) runs effect cleanups and re-runs setup synchronously, so
+  // a deferred destroy lets the re-run cancel it — the runtime survives
+  // StrictMode instead of being torn down and recreated (which flashed the
+  // whole app as it re-rendered on a fresh runtime).
+  const destroyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { dom: domOptions, cssVariables: cssOptions, transition: transitionOptions, ...coreOptions } = runtimeOptions;
 
@@ -198,24 +200,27 @@ export function ThemeProvider<T extends ThemeDefinition>({
   }, [resolvedRuntime, domOptions, cssOptions]);
 
   useEffect(() => {
+    // Cancel a deferred destroy left by a StrictMode simulated unmount. The
+    // cleanup below schedules a deferred destroy; if this setup runs (the
+    // effect re-initialises) before the timer fires, the destroy is cancelled
+    // and the runtime survives StrictMode. On a real unmount there is no
+    // re-run, so the deferred destroy executes.
+    if (destroyTimerRef.current) {
+      clearTimeout(destroyTimerRef.current);
+      destroyTimerRef.current = null;
+    }
+
     return () => {
-      if (ownsRuntime && resolvedRuntime) {
+      if (!ownsRuntime || !resolvedRuntime) {
+        return;
+      }
+      destroyTimerRef.current = setTimeout(() => {
+        destroyTimerRef.current = null;
         resolvedRuntime.destroy();
         runtimeRef.current = null;
-      }
+      }, 0);
     };
   }, [ownsRuntime, resolvedRuntime]);
-
-  // React StrictMode (dev) mounts → unmounts → remounts effects. The cleanup
-  // above destroys the runtime and nulls the ref, but the remount does not
-  // re-render the component, so the render body would keep using the destroyed
-  // runtime and every selection change would silently no-op. Force a re-render
-  // so the render body recreates a fresh runtime for the remounted effects.
-  useEffect(() => {
-    if (ownsRuntime && runtimeRef.current === null) {
-      setRuntimeTick((t) => t + 1);
-    }
-  }, [ownsRuntime, setRuntimeTick]);
 
   const value = useMemo(
     () => ({

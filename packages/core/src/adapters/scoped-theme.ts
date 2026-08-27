@@ -282,6 +282,12 @@ export function createScopedThemeBinding<T extends ThemeDefinition>(
   let appliedVariables = new Map<string, string>();
   let currentTheme: T;
 
+  // Capture the element's inline style before we write theme variables so
+  // destroy() can restore it. Without this, React StrictMode's simulated unmount
+  // strips the scope off its prepaint theme variables, flashing the content to
+  // the page theme until the binding is recreated.
+  const previousStyle = target.getAttribute("style");
+
   function updateStateAttributes(theme: T) {
     const isDark = getThemeMode(theme) === "dark";
     target.classList.toggle("dark", isDark);
@@ -389,8 +395,14 @@ export function createScopedThemeBinding<T extends ThemeDefinition>(
     },
     destroy() {
       cancelThemeAnimation(target);
-      for (const variable of appliedVariables.keys()) {
-        target.style.removeProperty(variable);
+      // Restore the element's pre-binding inline style (the framework's
+      // prepaint theme variables + user styles) instead of stripping every
+      // variable we wrote. Prevents a flash-to-page-theme when a StrictMode
+      // cleanup runs before the framework re-applies its prepaint on remount.
+      if (previousStyle != null) {
+        target.setAttribute("style", previousStyle);
+      } else {
+        target.removeAttribute("style");
       }
       appliedVariables.clear();
       target.removeAttribute("data-theme");
