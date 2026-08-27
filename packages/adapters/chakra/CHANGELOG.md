@@ -1,5 +1,14 @@
 # @theme-kit/chakra
 
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @theme-kit/core@1.2.2
+  - @theme-kit/react@1.2.2
+  - @theme-kit/adapters@1.2.2
+
 ## 1.0.0
 
 ### Major Changes

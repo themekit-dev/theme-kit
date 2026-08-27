@@ -1,5 +1,18 @@
 # @theme-kit/vue
 
+## 1.2.2
+
+### Patch Changes
+
+- Fix scrollbar overlay clipping to host rounded corners; update framework packages (react/solid/svelte/vue) and core internals.
+- Updated dependencies
+  - @theme-kit/core@1.2.2
+  - @theme-kit/bootstrap@1.2.2
+  - @theme-kit/daisyui@1.2.2
+  - @theme-kit/open-props@1.2.2
+  - @theme-kit/shadcn@1.2.2
+  - @theme-kit/web@1.2.2
+
 ## 1.0.0
 
 ### Major Changes

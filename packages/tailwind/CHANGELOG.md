@@ -1,5 +1,12 @@
 # @theme-kit/tailwind
 
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @theme-kit/core@1.2.2
+
 ## 1.0.0
 
 ### Major Changes
