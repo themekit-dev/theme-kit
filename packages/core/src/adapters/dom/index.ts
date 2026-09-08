@@ -50,7 +50,11 @@ export function createDOMBinding(
   };
 
   if (subscribe) {
-    applyTheme(store.get());
+    // Initial synchronization must never animate. The theme bootstrap (when
+    // present) has already established the first-paint state, and a binding
+    // created after mount must not reinterpret that synchronization as a
+    // theme change.
+    applyTheme(store.get(), { suppressTransition: true });
     const unsubscribe = store.subscribe(applyTheme);
     return {
       apply: applyTheme,

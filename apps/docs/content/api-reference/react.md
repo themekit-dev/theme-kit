@@ -4,6 +4,68 @@
 
 ## Functions
 
+### `createThemeRoot<T extends ThemeDefinition<string>>(options): ThemeRootHandle<T>`
+Create a Theme Kit-owned React root for client-rendered (CSR) applications.
+
+Theme Kit owns the root boundary: the runtime is created once, and the
+initial commit is flushed synchronously so the browser's very first frame is
+already the themed UI. Without it, React's concurrent root can schedule the
+initial commit after the browser paints an empty/partial frame — visible as
+a flicker on reload in some applications.
+
+This is an **optional, opt-in** helper. Most applications can use the plain
+React API and it will be smooth:
+
+```tsx
+const root = createRoot(container);
+root.render(
+  <ThemeProvider themes={themes} defaultTheme="mint-light" initialMode="system">
+    <App />
+  </ThemeProvider>,
+);
+```
+
+Reach for `createThemeRoot` when you want Theme Kit to own the root
+initialization boundary — for example a reload-sensitive demo, or an app
+whose providers need the Theme Kit runtime at composition time:
+
+```tsx
+import { createThemeRoot } from "@theme-kit/react";
+
+const handle = createThemeRoot({
+  container: document.getElementById("root")!,
+  themes,
+  defaultTheme: "mint-light",
+  initialMode: "system",
+  transition: { enabled: true },
+  render: ({ runtime }) => (
+    <MuiThemeProvider theme={createMuiTheme(runtime)}>
+      <App />
+    </MuiThemeProvider>
+  ),
+});
+
+handle.unmount();
+```
+
+Only the FIRST commit is flushed synchronously; subsequent renders keep
+React's normal concurrent scheduling. `ThemeProvider` itself never calls
+`flushSync` — the helper owns the root, which is the one place React
+documents `flushSync` as appropriate.
+
+Do **not** use this helper for SSR/SSG applications — server-rendered HTML
+must be hydrated with `hydrateRoot()` (or a framework integration such as
+`@theme-kit/next`), not replaced by a fresh `createRoot`.
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `options` | `CreateThemeRootOptions<T>` | — |
+
+**Returns** `ThemeRootHandle<T>`
+
+---
+
+
 ### `ThemeInspector(__namedParameters): Element`
 **Returns** `Element`
 
@@ -69,67 +131,106 @@ and `icons` — but every option is also accepted as a flat, top-level prop
 ---
 
 
-### `useSetThemeFamily(): __type(nextFamily: string): void`
-**Returns** `__type(nextFamily: string): void`
+### `useSetThemeFamily<T extends ThemeDefinition<string>>(): __type(family: ThemeFamilies<readonly T[]>): void`
+Get a stable `setFamily` function (does not re-render on change).
+
+**Returns** `__type(family: ThemeFamilies<readonly T[]>): void`
 
 ---
 
 
-### `useSetThemeMode(): __type(nextMode: ThemeMode): void`
-**Returns** `__type(nextMode: ThemeMode): void`
+### `useSetThemeMode<T extends ThemeDefinition<string>>(): __type(mode: ModesOf<T>): void`
+Get a stable `setMode` function (does not re-render on change).
+
+**Returns** `__type(mode: ModesOf<T>): void`
 
 ---
 
 
-### `useTheme<T extends ThemeDefinition<string>>(): { family: string; mode: ThemeMode; setFamily: __type(nextFamily: string): void; setMode: __type(nextMode: ThemeMode): void; theme: T; toggleTheme: __type(): void }`
-**Returns** `{ family: string; mode: ThemeMode; setFamily: __type(nextFamily: string): void; setMode: __type(nextMode: ThemeMode): void; theme: T; toggleTheme: __type(): void }`
+### `useTheme<T extends ThemeDefinition<string>>(): { family: string; mode: ThemeMode; setFamily: __type(family: ThemeFamilies): void; setMode: __type(mode: ModesOf): void; theme: T; toggleTheme: __type(): void }`
+The primary Theme Kit hook. Returns the current theme, mode, family and
+   the selection controls.
+
+   When you pass the theme tuple element type, `setFamily` and `setMode`
+   are constrained to the families/modes defined in your themes:
+
+   ```ts
+   const { theme, mode, family, setMode, setFamily, toggleTheme } = useTheme<typeof themes[number]>();
+   setFamily("mint");   // autocomplete suggests your families
+   setMode("dark");
+   ```
+
+**Returns** `{ family: string; mode: ThemeMode; setFamily: __type(family: ThemeFamilies): void; setMode: __type(mode: ModesOf): void; theme: T; toggleTheme: __type(): void }`
 
 ---
 
 
 ### `useThemeBatch(): __type(callback: __type(): void): void`
+Get a batch function that defers all selection changes and DOM writes
+   to a single flush.
+
 **Returns** `__type(callback: __type(): void): void`
 
 ---
 
 
 ### `useThemeFamily(): string`
+Subscribe to the current selection family.
+
 **Returns** `string`
 
 ---
 
 
 ### `useThemeHistory(): { canRedo: boolean; canUndo: boolean; clear: __type(): void; redo: __type(): void; undo: __type(): void }`
+Subscribe to the runtime history (undo/redo/canUndo/canRedo/clear).
+
 **Returns** `{ canRedo: boolean; canUndo: boolean; clear: __type(): void; redo: __type(): void; undo: __type(): void }`
 
 ---
 
 
 ### `useThemeLifecycle(): { on: __type(event: keyof ThemeLifecycleEventMap<ThemeDefinition<string>>, listener: __type(data: unknown): void): __type(): void }`
+Subscribe to runtime lifecycle events (theme changed, mode changed, …).
+
 **Returns** `{ on: __type(event: keyof ThemeLifecycleEventMap<ThemeDefinition<string>>, listener: __type(data: unknown): void): __type(): void }`
 
 ---
 
 
 ### `useThemeMode(): ThemeMode`
+Subscribe to the current selection mode ("light" | "dark" | "system").
+
 **Returns** `ThemeMode`
 
 ---
 
 
 ### `useThemePacks(): __type(pack: ThemePack<any>): void`
+Get a function that applies a theme pack to the runtime.
+
 **Returns** `__type(pack: ThemePack<any>): void`
 
 ---
 
 
 ### `useThemeRestore(): __type(snapshot: ThemeRuntimeSnapshot): void`
+Get a restore function that re-applies a previously captured snapshot.
+
 **Returns** `__type(snapshot: ThemeRuntimeSnapshot): void`
 
 ---
 
 
 ### `useThemeRuntime<T extends ThemeDefinition<string>>(): ThemeRuntime<T>`
+Get the active Theme Kit runtime from context. Throws when used outside a
+`ThemeProvider`. Pass the theme tuple element type to type the runtime's
+store/selection against your themes:
+
+```ts
+const runtime = useThemeRuntime<typeof themes[number]>();
+```
+
 **Returns** `ThemeRuntime<T>`
 
 ---
@@ -156,35 +257,107 @@ schedule?.disable();
 
 
 ### `useThemeSnapshot(): __type(): ThemeRuntimeSnapshot`
+Get a snapshot function that captures the full runtime state.
+
 **Returns** `__type(): ThemeRuntimeSnapshot`
 
 ---
 
 
 ### `useThemeTimeTravel(): { history: HistoryEntry<ThemeDefinition<string>>[]; jump: __type(index: number): void }`
+Subscribe to the history timeline and get a `jump(index)` function.
+
 **Returns** `{ history: HistoryEntry<ThemeDefinition<string>>[]; jump: __type(index: number): void }`
 
 ---
 
 
 ### `useThemeTokens<T extends ThemeDefinition<string>>(): ThemeTokens | undefined`
+Subscribe to the current theme's token groups.
+
 **Returns** `ThemeTokens | undefined`
 
 ---
 
 
 ### `useThemeValue<T extends ThemeDefinition<string>>(): T`
+Subscribe to the current theme definition (re-renders on change).
+
 **Returns** `T`
 
 ---
 
 
 ### `useToggleTheme(): __type(): void`
+Get a stable `toggleTheme` function (flips light ⇄ dark).
+
 **Returns** `__type(): void`
 
 ---
 
 ## Interfaces
+
+### `CreateThemeRootOptions<T extends ThemeDefinition>`
+
+**Extends** `Omit<ThemeProviderProps<T>, "children" | "runtime">`
+Options for `createThemeRoot`.
+
+Everything `ThemeProvider` accepts (except `children` and `runtime`, which
+this helper manages), plus:
+
+- `container` — the DOM node the root mounts into.
+- `render` — the application's full composition. Receives the Theme Kit
+  runtime so dependent library configuration can be derived from it:
+
+  ```tsx
+  createThemeRoot({
+    container,
+    themes,
+    defaultTheme: "mint-light",
+    initialMode: "system",
+    render: ({ runtime }) => (
+      <MuiThemeProvider theme={createMuiTheme(runtime)}>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </MuiThemeProvider>
+    ),
+  });
+  ```
+
+  Composition belongs in JSX, so arbitrary provider trees (MUI, Chakra,
+  React Query, Redux, Router, …) are fully under the application's control.
+  `render` is the primary (and only) composition mechanism — there is no
+  separate `children` option.
+
+| Member | Type | Description |
+| ------ | ---- | ----------- |
+| `adapters` (optional) | `ThemeAdapter<T>[]` | Library adapters installed when the runtime is created. The runtime owns
+ the registry and notifies every adapter whenever the theme changes; it
+ never knows anything about the libraries themselves. |
+| `broadcast` (optional) | `ThemeSelectionBroadcastAdapter | null` | — |
+| `container` | `Element | DocumentFragment` | The DOM node this root mounts into. |
+| `cssVariables` (optional) | `false | CSSVariablesOptions` | — |
+| `defaultTheme` (optional) | `T["name"]` | — |
+| `dom` (optional) | `false | DOMBindingOptions` | — |
+| `initial` (optional) | `InitialThemeResolution<T>` | — |
+| `initialFamily` (optional) | `ThemeFamilies<readonly T[]>` | The family resolved on first load. When themes are defined with `as const`,
+this is constrained to the families defined in `themes` (autocomplete). |
+| `initialMode` (optional) | `"system" | ThemeModes<readonly T[]>` | The mode resolved on first load: `"light" | "dark" | "system"`.
+When themes are defined with `as const`, this is constrained to the
+modes defined in `themes` plus `"system"` (autocomplete). |
+| `persistence` (optional) | `ThemeSelectionPersistenceAdapter | null` | — |
+| `plugins` (optional) | `ThemePlugin<T>[]` | — |
+| `readPersistenceOnInit` (optional) | `boolean` | — |
+| `render` | `__type(context: { runtime: ThemeRuntime<T> }): ReactNode` | Render the application tree. Called with the Theme Kit runtime so other
+library providers can derive their configuration from it. |
+| `scheduled` (optional) | `false | ScheduledThemeOptions<T>` | — |
+| `themes` (optional) | `readonly T[]` | — |
+| `transition` (optional) | `boolean | ThemeTransitionOptions` | — |
+| `view` (optional) | `Window` | — |
+
+---
+
 
 ### `ThemeInspectorProps`
 | Member | Type | Description |
@@ -199,7 +372,7 @@ schedule?.disable();
 
 ### `ThemeProviderProps<T extends ThemeDefinition>`
 
-**Extends** `ThemeRuntimeOptions<T>`
+**Extends** `Omit<ThemeRuntimeOptions<T>, "initialFamily" | "initialMode">`
 | Member | Type | Description |
 | ------ | ---- | ----------- |
 | `adapters` (optional) | `ThemeAdapter<T>[]` | Library adapters installed when the runtime is created. The runtime owns
@@ -211,8 +384,11 @@ schedule?.disable();
 | `defaultTheme` (optional) | `T["name"]` | — |
 | `dom` (optional) | `false | DOMBindingOptions` | — |
 | `initial` (optional) | `InitialThemeResolution<T>` | — |
-| `initialFamily` (optional) | `string` | — |
-| `initialMode` (optional) | `ThemeMode` | — |
+| `initialFamily` (optional) | `ThemeFamilies<readonly T[]>` | The family resolved on first load. When themes are defined with `as const`,
+this is constrained to the families defined in `themes` (autocomplete). |
+| `initialMode` (optional) | `"system" | ThemeModes<readonly T[]>` | The mode resolved on first load: `"light" | "dark" | "system"`.
+When themes are defined with `as const`, this is constrained to the
+modes defined in `themes` plus `"system"` (autocomplete). |
 | `persistence` (optional) | `ThemeSelectionPersistenceAdapter | null` | — |
 | `plugins` (optional) | `ThemePlugin<T>[]` | — |
 | `readPersistenceOnInit` (optional) | `boolean` | — |
@@ -221,6 +397,18 @@ schedule?.disable();
 | `themes` (optional) | `readonly T[]` | — |
 | `transition` (optional) | `boolean | ThemeTransitionOptions` | — |
 | `view` (optional) | `Window` | — |
+
+---
+
+
+### `ThemeRootHandle<T extends ThemeDefinition>`
+The handle returned by `createThemeRoot`.
+
+| Member | Type | Description |
+| ------ | ---- | ----------- |
+| `root` | `Root` | The underlying React root (for manual re-renders if needed). |
+| `runtime` | `ThemeRuntime<T>` | The Theme Kit runtime created for this root. |
+| `unmount` | `void` | — |
 
 ---
 
@@ -234,6 +422,7 @@ schedule?.disable();
  follows the provider's current mode (light/dark/system). |
 | `mode` (optional) | `ThemeMode` | Mode for a family-based scope. Optional — defaults to the provider's
  current mode so `family="plum"` flips light/dark with the page. |
+| `style` (optional) | `CSSProperties` | — |
 | `theme` (optional) | `string` | Exact theme name, family name, or a `{ family, mode }`-style object.
  When `family`/`mode` are also passed, `theme` wins (it's the explicit
  selection). Omit to follow the global selection inside a new boundary. |

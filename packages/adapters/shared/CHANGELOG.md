@@ -1,5 +1,12 @@
 # @theme-kit/adapters
 
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @theme-kit/core@1.3.0
+
 ## 1.2.2
 
 ### Patch Changes

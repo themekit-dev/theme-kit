@@ -2,8 +2,8 @@
 
 import React, {
   useEffect,
-  useId,
   useLayoutEffect,
+  useId,
   useMemo,
   useRef,
   type CSSProperties,
@@ -178,13 +178,13 @@ export function ThemeScope({
   }, [baseSelection, runtime]);
 
   // Local theme definitions swapped at runtime (late-loaded packs).
-  useEffect(() => {
+  useLayoutEffect(() => {
     bindingRef.current?.setLocalThemes(localThemesRef.current);
   }, [localThemes]);
 
   // Transition config changed (duration/easing/preset on the prop) — swap it on
   // the existing binding so an in-flight scope animation isn't torn down.
-  useEffect(() => {
+  useLayoutEffect(() => {
     bindingRef.current?.setTransition(transitionRef.current);
   }, [scopeTransition]);
 

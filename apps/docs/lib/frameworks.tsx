@@ -43,6 +43,7 @@ export type FrameworkItem = {
   quickStart: FrameworkSnippet;
   snippet: FrameworkSnippet;
   snippet2: FrameworkSnippet;
+  snippet3?: FrameworkSnippet;
   noTheme: FrameworkSnippet;
   featureCount: number;
 };
@@ -56,7 +57,7 @@ export const rawFrameworks: RawFramework[] = [
     icon: icons.react,
     pkg: "@theme-kit/react",
     tagline:
-      "Provider + hooks for React 18/19. The reference integration, and the base that Next.js and Remix re-export.",
+      "Provider-first theming for React with hooks, scoped themes, adapters, runtime transitions, and an optional optimized client bootstrap.",
     mark: "R",
     tags: ["SPA", "Vite", "Context"],
     groups: [
@@ -74,6 +75,19 @@ export const rawFrameworks: RawFramework[] = [
           {
             name: "scheduled prop",
             desc: "Pass `scheduled={{ lightTheme, darkTheme }}` to ThemeProvider to switch the app between light and dark at each visitor's local sunrise/sunset. Latitude/longitude are optional — the location is auto-detected from the browser timezone (or pin it with `timeZone`).",
+          },
+        ],
+      },
+      {
+        label: "Root bootstrap",
+        features: [
+          {
+            name: "createThemeRoot()",
+            desc: "Optional client-only root bootstrap that lets Theme Kit control the initial React root commit when synchronous first-commit behavior is required.",
+          },
+          {
+            name: "Standard createRoot()",
+            desc: "Use the normal React root API when no special first-commit optimization is needed.",
           },
         ],
       },
@@ -195,35 +209,32 @@ export const rawFrameworks: RawFramework[] = [
       },
     ],
     quickStart: {
-      title: "main.tsx",
-      lang: "tsx",
-      code: `// main.tsx
-import { createRoot } from "react-dom/client";
-import { ThemeProvider } from "@theme-kit/react";
-import App from "./App";
-import { themes } from "./themes";
-
-createRoot(document.getElementById("root")!).render(
-  <ThemeProvider themes={themes} defaultTheme="mint-light">
-    <App />
-  </ThemeProvider>,
-);`,
-    },
-    snippet: {
       title: "app.tsx",
       lang: "tsx",
-      code: `import { ThemeProvider, useTheme } from "@theme-kit/react";
+      code: `// app.tsx
+import { ThemeProvider } from "@theme-kit/react";
+import { themes } from "./themes";
 
 export function App() {
   return (
-    <ThemeProvider themes={themes} transition={{ enabled: true }}>
-      <ThemeSwitcher />
+    <ThemeProvider
+      themes={themes}
+      defaultTheme="mint-light"
+      transition={{ enabled: true }}
+    >
+      <AppContent />
     </ThemeProvider>
   );
-}
+}`,
+    },
+    snippet: {
+      title: "theme-switcher.tsx",
+      lang: "tsx",
+      code: `// theme-switcher.tsx
+import { useTheme } from "@theme-kit/react";
 
-function ThemeSwitcher() {
-  const { theme, family, setFamily, toggleTheme } = useTheme();
+export function ThemeSwitcher() {
+  const { theme, mode, family, setMode, setFamily, toggleTheme } = useTheme();
   return (
     <button onClick={toggleTheme}>
       {theme.name} · {family}
@@ -248,6 +259,24 @@ export function App() {
     </ThemeProvider>
   );
 }`,
+    },
+    snippet3: {
+      title: "main.tsx — optimized CSR bootstrap",
+      lang: "tsx",
+      code: `// main.tsx — optimized CSR bootstrap
+import { createThemeRoot } from "@theme-kit/react";
+import "@theme-kit/core/scrollbar.css";
+import App from "./App";
+import { themes } from "./themes";
+
+createThemeRoot({
+  container: document.getElementById("root")!,
+  themes,
+  defaultTheme: "mint-light",
+  initialMode: "system",
+  transition: { enabled: true },
+  render: ({ runtime }) => <App />,
+});`,
     },
     noTheme: {
       title: "main.tsx",

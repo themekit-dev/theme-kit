@@ -13,6 +13,10 @@ import {
 import { frameworks } from "../../../lib/frameworks";
 import { frameworkUseCases } from "../../../lib/use-cases";
 import { highlightCode } from "../../../lib/highlight";
+import {
+  WhichReactSetupPanel,
+  OptimizedCsrBootstrap,
+} from "../../../components/framework-guides/react-bootstrap";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -93,6 +97,8 @@ export default async function FrameworkGuidePage({ params }: PageProps) {
             description={framework.tagline}
             badges={framework.tags.map((tag) => ({ label: tag }))}
           />
+
+          {framework.slug === "react" ? <WhichReactSetupPanel /> : null}
 
           <section id="install" className="scroll-mt-24">
             <h2 className="text-lg font-semibold tracking-tight">
@@ -204,6 +210,8 @@ export default async function FrameworkGuidePage({ params }: PageProps) {
               className="rounded-lg m-0"
             />
           </section>
+
+          {framework.slug === "react" ? OptimizedCsrBootstrap(framework) : null}
 
           <section id="api" className="mt-10 scroll-mt-24">
             <h2 className="text-lg font-semibold tracking-tight">

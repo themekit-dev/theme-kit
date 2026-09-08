@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useEffect, useInsertionEffect, useRef } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import {
+  createPrePaintScrollbarScript,
   createOverlayScrollbar,
   type OverlayScrollbarHandle,
   type OverlayScrollbarOptions,
@@ -146,6 +147,19 @@ export function ThemeScrollbar(props: ThemeScrollbarProps) {
   const runtime = useThemeRuntime();
   const handleRef = useRef<OverlayScrollbarHandle | null>(null);
 
+  // Phase 1 — hide the native scrollbar before the first paint. The blocking
+  // script adds `tk-scrollbar` to <html> plus a <style> hiding native bars, so
+  // the custom overlay is the only scrollbar from the very first frame
+  // (matching the Next.js/Nuxt SSR experience). Idempotent: when the Vite
+  // plugin or an SSR adapter already emitted it, this no-ops.
+  useInsertionEffect(() => {
+    if (typeof document === "undefined" || !document.head) return;
+    if (document.getElementById("tk-scrollbar-style")) return;
+    const script = document.createElement("script");
+    script.text = createPrePaintScrollbarScript();
+    document.head.appendChild(script);
+  }, []);
+
   const {
     behavior = {},
     appearance = {},
@@ -185,7 +199,7 @@ export function ThemeScrollbar(props: ThemeScrollbarProps) {
     dir,
   } = props;
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const opts: OverlayScrollbarOptions = {};
     // behavior — grouped props, flat overrides win
     if (autoHide !== undefined) opts.autoHide = autoHide;

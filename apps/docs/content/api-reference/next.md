@@ -954,6 +954,7 @@ the custom strips and takes over. Import
  follows the provider's current mode (light/dark/system). |
 | `mode` (optional) | `ThemeMode` | Mode for a family-based scope. Optional — defaults to the provider's
  current mode so `family="plum"` flips light/dark with the page. |
+| `style` (optional) | `CSSProperties` | — |
 | `theme` (optional) | `string` | Exact theme name, family name, or a `{ family, mode }`-style object.
  When `family`/`mode` are also passed, `theme` wins (it's the explicit
  selection). Omit to follow the global selection inside a new boundary. |

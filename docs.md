@@ -536,6 +536,130 @@ Creates a runtime, wires DOM + CSS variable bindings, and provides it via contex
 
 Accepts every `ThemeRuntimeOptions` prop, plus `runtime` to inject a shared runtime and `initial` for server-resolved selections.
 
+### Entry point (CSR)
+
+For a client-rendered Vite/SPA app, the canonical mount is plain React:
+
+```tsx
+const root = createRoot(document.getElementById("root")!);
+root.render(
+  <ThemeProvider themes={themes} defaultTheme="mint-light" initialMode="system">
+    <App />
+  </ThemeProvider>,
+);
+```
+
+### `createThemeRoot` — optional flash-free initial commit
+
+React's concurrent root schedules the initial commit, so in some applications
+the browser can paint an empty/partial frame before the themed tree is
+committed (a brief flicker on reload). `ThemeProvider` cannot change this from
+inside the tree — the scheduling boundary is the root, not the provider.
+
+For applications where the initial commit visibly matters, `@theme-kit/react`
+provides an opt-in root composition helper. Theme Kit owns the root boundary:
+the runtime is created once, and **only the first** commit is flushed
+synchronously:
+
+```tsx
+import { createThemeRoot } from "@theme-kit/react";
+
+const handle = createThemeRoot({
+  container: document.getElementById("root")!,
+  themes,
+  defaultTheme: "mint-light",
+  initialMode: "system",
+  transition: { enabled: true },
+  render: ({ runtime }) => <App />,
+});
+```
+
+The `render({ runtime })` callback is the application's full composition. This
+is what keeps the helper composition-friendly: arbitrary provider trees (MUI,
+Chakra, React Query, Redux, Router, …) stay entirely under the application's
+control, and dependent libraries can derive their configuration from the
+Theme Kit runtime at composition time:
+
+```tsx
+render: ({ runtime }) => (
+  <MuiThemeProvider theme={createMuiTheme(runtime)}>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  </MuiThemeProvider>
+),
+```
+
+The returned handle exposes:
+
+- `root` — the underlying React root (manual re-renders if needed);
+- `runtime` — the Theme Kit runtime created for this root;
+- `unmount()` — unmounts the tree and destroys the runtime.
+
+- Only the **initial** render is flushed; subsequent renders keep React's
+  normal concurrent scheduling.
+- `ThemeProvider` itself never calls `flushSync` — the helper owns the root,
+  which is the one place React documents `flushSync` as appropriate.
+- **Do not use for SSR/SSG.** Server-rendered HTML is hydrated with
+  `hydrateRoot()` (or `@theme-kit/next` / `@theme-kit/remix`), never replaced
+  by a fresh `createRoot`.
+
+Most applications do not need `createThemeRoot`; it is a specialized escape
+hatch for CSR apps where the concurrent initial commit is visible or where
+providers need the Theme Kit runtime at composition time.
+
+#### Which React setup should I use?
+
+| Scenario | Recommended API |
+|----------|-----------------|
+| Standard React application (Vite, CRA, SPA) | `<ThemeProvider>` — the normal React integration |
+| CSR app with visible first-commit flicker / providers need runtime at composition time | `createThemeRoot()` — advanced / opt-in |
+| Next.js / Remix / SSR framework | Framework integration (`@theme-kit/next`, `@theme-kit/remix`) — don't manage the root yourself |
+
+#### SSR note
+
+**CSR only:** `createThemeRoot()` is intended for client-rendered React applications. Framework integrations such as Next.js and Remix own their application root/hydration lifecycle and should use their framework-specific Theme Kit integration instead.
+
+#### Why doesn't ThemeProvider call `flushSync()`?
+
+`ThemeProvider` lives inside the React root. It cannot change how the owning root was scheduled. Calling `flushSync()` from inside the provider would also couple the component to React's root scheduling semantics. `createThemeRoot()` exists specifically so the root-level behavior can be controlled at the correct boundary.
+
+#### Multi-provider composition example
+
+`createThemeRoot()` does not trap the user into Theme Kit-only composition. The `render` callback owns the entire application tree:
+
+```tsx
+import { createThemeRoot } from "@theme-kit/react";
+import { createMuiTheme } from "@theme-kit/mui/factory";
+import { MuiThemeProvider } from "@mui/material/styles";
+import { QueryClientProvider } from "@tanstack/react-query";
+
+createThemeRoot({
+  container: document.getElementById("root")!,
+  themes,
+  defaultTheme: "mint-light",
+  initialMode: "system",
+  render: ({ runtime }) => (
+    <MuiThemeProvider theme={createMuiTheme(runtime)}>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </MuiThemeProvider>
+  ),
+});
+```
+
+This demonstrates the relationship:
+```
+Theme Kit runtime
+↓
+MUI theme (createMuiTheme)
+↓
+MUI provider
+↓
+App
+```
+
 ### Hooks
 
 | Hook                                        | Returns                                                    |

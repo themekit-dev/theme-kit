@@ -1,5 +1,6 @@
 import type { ThemeDefinition, ThemeMode } from "./model/theme";
 import { createThemeBootstrapScript } from "./bootstrap";
+import { createPrePaintScrollbarScript } from "./scrollbar/pre-paint";
 
 export interface ThemeKitVitePluginOptions<T extends ThemeDefinition> {
   /** The theme definitions registered with the runtime. */
@@ -11,6 +12,12 @@ export interface ThemeKitVitePluginOptions<T extends ThemeDefinition> {
   storageKey?: string;
   /** CSS custom property prefix. Defaults to `"theme-"`. */
   prefix?: string;
+  /** Hide native scrollbars before first paint by injecting the scrollbar
+   *  pre-paint bootstrap script. `true` hides them (desktop), an options
+   *  object keeps native bars on coarse-pointer devices unless `touch` is
+   *  forced. Default `false` — the script is only needed when the page uses
+   *  the Theme Kit overlay scrollbar. */
+  scrollbar?: boolean | import("./scrollbar/pre-paint").PrePaintScrollbarOptions;
 }
 
 /**
@@ -54,11 +61,26 @@ export function themeKitVitePlugin<T extends ThemeDefinition>(
   const name = "theme-kit:vite";
 
   let script: string | null = null;
+  let scrollbarScript: string | null = null;
   function getScript(): string {
     if (script === null) {
       script = createThemeBootstrapScript(options);
     }
     return script;
+  }
+
+  function getScrollbarScript(): string | null {
+    if (options.scrollbar === undefined || options.scrollbar === false) {
+      return null;
+    }
+    if (scrollbarScript === null) {
+      scrollbarScript = createPrePaintScrollbarScript(
+        options.scrollbar === true
+          ? {}
+          : options.scrollbar,
+      );
+    }
+    return scrollbarScript;
   }
 
   return {
@@ -68,14 +90,24 @@ export function themeKitVitePlugin<T extends ThemeDefinition>(
       // Return the plain `HtmlTagDescriptor[]` form of `transformIndexHtml`,
       // which is valid across Vite 4–8. (The old `{ tags, order }` object form
       // was dropped in Vite 6, where the object result requires `html`.)
-      return [
+      const tags: ThemeKitViteInjectedTag[] = [
         {
           tag: "script",
-          attrs: {},
+          attrs: { id: "theme-kit-bootstrap" },
           children: getScript(),
           injectTo: "head-prepend",
         },
       ];
+      const scrollbar = getScrollbarScript();
+      if (scrollbar) {
+        tags.push({
+          tag: "script",
+          attrs: { id: "tk-scrollbar-bootstrap" },
+          children: scrollbar,
+          injectTo: "head-prepend",
+        });
+      }
+      return tags;
     },
   };
 }

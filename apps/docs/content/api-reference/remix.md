@@ -236,14 +236,18 @@ function App() {
 ---
 
 
-### `useSetThemeFamily(): __type(nextFamily: string): void`
-**Returns** `__type(nextFamily: string): void`
+### `useSetThemeFamily<T extends ThemeDefinition<string>>(): __type(family: ThemeFamilies<readonly T[]>): void`
+Get a stable `setFamily` function (does not re-render on change).
+
+**Returns** `__type(family: ThemeFamilies<readonly T[]>): void`
 
 ---
 
 
-### `useSetThemeMode(): __type(nextMode: ThemeMode): void`
-**Returns** `__type(nextMode: ThemeMode): void`
+### `useSetThemeMode<T extends ThemeDefinition<string>>(): __type(mode: ModesOf<T>): void`
+Get a stable `setMode` function (does not re-render on change).
+
+**Returns** `__type(mode: ModesOf<T>): void`
 
 ---
 
@@ -273,55 +277,90 @@ function App() {
 ---
 
 
-### `useTheme<T extends ThemeDefinition<string>>(): { family: string; mode: ThemeMode; setFamily: __type(nextFamily: string): void; setMode: __type(nextMode: ThemeMode): void; theme: T; toggleTheme: __type(): void }`
-**Returns** `{ family: string; mode: ThemeMode; setFamily: __type(nextFamily: string): void; setMode: __type(nextMode: ThemeMode): void; theme: T; toggleTheme: __type(): void }`
+### `useTheme<T extends ThemeDefinition<string>>(): { family: string; mode: ThemeMode; setFamily: __type(family: ThemeFamilies<readonly T[]>): void; setMode: __type(mode: ModesOf<T>): void; theme: T; toggleTheme: __type(): void }`
+The primary Theme Kit hook. Returns the current theme, mode, family and
+   the selection controls.
+
+   When you pass the theme tuple element type, `setFamily` and `setMode`
+   are constrained to the families/modes defined in your themes:
+
+   ```ts
+   const { theme, mode, family, setMode, setFamily, toggleTheme } = useTheme<typeof themes[number]>();
+   setFamily("mint");   // autocomplete suggests your families
+   setMode("dark");
+   ```
+
+**Returns** `{ family: string; mode: ThemeMode; setFamily: __type(family: ThemeFamilies<readonly T[]>): void; setMode: __type(mode: ModesOf<T>): void; theme: T; toggleTheme: __type(): void }`
 
 ---
 
 
 ### `useThemeBatch(): __type(callback: __type(): void): void`
+Get a batch function that defers all selection changes and DOM writes
+   to a single flush.
+
 **Returns** `__type(callback: __type(): void): void`
 
 ---
 
 
 ### `useThemeFamily(): string`
+Subscribe to the current selection family.
+
 **Returns** `string`
 
 ---
 
 
 ### `useThemeHistory(): { canRedo: boolean; canUndo: boolean; clear: __type(): void; redo: __type(): void; undo: __type(): void }`
+Subscribe to the runtime history (undo/redo/canUndo/canRedo/clear).
+
 **Returns** `{ canRedo: boolean; canUndo: boolean; clear: __type(): void; redo: __type(): void; undo: __type(): void }`
 
 ---
 
 
 ### `useThemeLifecycle(): { on: __type(event: keyof ThemeLifecycleEventMap<ThemeDefinition<string>>, listener: __type(data: unknown): void): __type(): void }`
+Subscribe to runtime lifecycle events (theme changed, mode changed, …).
+
 **Returns** `{ on: __type(event: keyof ThemeLifecycleEventMap<ThemeDefinition<string>>, listener: __type(data: unknown): void): __type(): void }`
 
 ---
 
 
 ### `useThemeMode(): ThemeMode`
+Subscribe to the current selection mode ("light" | "dark" | "system").
+
 **Returns** `ThemeMode`
 
 ---
 
 
 ### `useThemePacks(): __type(pack: ThemePack<any>): void`
+Get a function that applies a theme pack to the runtime.
+
 **Returns** `__type(pack: ThemePack<any>): void`
 
 ---
 
 
 ### `useThemeRestore(): __type(snapshot: ThemeRuntimeSnapshot): void`
+Get a restore function that re-applies a previously captured snapshot.
+
 **Returns** `__type(snapshot: ThemeRuntimeSnapshot): void`
 
 ---
 
 
 ### `useThemeRuntime<T extends ThemeDefinition<string>>(): ThemeRuntime<T>`
+Get the active Theme Kit runtime from context. Throws when used outside a
+`ThemeProvider`. Pass the theme tuple element type to type the runtime's
+store/selection against your themes:
+
+```ts
+const runtime = useThemeRuntime<typeof themes[number]>();
+```
+
 **Returns** `ThemeRuntime<T>`
 
 ---
@@ -348,30 +387,40 @@ schedule?.disable();
 
 
 ### `useThemeSnapshot(): __type(): ThemeRuntimeSnapshot`
+Get a snapshot function that captures the full runtime state.
+
 **Returns** `__type(): ThemeRuntimeSnapshot`
 
 ---
 
 
 ### `useThemeTimeTravel(): { history: HistoryEntry<ThemeDefinition<string>>[]; jump: __type(index: number): void }`
+Subscribe to the history timeline and get a `jump(index)` function.
+
 **Returns** `{ history: HistoryEntry<ThemeDefinition<string>>[]; jump: __type(index: number): void }`
 
 ---
 
 
 ### `useThemeTokens<T extends ThemeDefinition<string>>(): ThemeTokens | undefined`
+Subscribe to the current theme's token groups.
+
 **Returns** `ThemeTokens | undefined`
 
 ---
 
 
 ### `useThemeValue<T extends ThemeDefinition<string>>(): T`
+Subscribe to the current theme definition (re-renders on change).
+
 **Returns** `T`
 
 ---
 
 
 ### `useToggleTheme(): __type(): void`
+Get a stable `toggleTheme` function (flips light ⇄ dark).
+
 **Returns** `__type(): void`
 
 ---

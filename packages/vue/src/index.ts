@@ -7,6 +7,7 @@ import {
   resolveScopedThemePrePaint,
   resolveScopeTransition,
   createOverlayScrollbar,
+  createPrePaintScrollbarScript,
   createThemeBootstrapScript,
   EMPTY_THEME_SCHEDULE_STATE,
   type OverlayScrollbarOptions,
@@ -762,6 +763,21 @@ export const ThemeScrollbar = defineComponent({
   setup(props: ThemeScrollbarProps) {
     const runtime = useThemeRuntime();
     let handle: { destroy(): void } | null = null;
+
+    // Phase 1 — hide the native scrollbar before the first paint. `setup` runs
+    // synchronously during mount (before the browser paints the app), so the
+    // blocking script's `tk-scrollbar` class + <style> are in place before the
+    // native bar could ever render — the custom overlay is the only scrollbar
+    // from the first frame (matching the Next.js/Nuxt SSR experience).
+    // Idempotent: when the Vite plugin or an SSR adapter already emitted it,
+    // this no-ops.
+    if (typeof document !== "undefined" && document.head) {
+      if (!document.getElementById("tk-scrollbar-style")) {
+        const script = document.createElement("script");
+        script.textContent = createPrePaintScrollbarScript();
+        document.head.appendChild(script);
+      }
+    }
 
     onMounted(() => {
       handle = createOverlayScrollbar(runtime.store as any, pickDefined(props));

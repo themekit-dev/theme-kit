@@ -71,47 +71,6 @@ target node. Use in any `.svelte` file:
 ---
 
 
-### `ThemeProvider<T extends ThemeDefinition<string>>(anchor, props): void`
-| Parameter | Type | Description |
-| --------- | ---- | ----------- |
-| `anchor` | `Node` | — |
-| `props` | `ThemeProviderProps<T>` | — |
-
-**Returns** `void`
-
----
-
-
-### `ThemeScope(anchor, scopeProps): void`
-Applies a scoped theme to its subtree without touching the provider's global
-selection. Own CSS variables, `data-theme`, `data-mode` and `.dark` are kept
-on a wrapper `div` (created client-side and cleaned up on unmount), so nested
-scopes and the rest of the page stay completely independent.
-
-`theme`/`family`/`mode` are read at mount. Family-based and boundary scopes
-keep following the provider's light/dark/system mode while mounted.
-
-| Parameter | Type | Description |
-| --------- | ---- | ----------- |
-| `anchor` | `Node` | — |
-| `scopeProps` | `ThemeScopeProps` | — |
-
-**Returns** `void`
-
----
-
-
-### `ThemeScrollbar(anchor, props?): void`
-| Parameter | Type | Description |
-| --------- | ---- | ----------- |
-| `anchor` | `Node` | — |
-| `props` | `ThemeScrollbarProps` (optional) | — |
-
-**Returns** `void`
-
----
-
-
 ### `useBootstrapTheme<T extends ThemeDefinition<string>>(options): ThemeAdapter<T>`
 Svelte composable that installs the Bootstrap adapter onto the active Theme
 Kit runtime. Maintains a tagged `:root` style element with concrete
@@ -396,5 +355,33 @@ const schedule = useThemeSchedule(); // `$schedule.enabled` …
 | Member | Type | Description |
 | ------ | ---- | ----------- |
 | `strategy` (optional) | `AdapterStrategy` | — |
+
+---
+
+## Variables
+
+### `ThemeProvider`
+The Theme Kit provider component. Cast to Svelte's `Component` type so
+`svelte-check` recognizes it as a component (Svelte 5 components have the
+`(internals, props) => { $on?, $set? }` shape; the runtime only needs the
+anchor, which is passed as the first argument).
+
+`Component<ThemeProviderProps<ThemeDefinition<string>>, object, string>`
+
+---
+
+
+### `ThemeScope`
+The scoped theming component. See ThemeScopeProps.
+
+`Component<ThemeScopeProps, object, string>`
+
+---
+
+
+### `ThemeScrollbar`
+The overlay scrollbar component. See ThemeScrollbarProps.
+
+`Component<ThemeScrollbarProps, object, string>`
 
 ---

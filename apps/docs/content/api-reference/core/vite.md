@@ -29,11 +29,15 @@ export default defineConfig({
 ## Interfaces
 
 ### `ThemeKitViteInjectedTag`
+Structural twin of Vite's `HtmlTagDescriptor`. Kept local so the plugin does
+not need a hard dependency on `vite` types; the shape is assignable to
+Vite's `IndexHtmlTransformResult` in Vite 4 through 8.
+
 | Member | Type | Description |
 | ------ | ---- | ----------- |
-| `attrs` | `Record<string, string>` | — |
+| `attrs` (optional) | `Record<string, string | boolean | undefined>` | — |
 | `children` (optional) | `string` | — |
-| `injectTo` | `string` | — |
+| `injectTo` (optional) | `"head" | "body" | "head-prepend" | "body-prepend"` | — |
 | `tag` | `string` | — |
 
 ---
@@ -44,7 +48,7 @@ export default defineConfig({
 | ------ | ---- | ----------- |
 | `enforce` | `"pre"` | — |
 | `name` | `string` | — |
-| `transformIndexHtml` | `string | { order?: "pre" | "post"; tags: ThemeKitViteInjectedTag[] } | ThemeKitViteInjectedTag[]` | — |
+| `transformIndexHtml` | `string | ThemeKitViteInjectedTag[]` | — |
 
 ---
 
@@ -56,6 +60,11 @@ export default defineConfig({
 | `initialFamily` (optional) | `string` | — |
 | `initialMode` (optional) | `ThemeMode` | — |
 | `prefix` (optional) | `string` | CSS custom property prefix. Defaults to `"theme-"`. |
+| `scrollbar` (optional) | `boolean | PrePaintScrollbarOptions` | Hide native scrollbars before first paint by injecting the scrollbar
+ pre-paint bootstrap script. `true` hides them (desktop), an options
+ object keeps native bars on coarse-pointer devices unless `touch` is
+ forced. Default `false` — the script is only needed when the page uses
+ the Theme Kit overlay scrollbar. |
 | `storageKey` (optional) | `string` | localStorage key holding the persisted theme selection. Defaults to `"theme-selection"`. |
 | `themes` | `readonly T[]` | The theme definitions registered with the runtime. |
 

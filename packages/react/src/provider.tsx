@@ -4,6 +4,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useInsertionEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -124,12 +125,10 @@ export function ThemeProvider<T extends ThemeDefinition>({
     }
   }, [ownsRuntime, resolvedRuntime, coreOptions.initial]);
 
-  // useLayoutEffect (not useEffect): the CSS variables + DOM attributes must be
-  // applied synchronously after the DOM is committed but BEFORE the browser
-  // paints, so the first frame already shows the resolved theme — no flash of
-  // an unthemed html/body background. The runtime already read the persisted
-  // selection during creation, so this paints the persisted theme.
-  useLayoutEffect(() => {
+  // The bootstrap above owns the first paint. Set up the live bindings after
+  // mount so their initialization cannot compete with the browser's first
+  // layout/composite pass.
+  useInsertionEffect(() => {
     if (!resolvedRuntime) {
       return;
     }
@@ -167,6 +166,13 @@ export function ThemeProvider<T extends ThemeDefinition>({
       }
     }
 
+  }, [resolvedRuntime, coreOptions, ownsRuntime]);
+
+  useLayoutEffect(() => {
+    if (!resolvedRuntime) {
+      return;
+    }
+
     const cssBindingDrivesDom =
       cssOptions !== false &&
       (cssOptions === undefined || cssOptions.styleSheet !== true);
@@ -178,8 +184,8 @@ export function ThemeProvider<T extends ThemeDefinition>({
             ...domOptions,
             // The CSS binding (when present and applying inline variables) runs
             // DOM updates inside its single View Transition lightswitch via
-            // onBeforeSwap; subscribing here too would fire a second, competing
-            // startViewTransition. Otherwise the DOM binding owns its updates.
+            // onBeforeSwap; subscribing here too would fire a second,
+            // competing startViewTransition. Otherwise the DOM binding owns its updates.
             subscribe: !cssBindingDrivesDom,
             ...(resolvedTransition !== undefined ? { transition: resolvedTransition } : {}),
           });

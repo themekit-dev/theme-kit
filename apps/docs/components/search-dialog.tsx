@@ -362,9 +362,30 @@ export function SearchProvider({
             />
 
             <div className="flex shrink-0 items-center gap-1.5">
-              <kbd className="mono rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] text-foreground/50">
+              <kbd className="mono hidden rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] text-foreground/50 md:inline">
                 esc
               </kbd>
+
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close search"
+                className="md:hidden inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border bg-muted/20 text-foreground/60 transition-colors hover:border-ring hover:text-foreground"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M6 6 L18 18 M18 6 L6 18" />
+                </svg>
+              </button>
             </div>
           </div>
 

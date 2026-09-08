@@ -16,7 +16,8 @@ export const apiPackages: ApiPackage[] = [
   {
     slug: "react",
     name: "@theme-kit/react",
-    tagline: "Provider, hooks and components for React 18/19 — the reference integration.",
+    tagline:
+      "Provider-first theming for React with hooks, scoped themes, adapters, runtime transitions, and an optional optimized client bootstrap.",
   },
   {
     slug: "next",

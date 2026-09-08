@@ -83,6 +83,9 @@ Abort any in-flight theme animation for `target` and remove its styles.
 
 
 ### `composeTheme<TName extends string>(name, sources...): ThemeDefinition<TName>`
+Compose a theme by layering multiple sources (e.g. a family theme, a
+   mode override, and local tokens), later sources winning.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `name` | `TName` | — |
@@ -144,6 +147,10 @@ Abort any in-flight theme animation for `target` and remove its styles.
 
 
 ### `createCSSVariablesBinding(store, options): { destroy: void } | null`
+Create a binding that keeps CSS custom properties (`--theme-*`) on a
+   target element (default `<html>`) in sync with the store. Applies the
+   current theme immediately on creation and diffs updates.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `store` | `ThemeStore` | — |
@@ -181,6 +188,10 @@ Abort any in-flight theme animation for `target` and remove its styles.
 
 
 ### `createDOMBinding(store, options): { apply: __type(theme: ThemeDefinition, emitOptions?: { suppressTransition?: boolean }): void; destroy: void } | null`
+Create a binding that syncs the store theme to the DOM: `data-theme`,
+   `data-theme-mode`, `data-theme-family`, the `dark` class, and the
+   `color-scheme` style — with transition support.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `store` | `ThemeStore` | — |
@@ -212,6 +223,9 @@ Abort any in-flight theme animation for `target` and remove its styles.
 
 
 ### `createMultiWindowSync(options): ThemeSelectionBroadcastAdapter`
+Sync theme selection across browser tabs/windows via BroadcastChannel
+   (with a SharedWorker + storage fallback).
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `options` | `MultiWindowSyncOptions` | — |
@@ -309,6 +323,9 @@ native scrollbars are kept.
 
 
 ### `createScopedThemeBinding<T extends ThemeDefinition<string>>(themes, target, selection, options): { destroy: void; getTheme: void; setLocalThemes: void; setTransition: void; update: void }`
+Create a scoped-theme binding for an element: applies the scoped theme's
+   CSS variables inline on the element and cleans them up on destroy.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `themes` | `readonly T[]` | — |
@@ -339,6 +356,9 @@ native scrollbars are kept.
 
 
 ### `createSystemThemeBinding<T extends ThemeDefinition<string>>(store, options): { destroy: void } | null`
+Create a binding that applies the theme for "system" mode, following
+   `prefers-color-scheme` live.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `store` | `ThemeStore<T>` | — |
@@ -454,6 +474,21 @@ produce no diff — and nothing animates.
 
 
 ### `createThemeRuntime<T extends ThemeDefinition<string>>(options): ThemeRuntime<T>`
+Create a Theme Kit runtime — the single entry point for theming.
+   The runtime wires together the theme store, selection controller
+   (mode/family/system binding), persistence, broadcast (cross-tab sync),
+   history, scheduling, the DOM + CSS-variable bindings, and the adapter
+   registry.
+
+   ```ts
+   const runtime = createThemeRuntime({
+     themes: [lightTheme, darkTheme],
+     defaultTheme: "light",
+     initialMode: "system",
+   });
+   runtime.selection.setMode("dark");
+   ```
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `options` | `ThemeRuntimeOptions<T>` | — |
@@ -503,6 +538,9 @@ Alias landing in the public API.
 
 
 ### `createThemeSelectionBroadcast(options): ThemeSelectionBroadcastAdapter | null`
+Create a broadcast adapter that publishes selection changes to other
+   tabs/windows and applies incoming changes.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `options` | `ThemeSelectionBroadcastOptions` | — |
@@ -513,6 +551,17 @@ Alias landing in the public API.
 
 
 ### `createThemeStore<T extends ThemeDefinition<string>>(options): ThemeStore<T>`
+Create a theme store. The store holds the current theme and notifies
+   subscribers when it changes. Use the higher-level `createThemeRuntime`
+   for the full runtime; use the store directly when you only need a
+   reactive current-theme container.
+
+   ```ts
+   const store = createThemeStore({ initialTheme: lightTheme });
+   store.subscribe((theme) => console.log(theme.name));
+   store.set(darkTheme);
+   ```
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `options` | `ThemeStoreOptions<T>` | — |
@@ -560,6 +609,9 @@ rendered statically, so dark-mode users get the correct colors without JS.
 
 
 ### `defineTheme<Name extends string, T extends ThemeDefinition<Name>>(theme): T`
+Define a theme. Currently returns the definition unchanged; it exists
+   to give themes a consistent shape and future validation.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `theme` | `T` | — |
@@ -586,6 +638,9 @@ rendered statically, so dark-mode users get the correct colors without JS.
 
 
 ### `extendTheme<TName extends string, TBase extends ThemeDefinition<string>>(name, base, overrides?): ThemeDefinition<TName>`
+Create a new theme by extending a base theme with overrides, merging
+   token groups recursively.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `name` | `TName` | — |
@@ -711,6 +766,9 @@ Look up the reference coordinates for an IANA timezone. Returns `null`
 
 
 ### `getThemeFamily(theme): string`
+Get a theme's family. Themes without `meta.family` belong to the
+   "default" family.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `theme` | `ThemeDefinition` | — |
@@ -802,6 +860,9 @@ True when two positions are close enough to consider the thumb "settled".
 
 
 ### `migrateTheme(theme, options): ThemeDefinition`
+Migrate a legacy theme to the current Theme Kit format using registered
+   migrations.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `theme` | `ThemeDefinition` | — |
@@ -821,6 +882,8 @@ Requested motion profile. Reduced motion snaps instantly.
 
 
 ### `registerMigration(step): void`
+Register a migration for the theme migration system.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `step` | `MigrationStep` | — |
@@ -1008,6 +1071,9 @@ browser timezone auto-detection → `DEFAULT_TIMEZONE_LOCATION`.
 
 
 ### `resolveTokens(tokens): ThemeTokens`
+Resolve a theme's token groups, evaluating expressions and references
+   into concrete values.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `tokens` | `ThemeTokens` | — |
@@ -1082,6 +1148,15 @@ Mirror the scoped binding's aliases (the `--color-*` / `--radius-*` tokens
 
 
 ### `themeToCSSVariables(theme, options): Record<string, string>`
+Flatten a theme's semantic tokens into CSS custom properties
+   (`--theme-*`), optionally filtered by token group.
+
+   ```ts
+   const vars = themeToCSSVariables(theme); // { "--theme-color-background": "#fff", ... }
+   ```
+
+   Pass `{ groups: ["colors"] }` to emit only specific token groups.
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `theme` | `ThemeDefinition` | — |
@@ -1093,6 +1168,10 @@ Mirror the scoped binding's aliases (the `--color-*` / `--radius-*` tokens
 
 
 ### `validateTheme(theme, options): ValidationResult`
+Validate a theme definition against the Theme Kit schema: required
+   semantic tokens, valid references, and contrast ratios. Returns a list
+   of issues (empty when valid).
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `theme` | `ThemeDefinition` | — |
@@ -1731,13 +1810,13 @@ Resolved (defaulted) options used internally.
 | ------ | ---- | ----------- |
 | `activeThumbColor` | `string | undefined` | — |
 | `animationDuration` | `number` | — |
-| `arrowDownIcon` | `ArrowIcon` | — |
-| `arrowIcon` | `ArrowIcon` | — |
+| `arrowDownIcon` | `ArrowIcon | undefined` | — |
+| `arrowIcon` | `ArrowIcon | undefined` | — |
 | `arrowIconRenderer` | `__type(button: HTMLDivElement, dir: ScrollbarArrowDir): void | undefined` | — |
-| `arrowLeftIcon` | `ArrowIcon` | — |
-| `arrowRightIcon` | `ArrowIcon` | — |
+| `arrowLeftIcon` | `ArrowIcon | undefined` | — |
+| `arrowRightIcon` | `ArrowIcon | undefined` | — |
 | `arrows` | `boolean` | — |
-| `arrowUpIcon` | `ArrowIcon` | — |
+| `arrowUpIcon` | `ArrowIcon | undefined` | — |
 | `autoHide` | `boolean` | — |
 | `autoHideDelay` | `number` | — |
 | `axes` | `ScrollbarAxis[]` | — |
@@ -2546,6 +2625,24 @@ never replaces or moves native scrolling — it only synchronizes with it.
 ---
 
 
+### `ThemeFamilies<T extends readonly ThemeDefinition[]>`
+Extract the literal theme-family union from a tuple of theme definitions.
+When themes are defined with `as const`, autocomplete shows the available
+families in `setFamily()` / `initialFamily`:
+
+```ts
+const themes = [
+  { name: "mint-light", meta: { family: "mint", mode: "light" }, tokens: {} },
+  { name: "mint-dark",  meta: { family: "mint", mode: "dark" }, tokens: {} },
+] as const;
+// ThemeFamilies<typeof themes> → "mint"
+```
+
+`FamilyOf<T[number]> extends never ? string : FamilyOf<T[number]>`
+
+---
+
+
 ### `ThemeLifecycleEventName`
 `keyof ThemeLifecycleEventMap`
 
@@ -2554,6 +2651,15 @@ never replaces or moves native scrolling — it only synchronizes with it.
 
 ### `ThemeMode`
 `"light" | "dark" | "system"`
+
+---
+
+
+### `ThemeModes<T extends readonly ThemeDefinition[]>`
+Extract the literal theme-mode union from a tuple of theme definitions.
+With `as const`, `ThemeModes<typeof themes> → "light" | "dark"`.
+
+`ModeOf<T[number]> extends never ? ThemeMode : ModeOf<T[number]>`
 
 ---
 
