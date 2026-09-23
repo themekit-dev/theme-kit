@@ -1,0 +1,3384 @@
+{
+  "capturedAt": "2026-09-22T16:48:01.077Z",
+  "tool": "scripts/release/snippet-audit.mjs",
+  "contract": "Audit A — docs → package (zero drift is the floor)",
+  "pages": 200,
+  "snippets": 816,
+  "references": 562,
+  "failures": 0,
+  "failing": [],
+  "entries": [
+    {
+      "page": "apps\\docs\\app\\accessibility\\page.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "useShadcnTheme from \"@theme-kit/shadcn/react\"",
+      "detail": "@theme-kit/shadcn./react exports useShadcnTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "createShadcnAdapter from \"@theme-kit/shadcn/factory\"",
+      "detail": "@theme-kit/shadcn./factory exports createShadcnAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "createBootstrapAdapter from \"@theme-kit/bootstrap/factory\"",
+      "detail": "@theme-kit/bootstrap./factory exports createBootstrapAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "createDaisyAdapter from \"@theme-kit/daisyui/factory\"",
+      "detail": "@theme-kit/daisyui./factory exports createDaisyAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "createOpenPropsAdapter from \"@theme-kit/open-props/factory\"",
+      "detail": "@theme-kit/open-props./factory exports createOpenPropsAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "createTailwindPlugin from \"@theme-kit/tailwind\"",
+      "detail": "@theme-kit/tailwind exports createTailwindPlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "useAntdTheme from \"@theme-kit/antd\"",
+      "detail": "@theme-kit/antd exports useAntdTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "presetThemeKit from \"@theme-kit/unocss\"",
+      "detail": "@theme-kit/unocss exports presetThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "createUnoTheme from \"@theme-kit/unocss\"",
+      "detail": "@theme-kit/unocss exports createUnoTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\adapters\\page.tsx",
+      "import": "resolveInitialTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports resolveInitialTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "synchronizeDarkClass from \"@theme-kit/tailwind\"",
+      "detail": "@theme-kit/tailwind exports synchronizeDarkClass",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "createScopedThemeBinding from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createScopedThemeBinding",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\animation\\AnimationGuide.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-scrollbar\\page.tsx",
+      "import": "createPrePaintScrollbarScript from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createPrePaintScrollbarScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-scrollbar\\page.tsx",
+      "import": "createPrePaintScrollbarCSS from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createPrePaintScrollbarCSS",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-scrollbar\\page.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-scrollbar\\page.tsx",
+      "import": "createThemeScrollbar from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeScrollbar",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "extendTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports extendTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "ThemeKit from \"@theme-kit/core/vanilla\"",
+      "detail": "@theme-kit/core./vanilla exports ThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "generateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports generateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "validateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\custom-themes\\CustomThemesGuide.tsx",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "createCSSVariablesBinding from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createCSSVariablesBinding",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "createDOMBinding from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createDOMBinding",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "createSystemThemeBinding from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createSystemThemeBinding",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "createScopedThemeBinding from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createScopedThemeBinding",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "createThemeDiff from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeDiff",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "createTransitionPlan from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createTransitionPlan",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "runThemeAnimation from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports runThemeAnimation",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\dom-adapters\\page.tsx",
+      "import": "cancelThemeAnimation from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports cancelThemeAnimation",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\migration\\page.tsx",
+      "import": "migrateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports migrateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\migration\\page.tsx",
+      "import": "registerMigration from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports registerMigration",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\multi-window-sync\\page.tsx",
+      "import": "createMultiWindowSync from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createMultiWindowSync",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\multi-window-sync\\page.tsx",
+      "import": "createThemeSelectionBroadcast from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeSelectionBroadcast",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\multi-window-sync\\page.tsx",
+      "import": "createStorageEventSync from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createStorageEventSync",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\no-flash-ssr\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\no-flash-ssr\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\no-flash-ssr\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\no-flash-ssr\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\persistence\\page.tsx",
+      "import": "createPersistencePlugin from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createPersistencePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\persistence\\page.tsx",
+      "import": "ThemeSelectionPersistenceAdapter from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeSelectionPersistenceAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\persistence\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\persistence\\page.tsx",
+      "import": "ThemeSelectionState from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeSelectionState",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\persistence\\page.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\persistence\\page.tsx",
+      "import": "createThemeSelectionBroadcast from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeSelectionBroadcast",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\plugins\\page.tsx",
+      "import": "ThemePlugin from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\plugins\\page.tsx",
+      "import": "ThemeTokens from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeTokens",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\plugins\\page.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\plugins\\page.tsx",
+      "import": "createPluginManager from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createPluginManager",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeTransitionOptions from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeTransitionOptions",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeScopeDirective from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports ThemeScopeDirective",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/nuxt\"",
+      "detail": "@theme-kit/nuxt exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeScope from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "useScopedTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useScopedTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "useScopedTheme from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useScopedTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "createScopedThemeBinding from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createScopedThemeBinding",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "getThemeRuntime from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports getThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeDefinition from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeDefinition",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\scoped-theme\\ScopedThemeGuide.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeInspector from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeInspector",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeInspector from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports ThemeInspector",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeInspector from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeInspector",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "themeInspector from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports themeInspector",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeInspector from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeInspector",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeInspectorComponent from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports ThemeInspectorComponent",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeInspector from \"@theme-kit/astro/ThemeInspector.astro\"",
+      "detail": "@theme-kit/astro./ThemeInspector.astro declared entrypoint (no TypeScript surface)",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeInspector from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeInspector",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\theme-inspector\\page.tsx",
+      "import": "ThemeKitInspector from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports ThemeKitInspector",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\code\\page.tsx",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "themeToCSSVariables from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports themeToCSSVariables",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "flattenTokens from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports flattenTokens",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "resolveTokens from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports resolveTokens",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "extendTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports extendTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "composeTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports composeTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "mergeTokens from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports mergeTokens",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "validateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\tokens\\page.tsx",
+      "import": "generateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports generateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\troubleshooting\\page.tsx",
+      "import": "createThemeBootstrapScript from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeBootstrapScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\troubleshooting\\page.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\troubleshooting\\page.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\troubleshooting\\page.tsx",
+      "import": "createPersistencePlugin from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createPersistencePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\troubleshooting\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\troubleshooting\\page.tsx",
+      "import": "ThemeScope from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\troubleshooting\\page.tsx",
+      "import": "validateThemeContrast from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateThemeContrast",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\troubleshooting\\page.tsx",
+      "import": "createMultiWindowSync from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createMultiWindowSync",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vanilla\\page.tsx",
+      "import": "ThemeKit from \"@theme-kit/core/vanilla\"",
+      "detail": "@theme-kit/core./vanilla exports ThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vite-plugin\\page.tsx",
+      "import": "defineThemeKitConfig from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineThemeKitConfig",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vite-plugin\\page.tsx",
+      "import": "themeKitVitePlugin from \"@theme-kit/core/vite\"",
+      "detail": "@theme-kit/core./vite exports themeKitVitePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vite-plugin\\page.tsx",
+      "import": "themeKit from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports themeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vite-plugin\\page.tsx",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vite-plugin\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vite-plugin\\page.tsx",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vite-plugin\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vite-plugin\\page.tsx",
+      "import": "ThemeHead from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeHead",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\vite-plugin\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "createThemeBootstrapScript from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeBootstrapScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "buildThemeCssMap from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports buildThemeCssMap",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "resolveInitialTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports resolveInitialTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "systemModeCSSTemplate from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports systemModeCSSTemplate",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "createBlockingScriptContent from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports createBlockingScriptContent",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "createBlockingScript from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports createBlockingScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "buildThemeCssMap from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports buildThemeCssMap",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "ThemeHead from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeHead",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\app\\zero-flash\\page.tsx",
+      "import": "getInitialThemeState from \"@theme-kit/remix/server\"",
+      "detail": "@theme-kit/remix./server exports getInitialThemeState",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useThemeRuntime from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useShadcnTheme from \"@theme-kit/shadcn/react\"",
+      "detail": "@theme-kit/shadcn./react exports useShadcnTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "createShadcnAdapter from \"@theme-kit/shadcn/factory\"",
+      "detail": "@theme-kit/shadcn./factory exports createShadcnAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "createBootstrapAdapter from \"@theme-kit/bootstrap/factory\"",
+      "detail": "@theme-kit/bootstrap./factory exports createBootstrapAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "createDaisyAdapter from \"@theme-kit/daisyui/factory\"",
+      "detail": "@theme-kit/daisyui./factory exports createDaisyAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "createOpenPropsAdapter from \"@theme-kit/open-props/factory\"",
+      "detail": "@theme-kit/open-props./factory exports createOpenPropsAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "MuiThemeProvider from \"@theme-kit/mui\"",
+      "detail": "@theme-kit/mui exports MuiThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "presetThemeKit from \"@theme-kit/unocss\"",
+      "detail": "@theme-kit/unocss exports presetThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "createUnoTheme from \"@theme-kit/unocss\"",
+      "detail": "@theme-kit/unocss exports createUnoTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "resolveInitialTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports resolveInitialTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useDaisyTheme from \"@theme-kit/daisyui/react\"",
+      "detail": "@theme-kit/daisyui./react exports useDaisyTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "provideThemeRuntime from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports provideThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useThemeRuntime from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useShadcnTheme from \"@theme-kit/shadcn/vue\"",
+      "detail": "@theme-kit/shadcn./vue exports useShadcnTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "setThemeRuntime from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports setThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "getThemeRuntime from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports getThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useBootstrapTheme from \"@theme-kit/bootstrap/svelte\"",
+      "detail": "@theme-kit/bootstrap./svelte exports useBootstrapTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useThemeRuntime from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useOpenPropsTheme from \"@theme-kit/open-props/solid\"",
+      "detail": "@theme-kit/open-props./solid exports useOpenPropsTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "injectThemeRuntime from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "injectShadcnTheme from \"@theme-kit/shadcn/angular\"",
+      "detail": "@theme-kit/shadcn./angular exports injectShadcnTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useThemeRuntime from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useThemeRuntime from \"@theme-kit/nuxt\"",
+      "detail": "@theme-kit/nuxt exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useDaisyTheme from \"@theme-kit/daisyui/vue\"",
+      "detail": "@theme-kit/daisyui./vue exports useDaisyTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useThemeRuntime from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useOpenPropsTheme from \"@theme-kit/open-props/react\"",
+      "detail": "@theme-kit/open-props./react exports useOpenPropsTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "useThemeRuntime from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "directive client:only",
+      "detail": "valid Astro client directive",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "ThemeAdapter from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\adapters.md",
+      "import": "ThemeDefinition from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeDefinition",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "generateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports generateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "mergeTokens from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports mergeTokens",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "validateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "registerMigration from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports registerMigration",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "migrateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports migrateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "flattenTokens from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports flattenTokens",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "resolveTokens from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports resolveTokens",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "ThemePlugin from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "getAccessibilityProfiles from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getAccessibilityProfiles",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "simulateCVD from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports simulateCVD",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "simulateThemeForCVD from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports simulateThemeForCVD",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\advanced-features.md",
+      "import": "validateThemeContrast from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateThemeContrast",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\animation.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\animation.md",
+      "import": "createAnimationsPlugin from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createAnimationsPlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\animation.md",
+      "import": "useThemeRuntime from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\angular.md",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\angular.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\antd.md",
+      "import": "AntdThemeProvider from \"@theme-kit/antd\"",
+      "detail": "@theme-kit/antd exports AntdThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\antd.md",
+      "import": "createAntdTheme from \"@theme-kit/antd\"",
+      "detail": "@theme-kit/antd exports createAntdTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro.md",
+      "import": "createThemeController from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports createThemeController",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro.md",
+      "import": "getInitialThemeState from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports getInitialThemeState",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro.md",
+      "import": "getThemeController from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports getThemeController",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro.md",
+      "import": "themeKit from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports themeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro\\client.md",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro\\client.md",
+      "import": "useTheme from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro\\client.md",
+      "import": "directive client:load",
+      "detail": "valid Astro client directive",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\bootstrap.md",
+      "import": "createBootstrapAdapter from \"@theme-kit/bootstrap\"",
+      "detail": "@theme-kit/bootstrap exports createBootstrapAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\bootstrap\\angular.md",
+      "import": "injectBootstrapTheme from \"@theme-kit/bootstrap/angular\"",
+      "detail": "@theme-kit/bootstrap./angular exports injectBootstrapTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\bootstrap\\factory.md",
+      "import": "createBootstrapAdapter from \"@theme-kit/bootstrap\"",
+      "detail": "@theme-kit/bootstrap exports createBootstrapAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\bootstrap\\react.md",
+      "import": "useBootstrapTheme from \"@theme-kit/bootstrap/react\"",
+      "detail": "@theme-kit/bootstrap./react exports useBootstrapTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\bootstrap\\solid.md",
+      "import": "useBootstrapTheme from \"@theme-kit/bootstrap/solid\"",
+      "detail": "@theme-kit/bootstrap./solid exports useBootstrapTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\bootstrap\\svelte.md",
+      "import": "useBootstrapTheme from \"@theme-kit/bootstrap/svelte\"",
+      "detail": "@theme-kit/bootstrap./svelte exports useBootstrapTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\bootstrap\\vue.md",
+      "import": "useBootstrapTheme from \"@theme-kit/bootstrap/vue\"",
+      "detail": "@theme-kit/bootstrap./vue exports useBootstrapTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\chakra.md",
+      "import": "ChakraThemeProvider from \"@theme-kit/chakra\"",
+      "detail": "@theme-kit/chakra exports ChakraThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\chakra.md",
+      "import": "createChakraTheme from \"@theme-kit/chakra\"",
+      "detail": "@theme-kit/chakra exports createChakraTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\core.md",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\core.md",
+      "import": "defineThemeKitConfig from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineThemeKitConfig",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\core\\vanilla.md",
+      "import": "ThemeKit from \"@theme-kit/core/vanilla\"",
+      "detail": "@theme-kit/core./vanilla exports ThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\core\\vite.md",
+      "import": "themeKitVitePlugin from \"@theme-kit/core/vite\"",
+      "detail": "@theme-kit/core./vite exports themeKitVitePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\daisyui.md",
+      "import": "createDaisyAdapter from \"@theme-kit/daisyui\"",
+      "detail": "@theme-kit/daisyui exports createDaisyAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\daisyui\\angular.md",
+      "import": "injectDaisyTheme from \"@theme-kit/daisyui/angular\"",
+      "detail": "@theme-kit/daisyui./angular exports injectDaisyTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\daisyui\\factory.md",
+      "import": "createDaisyAdapter from \"@theme-kit/daisyui\"",
+      "detail": "@theme-kit/daisyui exports createDaisyAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\daisyui\\react.md",
+      "import": "useDaisyTheme from \"@theme-kit/daisyui/react\"",
+      "detail": "@theme-kit/daisyui./react exports useDaisyTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\daisyui\\solid.md",
+      "import": "useDaisyTheme from \"@theme-kit/daisyui/solid\"",
+      "detail": "@theme-kit/daisyui./solid exports useDaisyTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\daisyui\\svelte.md",
+      "import": "useDaisyTheme from \"@theme-kit/daisyui/svelte\"",
+      "detail": "@theme-kit/daisyui./svelte exports useDaisyTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\daisyui\\vue.md",
+      "import": "useDaisyTheme from \"@theme-kit/daisyui/vue\"",
+      "detail": "@theme-kit/daisyui./vue exports useDaisyTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\devtools.md",
+      "import": "createDevToolsPlugin from \"@theme-kit/devtools\"",
+      "detail": "@theme-kit/devtools exports createDevToolsPlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\devtools.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\devtools.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\mantine.md",
+      "import": "createMantineTheme from \"@theme-kit/mantine\"",
+      "detail": "@theme-kit/mantine exports createMantineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\mantine.md",
+      "import": "MantineThemeProvider from \"@theme-kit/mantine\"",
+      "detail": "@theme-kit/mantine exports MantineThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\mui.md",
+      "import": "createMuiTheme from \"@theme-kit/mui\"",
+      "detail": "@theme-kit/mui exports createMuiTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\mui.md",
+      "import": "MuiThemeProvider from \"@theme-kit/mui\"",
+      "detail": "@theme-kit/mui exports MuiThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\next.md",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\next\\client.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\nuxt.md",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\nuxt.md",
+      "import": "defineThemeKitConfig from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineThemeKitConfig",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\open-props.md",
+      "import": "createOpenPropsAdapter from \"@theme-kit/open-props\"",
+      "detail": "@theme-kit/open-props exports createOpenPropsAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\open-props\\angular.md",
+      "import": "injectOpenPropsTheme from \"@theme-kit/open-props/angular\"",
+      "detail": "@theme-kit/open-props./angular exports injectOpenPropsTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\open-props\\factory.md",
+      "import": "createOpenPropsAdapter from \"@theme-kit/open-props\"",
+      "detail": "@theme-kit/open-props exports createOpenPropsAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\open-props\\react.md",
+      "import": "useOpenPropsTheme from \"@theme-kit/open-props/react\"",
+      "detail": "@theme-kit/open-props./react exports useOpenPropsTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\open-props\\solid.md",
+      "import": "useOpenPropsTheme from \"@theme-kit/open-props/solid\"",
+      "detail": "@theme-kit/open-props./solid exports useOpenPropsTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\open-props\\svelte.md",
+      "import": "useOpenPropsTheme from \"@theme-kit/open-props/svelte\"",
+      "detail": "@theme-kit/open-props./svelte exports useOpenPropsTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\open-props\\vue.md",
+      "import": "useOpenPropsTheme from \"@theme-kit/open-props/vue\"",
+      "detail": "@theme-kit/open-props./vue exports useOpenPropsTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\react.md",
+      "import": "createThemeRoot from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports createThemeRoot",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\react.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\remix.md",
+      "import": "createRemixThemePersistence from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports createRemixThemePersistence",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\remix.md",
+      "import": "ThemeHead from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeHead",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\remix.md",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\remix.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\shadcn.md",
+      "import": "createShadcnAdapter from \"@theme-kit/shadcn\"",
+      "detail": "@theme-kit/shadcn exports createShadcnAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\shadcn\\angular.md",
+      "import": "injectShadcnTheme from \"@theme-kit/shadcn/angular\"",
+      "detail": "@theme-kit/shadcn./angular exports injectShadcnTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\shadcn\\factory.md",
+      "import": "createShadcnAdapter from \"@theme-kit/shadcn\"",
+      "detail": "@theme-kit/shadcn exports createShadcnAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\shadcn\\react.md",
+      "import": "useShadcnTheme from \"@theme-kit/shadcn/react\"",
+      "detail": "@theme-kit/shadcn./react exports useShadcnTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\shadcn\\solid.md",
+      "import": "useShadcnTheme from \"@theme-kit/shadcn/solid\"",
+      "detail": "@theme-kit/shadcn./solid exports useShadcnTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\shadcn\\svelte.md",
+      "import": "useShadcnTheme from \"@theme-kit/shadcn/svelte\"",
+      "detail": "@theme-kit/shadcn./svelte exports useShadcnTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\shadcn\\vue.md",
+      "import": "useShadcnTheme from \"@theme-kit/shadcn/vue\"",
+      "detail": "@theme-kit/shadcn./vue exports useShadcnTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\solid.md",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\solid.md",
+      "import": "useTheme from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\tailwind.md",
+      "import": "createTailwindPlugin from \"@theme-kit/tailwind\"",
+      "detail": "@theme-kit/tailwind exports createTailwindPlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\tailwind.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\web.md",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\architecture.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\architecture.md",
+      "import": "createThemeBootstrapScript from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeBootstrapScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\architecture.md",
+      "import": "buildThemeCssMap from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports buildThemeCssMap",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\architecture.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\accessibility-first-theming.md",
+      "import": "getContrastRatio from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getContrastRatio",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\accessibility-first-theming.md",
+      "import": "validateThemeContrast from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateThemeContrast",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\accessibility-first-theming.md",
+      "import": "simulateThemeForCVD from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports simulateThemeForCVD",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\multi-window-sync.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\multi-window-sync.md",
+      "import": "createMultiWindowSync from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createMultiWindowSync",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\persistence-sync.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\persistence-sync.md",
+      "import": "createPersistencePlugin from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createPersistencePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\persistence-sync.md",
+      "import": "createMultiWindowSync from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createMultiWindowSync",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\scoped-themes.md",
+      "import": "ThemeScope from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\scoped-themes.md",
+      "import": "createScopedThemeBinding from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createScopedThemeBinding",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\scoped-themes.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\scoped-themes.md",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\semantic-tokens.md",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\semantic-tokens.md",
+      "import": "useThemeTokens from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeTokens",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\semantic-tokens.md",
+      "import": "extendTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports extendTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\semantic-tokens.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\semantic-tokens.md",
+      "import": "validateThemeContrast from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateThemeContrast",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\solar-time-theming.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\solar-time-theming.md",
+      "import": "calculateSunTimes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports calculateSunTimes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\theme-families.md",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\theme-families.md",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\zero-flash-theming.md",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\zero-flash-theming.md",
+      "import": "createThemeBootstrapScript from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeBootstrapScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\blog\\zero-flash-theming.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\cli\\quickstart.md",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\cli\\workflows.md",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "themeToCSSVariables from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports themeToCSSVariables",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "createThemeStore from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeStore",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "extendTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports extendTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "composeTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports composeTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "mergeThemeDefinitions from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports mergeThemeDefinitions",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "mergeTokens from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports mergeTokens",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "resolveTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports resolveTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "createThemeRegistry from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRegistry",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "generateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports generateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "validateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "migrateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports migrateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "registerMigration from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports registerMigration",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "getContrastRatio from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getContrastRatio",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "validateThemeContrast from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateThemeContrast",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "simulateCVD from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports simulateCVD",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "simulateThemeForCVD from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports simulateThemeForCVD",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "createCSSVariablesBinding from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createCSSVariablesBinding",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "createDOMBinding from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createDOMBinding",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "createMultiWindowSync from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createMultiWindowSync",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "createPersistencePlugin from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createPersistencePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "createThemeBootstrapScript from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeBootstrapScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "buildThemeCssMap from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports buildThemeCssMap",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "darkModeCSSTemplate from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports darkModeCSSTemplate",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "getNeutralThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getNeutralThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "getPresetThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getPresetThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "getBrandPresets from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBrandPresets",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "getAccessibilityProfiles from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getAccessibilityProfiles",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "ThemeKit from \"@theme-kit/core/vanilla\"",
+      "detail": "@theme-kit/core./vanilla exports ThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "defineThemeKitConfig from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineThemeKitConfig",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\core-concepts.md",
+      "import": "themeKitVitePlugin from \"@theme-kit/core/vite\"",
+      "detail": "@theme-kit/core./vite exports themeKitVitePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\devtools.md",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\devtools.md",
+      "import": "createDevToolsPlugin from \"@theme-kit/devtools\"",
+      "detail": "@theme-kit/devtools exports createDevToolsPlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\devtools.md",
+      "import": "createDevToolsPanel from \"@theme-kit/devtools\"",
+      "detail": "@theme-kit/devtools exports createDevToolsPanel",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeScope from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useThemeHistory from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "createThemeRoot from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports createThemeRoot",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useTheme from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeScope from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useThemeHistory from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useTheme from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeScope from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useThemeHistory from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useTheme from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeScope from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useThemeHistory from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useTheme from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeScope from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useThemeHistory from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "injectTheme from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "injectThemeHistory from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeScopeDirective from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports ThemeScopeDirective",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeTransitionOptions from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeTransitionOptions",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "createThemeBootstrapScript from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeBootstrapScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "getProviderRuntime from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports getProviderRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useThemeValue from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports useThemeValue",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "defineThemeKitConfig from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineThemeKitConfig",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "themeKit from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports themeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "Provider from \"@theme-kit/astro/provider.astro\"",
+      "detail": "@theme-kit/astro./provider.astro declared entrypoint (no TypeScript surface)",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useTheme from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "directive client:load",
+      "detail": "valid Astro client directive",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeToggle from \"@theme-kit/astro/ThemeToggle.astro\"",
+      "detail": "@theme-kit/astro./ThemeToggle.astro declared entrypoint (no TypeScript surface)",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "getThemeController from \"@theme-kit/astro/runtime\"",
+      "detail": "@theme-kit/astro./runtime exports getThemeController",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeHead from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeHead",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "getInitialThemeState from \"@theme-kit/remix/server\"",
+      "detail": "@theme-kit/remix./server exports getInitialThemeState",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useTheme from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "ThemeScope from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\framework-guides.md",
+      "import": "useThemeHistory from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeScope from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useThemeHistory from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "createThemeRoot from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports createThemeRoot",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useTheme from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeScope from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useThemeHistory from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useTheme from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeScope from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useThemeHistory from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useTheme from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeScope from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useThemeHistory from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useTheme from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeScope from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useThemeHistory from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "injectTheme from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "injectThemeHistory from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeScopeDirective from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports ThemeScopeDirective",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeTransitionOptions from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeTransitionOptions",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "getProviderRuntime from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports getProviderRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useThemeValue from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports useThemeValue",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "createThemeBootstrapScript from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeBootstrapScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "defineThemeKitConfig from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineThemeKitConfig",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "themeKit from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports themeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "Provider from \"@theme-kit/astro/provider.astro\"",
+      "detail": "@theme-kit/astro./provider.astro declared entrypoint (no TypeScript surface)",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeToggle from \"@theme-kit/astro/ThemeToggle.astro\"",
+      "detail": "@theme-kit/astro./ThemeToggle.astro declared entrypoint (no TypeScript surface)",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "getThemeController from \"@theme-kit/astro/runtime\"",
+      "detail": "@theme-kit/astro./runtime exports getThemeController",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useTheme from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeHead from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeHead",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "getInitialThemeState from \"@theme-kit/remix/server\"",
+      "detail": "@theme-kit/remix./server exports getInitialThemeState",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useTheme from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeScope from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "useThemeHistory from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "getThemeRuntime from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports getThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "injectThemeRuntime from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/nuxt\"",
+      "detail": "@theme-kit/nuxt exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "useThemeRuntime from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "presetThemeKit from \"@theme-kit/unocss\"",
+      "detail": "@theme-kit/unocss exports presetThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "createShadcnVariables from \"@theme-kit/shadcn\"",
+      "detail": "@theme-kit/shadcn exports createShadcnVariables",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "createBootstrapVariables from \"@theme-kit/bootstrap\"",
+      "detail": "@theme-kit/bootstrap exports createBootstrapVariables",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "createDaisyVariables from \"@theme-kit/daisyui\"",
+      "detail": "@theme-kit/daisyui exports createDaisyVariables",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "createOpenPropsVariables from \"@theme-kit/open-props\"",
+      "detail": "@theme-kit/open-props exports createOpenPropsVariables",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "createMuiTheme from \"@theme-kit/mui\"",
+      "detail": "@theme-kit/mui exports createMuiTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "createChakraTheme from \"@theme-kit/chakra\"",
+      "detail": "@theme-kit/chakra exports createChakraTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "createAntdTheme from \"@theme-kit/antd\"",
+      "detail": "@theme-kit/antd exports createAntdTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "createMantineTheme from \"@theme-kit/mantine\"",
+      "detail": "@theme-kit/mantine exports createMantineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\libraries.tsx",
+      "import": "createUnoTheme from \"@theme-kit/unocss\"",
+      "detail": "@theme-kit/unocss exports createUnoTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "ThemeKit from \"@theme-kit/core/vanilla\"",
+      "detail": "@theme-kit/core./vanilla exports ThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "generateTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports generateTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "ThemeScope from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "ThemeTransitionOptions from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeTransitionOptions",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "useTheme from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "useTheme from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "useTheme from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "injectTheme from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "themeKit from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports themeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "getInitialThemeState from \"@theme-kit/remix/server\"",
+      "detail": "@theme-kit/remix./server exports getInitialThemeState",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\packages.tsx",
+      "import": "createDevToolsPlugin from \"@theme-kit/devtools\"",
+      "detail": "@theme-kit/devtools exports createDevToolsPlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\recipes.ts",
+      "import": "createThemeBootstrapScript from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeBootstrapScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\recipes.ts",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\recipes.ts",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\recipes.ts",
+      "import": "createPersistencePlugin from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createPersistencePlugin",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\recipes.ts",
+      "import": "createMultiWindowSync from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createMultiWindowSync",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\recipes.ts",
+      "import": "createOverlayScrollbar from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createOverlayScrollbar",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\recipes.ts",
+      "import": "ThemeScope from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\recipes.ts",
+      "import": "getContrastRatio from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getContrastRatio",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\recipes.ts",
+      "import": "validateThemeContrast from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports validateThemeContrast",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createShadcnAdapter from \"@theme-kit/shadcn\"",
+      "detail": "@theme-kit/shadcn exports createShadcnAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createBootstrapAdapter from \"@theme-kit/bootstrap\"",
+      "detail": "@theme-kit/bootstrap exports createBootstrapAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createDaisyAdapter from \"@theme-kit/daisyui\"",
+      "detail": "@theme-kit/daisyui exports createDaisyAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createOpenPropsAdapter from \"@theme-kit/open-props\"",
+      "detail": "@theme-kit/open-props exports createOpenPropsAdapter",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createMuiTheme from \"@theme-kit/mui\"",
+      "detail": "@theme-kit/mui exports createMuiTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "resolveTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports resolveTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createChakraTheme from \"@theme-kit/chakra\"",
+      "detail": "@theme-kit/chakra exports createChakraTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createAntdTheme from \"@theme-kit/antd\"",
+      "detail": "@theme-kit/antd exports createAntdTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createMantineTheme from \"@theme-kit/mantine\"",
+      "detail": "@theme-kit/mantine exports createMantineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases-libraries.ts",
+      "import": "createUnoTheme from \"@theme-kit/unocss\"",
+      "detail": "@theme-kit/unocss exports createUnoTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeHistory from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeRuntime from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeScope from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useScopedTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useScopedTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeTransitionOptions from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeTransitionOptions",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeLifecycle from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemeLifecycle",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemePacks from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useThemePacks",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useTheme from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeScope from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeRuntime from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeLifecycle from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useThemeLifecycle",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeSchedule from \"@theme-kit/next/client\"",
+      "detail": "@theme-kit/next./client exports useThemeSchedule",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useTheme from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeHistory from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeRuntime from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeScope from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeLifecycle from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useThemeLifecycle",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemePacks from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useThemePacks",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useTheme from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeHistory from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeRuntime from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeLifecycle from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useThemeLifecycle",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemePacks from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useThemePacks",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useTheme from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeHistory from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeRuntime from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeScope from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeLifecycle from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useThemeLifecycle",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemePacks from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useThemePacks",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "injectTheme from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "injectThemeHistory from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "injectThemeRuntime from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports injectThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeScopeDirective from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports ThemeScopeDirective",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "getProviderRuntime from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports getProviderRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "synchronizeDarkClass from \"@theme-kit/tailwind\"",
+      "detail": "@theme-kit/tailwind exports synchronizeDarkClass",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "createBlockingScript from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports createBlockingScript",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "buildThemeCssMap from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports buildThemeCssMap",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "computeFingerprint from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports computeFingerprint",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeScope from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeScope",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "getGlobalRuntime from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports getGlobalRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "getInitialThemeState from \"@theme-kit/remix/server\"",
+      "detail": "@theme-kit/remix./server exports getInitialThemeState",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeHead from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeHead",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useTheme from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useThemeHistory from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports useThemeHistory",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "createRemixThemePersistence from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports createRemixThemePersistence",
+      "ok": true
+    }
+  ]
+}

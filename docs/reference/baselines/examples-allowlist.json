@@ -1,0 +1,38 @@
+{
+  "$comment": [
+    "Authored allowlist for scripts/docs/check-examples.mjs check B (dependency completeness).",
+    "A docs snippet may only import a bare package that appears here — otherwise the reader",
+    "is being asked to install something the page never declared. Add a package only when a",
+    "docs page genuinely needs it, and keep the note: it is the justification a reviewer reads.",
+    "Relative specifiers, `@theme-kit/*`, Node builtins and URL imports are handled by the check.",
+    "Generated-ish data: this file is authored, the sibling examples-baseline.json is generated."
+  ],
+  "specifierPrefixes": [
+    "$lib",
+    "@/",
+    "~"
+  ],
+  "packages": {
+    "@analogjs/vite-plugin-angular": "Angular + Vite build setup (angular guide)",
+    "@angular/core": "Angular runtime (angular guide, adapters)",
+    "@angular/platform-browser": "Angular bootstrap (angular guide)",
+    "@astrojs/react": "Astro + React island setup (astro guide)",
+    "@remix-run/dev": "Remix Vite plugin (remix guide, vite-plugin registration tabs)",
+    "@remix-run/react": "Remix runtime (remix guide)",
+    "@sveltejs/vite-plugin-svelte": "Svelte + Vite build setup (svelte guide)",
+    "@tailwindcss/vite": "Tailwind v4 Vite plugin (tailwind guide)",
+    "@vitejs/plugin-react": "React + Vite build setup (react/web guides)",
+    "@vitejs/plugin-vue": "Vue + Vite build setup (vue guide)",
+    "astro": "Astro runtime (astro guide)",
+    "next": "Next.js runtime (next guide)",
+    "react": "React runtime (react, next, remix, astro-island guides)",
+    "react-dom": "React DOM runtime (react, next, remix guides)",
+    "solid-js": "Solid runtime (solid guide)",
+    "svelte": "Svelte runtime (svelte guide)",
+    "tailwindcss": "Tailwind CSS (tailwind guide, adapters)",
+    "unocss": "UnoCSS preset usage (unocss guide)",
+    "vite": "Vite config / plugin API (vite-plugin, framework setup guides)",
+    "vite-plugin-solid": "Solid + Vite build setup (solid guide)",
+    "vue": "Vue runtime (vue, nuxt guides)"
+  }
+}

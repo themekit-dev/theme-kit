@@ -1,0 +1,21 @@
+# Generated artifacts whose `--check` gate compares content byte-for-byte.
+#
+# The generators write LF. With `core.autocrlf=true` (the Windows default) a
+# fresh checkout rewrites text files as CRLF, and the byte comparison in
+# `generate-examples.mjs`, `generate-package-graph.mjs` and
+# `generate-toc-headings.mjs` would then report drift that does not exist — on
+# every clone, for every contributor whose checkout converts line endings.
+# Verified: with `core.autocrlf=true` a checkout of these blobs yields CRLF,
+# which is not what the generators produce.
+#
+# Pinning them to LF keeps `--check` a real drift detector rather than a
+# line-ending detector. These files are generated and never hand-edited, so
+# the attribute costs nothing.
+#
+# Scope is deliberately narrow. `docs/reference/public-api.json` and the
+# baselines under `docs/reference/baselines/` are read with `JSON.parse`, so
+# line endings cannot affect them; they are left alone. Normalising the rest
+# of the tree is a separate, repo-wide decision.
+#
+# If a byte-wise check is ever added for another generated path, pin it here.
+apps/docs/lib/generated/** text eol=lf

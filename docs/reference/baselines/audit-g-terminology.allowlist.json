@@ -1,0 +1,4 @@
+{
+  "$comment": "Per-line allowlist for Audit G. Each entry matches (file, ruleId); the matched lines are reported as allowlisted, not as failures. Re-freeze with `node scripts/docs/audits/audit-g-terminology.mjs --update`. Prefer fixing the prose over widening the allowlist.",
+  "entries": []
+}
