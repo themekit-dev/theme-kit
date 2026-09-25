@@ -101,9 +101,10 @@ export const brandLight = extendTheme("app-light", {
 Because contrast pairs are *semantic* (`foreground` on `background`, `primary` on `primaryForeground`), Theme Kit can audit them:
 
 ```ts
-import { validateThemeContrast } from "@theme-kit/core";
+import { getBuiltInThemes, validateThemeContrast } from "@theme-kit/core";
 
-const result = validateThemeContrast(theme, { themes });
+// Pass a theme list to resolve `extends` chains before auditing.
+const result = validateThemeContrast(theme, { themes: getBuiltInThemes() });
 // { valid, checks: [{ foregroundToken, backgroundToken, ratio, passesAALarge, … }] }
 ```
 

@@ -1,179 +1,164 @@
 import Link from "next/link";
-import { DocsLayout } from "../../components/docs-layout";
-import { PageHeader } from "../../components/ui/page-header";
-import { SectionHeading } from "../../components/ui/section-heading";
+import type { Metadata } from "next";
 
-export const metadata = {
+import { ShowcaseGallery } from "../../components/showcase/showcase-gallery";
+import { PKG_VERSION } from "../../lib/version";
+import { docsUrl } from "../../lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/showcase") },
   title: "Showcase",
   description:
-    "Apps and projects built with Theme Kit — the docs site itself, the interactive playground, and official example apps for every supported framework.",
+    "Beautiful interfaces, one theming system. Six interfaces themed with Theme Kit — dashboards, analytics, settings, a storefront, a documentation layout and a component gallery. Switch theme or mode and every preview restyles live.",
 };
 
-type ShowcaseItem = {
-  name: string;
-  description: string;
-  href: string;
-  tags: string[];
-};
-
-const official: ShowcaseItem[] = [
+/**
+ * Navigation destinations, not showcase items. Deliberately short: the Showcase's
+ * job is “look what Theme Kit can make possible”, not “here is another page that
+ * links to everything on the site”.
+ */
+const EXPLORE_MORE = [
   {
-    name: "Theme Kit Docs",
-    description:
-      "The website you are on right now. Every route is server-rendered, re-themes live through the runtime, and features Theme Studio, the Accessibility Lab and the Playground.",
-    href: "/",
-    tags: ["Next.js", "App Router", "Zero-flash", "RSC"],
+    name: "Examples",
+    description: "Runnable implementation examples",
+    href: "/examples",
   },
   {
-    name: "Theme Kit Playground",
-    description:
-      "Switch families and modes live, expand the token tree while CSS variables update in real time, time-travel through theme history, and try the multi-window sync and solar-time demos.",
+    name: "Playground",
+    description: "Experiment with Theme Kit",
     href: "/playground",
-    tags: ["Interactive", "Token tree", "History"],
   },
   {
     name: "Theme Studio",
-    description:
-      "Pick a seed color and watch a full light + dark theme pair get generated with generateTheme(). Apply the result to the running site right away.",
+    description: "Create a theme visually",
     href: "/theme-studio",
-    tags: ["generateTheme", "Seed color"],
+  },
+  {
+    name: "Presets",
+    description: "Ready-to-use theme presets",
+    href: "/presets/default",
+  },
+  {
+    name: "Framework guides",
+    description: "Integrate Theme Kit into your stack",
+    href: "/framework-guides",
   },
   {
     name: "Accessibility Lab",
-    description:
-      "Live WCAG contrast checks, full-theme audits with validateThemeContrast, and color-vision-deficiency simulation applied to the real theme.",
+    description: "Check contrast and simulate CVD",
     href: "/accessibility",
-    tags: ["WCAG", "CVD", "Contrast"],
   },
 ];
 
-const examples: ShowcaseItem[] = [
-  {
-    name: "React example",
-    description:
-      "Vite + React 19 with ThemeProvider, hooks and a live switcher — the reference integration.",
-    href: "/framework-guides/react",
-    tags: ["React", "Vite"],
-  },
-  {
-    name: "Next.js example",
-    description:
-      "App Router with SSR-safe hydration, cookie persistence and zero flash of incorrect theme.",
-    href: "/framework-guides/next",
-    tags: ["Next.js", "App Router"],
-  },
-  {
-    name: "Vue 3 example",
-    description:
-      "Vue 3 with app.use(ThemeProvider, options) and composables exposed as refs.",
-    href: "/framework-guides/vue",
-    tags: ["Vue 3", "Composables"],
-  },
-  {
-    name: "Svelte 5 example",
-    description:
-      "Svelte 5 provider and runes-based reactive stores.",
-    href: "/framework-guides/svelte",
-    tags: ["Svelte 5", "Runes"],
-  },
-  {
-    name: "Solid example",
-    description:
-      "Solid with fine-grained signals and a context provider.",
-    href: "/framework-guides/solid",
-    tags: ["Solid", "Signals"],
-  },
-  {
-    name: "Angular example",
-    description:
-      "Angular providers and injectables wired through the DI container.",
-    href: "/framework-guides/angular",
-    tags: ["Angular", "DI"],
-  },
-  {
-    name: "Web Components example",
-    description:
-      "Framework-free theming with custom elements — provider, toggle and select.",
-    href: "/framework-guides/web",
-    tags: ["Custom Elements", "Vanilla"],
-  },
-  {
-    name: "Astro example",
-    description:
-      "Islands integration with a zero-flash blocking script.",
-    href: "/framework-guides/astro",
-    tags: ["Astro", "Islands"],
-  },
-  {
-    name: "Nuxt example",
-    description:
-      "Nuxt 3 module with auto-imported composables and components.",
-    href: "/framework-guides/nuxt",
-    tags: ["Nuxt 3", "Module"],
-  },
-  {
-    name: "Remix example",
-    description:
-      "Loader-based SSR theming with a blocking head script.",
-    href: "/framework-guides/remix",
-    tags: ["Remix", "SSR"],
-  },
-];
-
-function Card({ item }: { item: ShowcaseItem }) {
-  return (
-    <Link
-      href={item.href}
-      className="glass-card card-lift p-5 no-underline flex flex-col gap-3"
-    >
-      <div className="flex items-center justify-between gap-2">
-        <div className="font-semibold">{item.name}</div>
-        <span
-          className="text-xs font-semibold shrink-0"
-          style={{ color: "var(--theme-color-primary)" }}
-        >
-          Open →
-        </span>
-      </div>
-      <p className="m-0 text-sm opacity-70 leading-relaxed">{item.description}</p>
-      <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
-        {item.tags.map((tag) => (
-          <span
-            key={tag}
-            className="text-[10px] px-2 py-0.5 rounded-full border border-border bg-muted/40"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-    </Link>
-  );
-}
-
+/**
+ * The Showcase deliberately does **not** use `DocsLayout`.
+ *
+ * A documentation page earns a sidebar and a table of contents because readers
+ * navigate sections of a long article. A gallery has a different interaction
+ * model — visual, exploratory, filter-driven — and the sidebar plus TOC rail
+ * cost a third of the width the previews want. Navigation here is the filter bar
+ * inside `ShowcaseGallery`.
+ *
+ * The page also ends cleanly: no related-docs block, no second navigation list.
+ * The last two sections are "Explore more" and "Build it yourself", then the
+ * site footer.
+ */
 export default function ShowcasePage() {
   return (
-    <DocsLayout>
-      <div className="max-w-3xl">
-        <PageHeader
-          eyebrow="Showcase"
-          title="Built with Theme Kit"
-          description="Theme Kit powers its own docs. These are the real apps — this documentation site, the interactive tools, and official example apps for every supported framework."
+    <>
+      {/* ---------------------------------------------------------- hero */}
+      <section className="relative overflow-hidden border-b border-border">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/8 via-transparent to-transparent"
         />
+        <div className="relative mx-auto max-w-[1400px] px-6 pt-14 pb-10 sm:pt-20 sm:pb-12">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+            Showcase
+          </div>
 
-      <SectionHeading>Official tools</SectionHeading>
-      <div className="grid gap-4 sm:grid-cols-2 mb-12">
-        {official.map((item) => (
-          <Card key={item.name} item={item} />
-        ))}
-      </div>
+          <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] max-w-3xl">
+            Beautiful interfaces.
+            <br />
+            One theming system.
+          </h1>
 
-      <SectionHeading>Example apps</SectionHeading>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-12">
-        {examples.map((item) => (
-          <Card key={item.name} item={item} />
-        ))}
+          <p className="mt-6 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
+            Explore what can be built with Theme Kit.
+          </p>
+
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            <span>
+              Verified with Theme Kit{" "}
+              <span className="mono text-foreground">{PKG_VERSION}</span>
+            </span>
+            <span aria-hidden className="opacity-40">
+              ·
+            </span>
+            <Link href="/examples" className="text-primary hover:underline">
+              Want runnable code? See Examples →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* --------------------------------------------------------- canvas */}
+      <div className="mx-auto max-w-[1400px] px-6 py-10 sm:py-14">
+        <ShowcaseGallery />
+
+        {/* ------------------------------------------------- explore more */}
+        <section className="mt-20">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-5">
+            Explore more
+          </h2>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {EXPLORE_MORE.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="glass-card card-lift p-4 no-underline flex items-start justify-between gap-3"
+              >
+                <span className="min-w-0">
+                  <span className="block font-medium text-sm">{item.name}</span>
+                  <span className="block text-[13px] text-muted-foreground mt-0.5">
+                    {item.description}
+                  </span>
+                </span>
+                <span className="text-primary text-sm shrink-0" aria-hidden>
+                  ↗
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* ------------------------------------------------- build it yourself */}
+        <section className="mt-16 rounded-2xl border border-primary/30 bg-primary/5 p-6 sm:p-8">
+          <h2 className="text-xl font-semibold tracking-tight">
+            Want to build one of these?
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground max-w-2xl">
+            Start with a runnable example or explore the framework guide for your
+            stack. Each composition above maps to a real integration — persistence,
+            scoping, zero-flash SSR, scheduling and more.
+          </p>
+          <div className="flex flex-wrap items-center gap-3 mt-5">
+            <Link
+              href="/examples"
+              className="text-sm font-medium px-4 py-2 rounded-lg bg-primary text-primary-foreground no-underline"
+            >
+              Browse examples
+            </Link>
+            <Link
+              href="/choose-package"
+              className="text-sm font-medium px-4 py-2 rounded-lg border border-border bg-card no-underline hover:border-ring"
+            >
+              Choose your framework
+            </Link>
+          </div>
+        </section>
       </div>
-      </div>
-    </DocsLayout>
+    </>
   );
 }

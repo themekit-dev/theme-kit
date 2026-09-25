@@ -1,32 +1,67 @@
 import { type ThemeDefinition } from "@theme-kit/core";
 import { findProviderRuntime } from "./utils";
+import { CustomElementBase } from "./custom-element-base";
 
-export class ThemeKitSelect extends HTMLElement {
+/**
+ * Custom element `<theme-kit-select>` that renders a `<select>` for choosing
+ * the theme mode or family.
+ *
+ * Framework-free (vanilla JS). When the `type` attribute is `mode` (default),
+ * it lists `system`, `light`, and `dark`; when `family`, it lists the theme
+ * families from the provider's registry. Changing the selection updates the
+ * provider's selection. Observes the `type` attribute.
+ *
+ * @remarks
+ * Requires an ancestor `<theme-kit-provider>`. If the provider is not yet
+ * initialized, it waits for the `theme-ready` event.
+ *
+ * @example
+ * ```html
+ * <theme-kit-select type="mode"></theme-kit-select>
+ * ```
+ *
+ * @see {@link defineCustomElements}
+ * @see {@link ThemeKitProvider}
+ */
+export class ThemeKitSelect extends CustomElementBase {
   static observedAttributes = ["type"];
 
   private unsubscribe: (() => void) | null = null;
   private selectEl: HTMLSelectElement | null = null;
   private selectType: "mode" | "family" = "mode";
 
+  /** Lifecycle hook: initializes the select when connected. */
   connectedCallback() {
     this.selectType =
       (this.getAttribute("type") as "mode" | "family") ?? "mode";
 
     const runtime = findProviderRuntime(this);
     if (!runtime) {
-      this.addEventListener("theme-ready", () => this.init(), { once: true });
+      // Listen on the document, not on `this`: <theme-kit-provider> dispatches
+      // theme-ready on itself with bubbles:true, which travels *up* and can never
+      // reach a descendant. A self-listener therefore only fired when the
+      // provider happened to initialise first.
+      document.addEventListener(
+        "theme-ready",
+        () => {
+          if (this.isConnected) this.init();
+        },
+        { once: true },
+      );
       return;
     }
 
     this.init();
   }
 
+  /** Lifecycle hook: unsubscribes and removes the change listener. */
   disconnectedCallback() {
     this.unsubscribe?.();
     this.unsubscribe = null;
     this.selectEl?.removeEventListener("change", this.handleChange);
   }
 
+  /** Lifecycle hook: re-initializes the select when the `type` attribute changes. */
   attributeChangedCallback(
     name: string,
     _oldValue: string | null,
@@ -122,6 +157,10 @@ export class ThemeKitSelect extends HTMLElement {
   };
 
   static define(tag = "theme-kit-select") {
+    // SSR-safe: customElements only exists in the browser. Framework wrappers
+    // (Vue, Solid, Angular, Astro, …) call define() from both server and client
+    // environments, so this must be a no-op on the server.
+    if (typeof customElements === "undefined") return;
     if (!customElements.get(tag)) {
       customElements.define(tag, ThemeKitSelect);
     }

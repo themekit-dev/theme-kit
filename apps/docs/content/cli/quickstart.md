@@ -1,5 +1,10 @@
 # CLI Quick Start
 
+## Prerequisites
+- Node.js 22+
+- npm, pnpm, yarn, or bun installed
+- No Theme Kit project setup required to start
+
 A complete five-minute workflow: generate a theme from a seed, validate it,
 inspect it, and export CSS variables — then wire the JSON into a Theme Kit
 provider.
@@ -34,7 +39,41 @@ theme-kit generate --seed "#6366f1" --mode light --output light.json
 theme-kit generate --seed "#6366f1" --mode dark  --output dark.json
 ```
 
-The default `--mode both` writes a `{ light, dark }` pair.
+The default `--mode both` writes a `{ light, dark }` pair — one definition per
+mode, each carrying its own `meta` (family + mode) and token set:
+
+```json title="theme.json"
+{
+  "light": {
+    "name": "indigo-light",
+    "meta": { "family": "indigo", "mode": "light", "label": "Indigo Light", "order": 10 },
+    "tokens": {
+      "colors": {
+        "background": "#f8fafc",
+        "foreground": "#0f172a",
+        "primary": "#6366f1",
+        "border": "#d9d9e8",
+        "ring": "#6366f1"
+      },
+      "radius": { "lg": "8px" }
+    }
+  },
+  "dark": {
+    "name": "indigo-dark",
+    "meta": { "family": "indigo", "mode": "dark", "label": "Indigo Dark", "order": 20 },
+    "tokens": {
+      "colors": {
+        "background": "#020617",
+        "foreground": "#f8fafc",
+        "primary": "#9596ea",
+        "border": "#080a5e",
+        "ring": "#9596ea"
+      },
+      "radius": { "lg": "8px" }
+    }
+  }
+}
+```
 
 ## 3. Validate
 
@@ -94,3 +133,13 @@ export function App() {
 
 See [Commands](/cli/generate) for each command's options, or
 [Workflows](/cli/workflows) for a full authoring loop.
+
+## Next Steps
+- [Run in CI](./ci)
+- [View full CLI reference](./reference)
+- [Migrate legacy themes](./migrate)
+
+## Related
+- [Theme Kit Quick Start](../quickstart)
+- [Custom Themes](../../custom-themes)
+- [Adapters Guide](../../adapters)

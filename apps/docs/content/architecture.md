@@ -6,7 +6,7 @@ The heart of the library is a single framework-agnostic runtime that wires the s
 import { createThemeRuntime } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,            // default: built-in themes
+  themes: getBuiltInThemes(),   // default: built-in themes
   defaultTheme,      // fallback theme name
   initialMode,       // "light" | "dark" | "system"
   initialFamily,     // e.g. "plum"
@@ -216,7 +216,15 @@ setFamily("plum")
 Before any JS runs, a blocking inline script reads the persisted selection, resolves the effective mode (`system` → `prefers-color-scheme`), and applies CSS variables + DOM effects.
 
 ```ts
-import { createThemeBootstrapScript, buildThemeCssMap } from "@theme-kit/core";
+import {
+  createThemeBootstrapScript,
+  buildThemeCssMap,
+  getBuiltInThemes,
+} from "@theme-kit/core";
+
+// buildThemeCssMap/createThemeBootstrapScript take the registry explicitly;
+// the built-in set is a valid registry, so no theme file is needed.
+const themes = getBuiltInThemes();
 
 const cssMap = buildThemeCssMap(themes);         // name + family:mode → variables
 const script = createThemeBootstrapScript({
@@ -230,3 +238,17 @@ const script = createThemeBootstrapScript({
 ```
 
 The `@theme-kit/next` provider does all of this automatically — it reads cookies on the server, renders the resolved theme, and emits the blocking script.
+
+## Independent packages
+
+Theme Kit is a set of independently installable packages, not a single bundle:
+
+- Installing a framework integration (`@theme-kit/react`, `@theme-kit/vue`,
+  `@theme-kit/svelte`, `@theme-kit/solid`, `@theme-kit/angular`,
+  `@theme-kit/next`, `@theme-kit/nuxt`, `@theme-kit/astro`,
+  `@theme-kit/remix`) installs that framework and nothing else — no unrelated
+  framework packages and no component-library adapters.
+- Adapters are separate packages, installed only when explicitly wanted. Their
+  framework wrappers live behind subpaths (`/react`, `/vue`, `/svelte`,
+  `/solid`, `/angular`) with optional peers.
+- `@theme-kit/core` has zero runtime dependencies.

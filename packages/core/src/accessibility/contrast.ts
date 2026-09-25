@@ -2,24 +2,48 @@ import type { ThemeDefinition } from "../model/theme";
 import { resolveTheme } from "../model";
 import type { ThemeName } from "../model/theme";
 
+/**
+ * The result of a single foreground/background contrast check.
+ */
 export interface ContrastCheck {
+  /** The foreground token name checked. */
   foregroundToken: string;
+  /** The background token name checked. */
   backgroundToken: string;
+  /** The resolved foreground color. */
   foreground: string;
+  /** The resolved background color. */
   background: string;
+  /** The WCAG contrast ratio (1 to 21). */
   ratio: number;
+  /** Whether the pair meets WCAG AA for normal text (ratio ≥ 4.5). */
   passesAANormal: boolean;
+  /** Whether the pair meets WCAG AA for large text (ratio ≥ 3.0). */
   passesAALarge: boolean;
+  /** Whether the pair meets WCAG AAA for normal text (ratio ≥ 7.0). */
   passesAAANormal: boolean;
+  /** Whether the pair meets WCAG AAA for large text (ratio ≥ 4.5). */
   passesAAALarge: boolean;
 }
 
+/**
+ * Options for {@link validateThemeContrast}.
+ */
 export interface ValidateThemeContrastOptions {
+  /**
+   * Additional theme definitions used to resolve the target theme by name
+   * before checking. When omitted, the theme is checked as-is.
+   */
   themes?: readonly ThemeDefinition[];
 }
 
+/**
+ * The outcome of validating a theme's color contrast.
+ */
 export interface ContrastValidationResult {
+  /** `true` when every checked pair passes WCAG AA for normal text. */
   valid: boolean;
+  /** The per-pair contrast checks performed. */
   checks: ContrastCheck[];
 }
 
@@ -42,6 +66,18 @@ function getLuminance(hex: string): number {
   return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
 }
 
+/**
+ * Compute the WCAG contrast ratio between two colors.
+ *
+ * The ratio is `(L1 + 0.05) / (L2 + 0.05)` where `L1`/`L2` are the relative
+ * luminances of the lighter and darker colors, yielding a value in the range
+ * 1 (identical colors) to 21 (black on white). Colors are parsed as hex.
+ *
+ * @param foreground The foreground color (hex).
+ * @param background The background color (hex).
+ * @returns The contrast ratio, a number between 1 and 21.
+ * @see {@link validateThemeContrast}
+ */
 export function getContrastRatio(foreground: string, background: string): number {
   const fg = getLuminance(foreground);
   const bg = getLuminance(background);
@@ -82,6 +118,20 @@ function isHexColor(value: string): boolean {
   return /^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$/.test(value);
 }
 
+/**
+ * Validate a theme's semantic color pairs against WCAG contrast thresholds.
+ *
+ * Checks the standard foreground/background pairs (e.g. `foreground` on
+ * `background`, `primaryForeground` on `primary`) and reports each pair's
+ * ratio and whether it passes WCAG AA/AAA for normal and large text. Pairs
+ * whose colors are missing or not hex are skipped. The theme is considered
+ * valid when every checked pair passes WCAG AA for normal text.
+ *
+ * @param theme The theme definition to check.
+ * @param options Optional configuration.
+ * @returns A {@link ContrastValidationResult} with per-pair checks.
+ * @see {@link getContrastRatio}
+ */
 export function validateThemeContrast(
   theme: ThemeDefinition,
   options: ValidateThemeContrastOptions = {},

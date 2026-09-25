@@ -1,5 +1,15 @@
 import { defineTheme } from "./model";
 
+/**
+ * Build a high-contrast theme for the given mode.
+ *
+ * Uses maximum-contrast colors (pure black/white surfaces, saturated primary)
+ * to maximize legibility for users with low vision.
+ *
+ * @param mode The color mode of the theme.
+ * @returns A high-contrast theme definition tagged `"accessibility"` and
+ *   `"high-contrast"`.
+ */
 export function getHighContrastTheme(mode: "light" | "dark") {
   const isLight = mode === "light";
   return defineTheme({
@@ -41,6 +51,16 @@ export function getHighContrastTheme(mode: "light" | "dark") {
   });
 }
 
+/**
+ * Build a large-text theme for the given mode.
+ *
+ * Enlarges the typography scale and uses high-contrast colors so text remains
+ * readable for users who need larger type.
+ *
+ * @param mode The color mode of the theme.
+ * @returns A large-text theme definition tagged `"accessibility"` and
+ *   `"large-text"`.
+ */
 export function getLargeTextTheme(mode: "light" | "dark") {
   const isLight = mode === "light";
   return defineTheme({
@@ -105,6 +125,12 @@ export function getLargeTextTheme(mode: "light" | "dark") {
   });
 }
 
+/**
+ * Build the accessibility profile theme set: high-contrast and large-text
+ * themes for both light and dark modes.
+ *
+ * @returns An array of four accessibility theme definitions.
+ */
 export function getAccessibilityProfiles() {
   return [
     getHighContrastTheme("light"),

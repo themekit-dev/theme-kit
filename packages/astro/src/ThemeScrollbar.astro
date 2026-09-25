@@ -1,0 +1,103 @@
+---
+import { ThemeKitScrollbar } from "@theme-kit/web";
+
+// SSR-safe (no-op on the server); the <script> below defines it in the browser.
+ThemeKitScrollbar.define();
+
+/**
+ * Framework-neutral overlay scrollbar, as an Astro component.
+ *
+ * This is the wrapper `@theme-kit/core`'s overlay engine is meant to have per
+ * framework — the same one `@theme-kit/react` exposes as `<ThemeScrollbar />`
+ * and `@theme-kit/vue`/`@theme-kit/svelte` expose as their own components. It
+ * renders the `<theme-kit-scrollbar>` custom element from `@theme-kit/web`, so
+ * it needs no client framework: an Astro project with no islands at all can
+ * still have the themed scrollbar.
+ *
+ * Pair it with `scrollbar` on `provider.astro` (or the `themeKit({ scrollbar })`
+ * integration option) so the native scrollbar is hidden *before* first paint —
+ * that is what makes the overlay the only scrollbar from the first frame. This
+ * component alone cannot do that: it mounts with the rest of the island layer,
+ * which is after paint.
+ *
+ * It resolves the runtime from the nearest ancestor that has one — the
+ * `<theme-kit-provider>` element, or the runtime `ThemeProviderClient` installs
+ * (which `@theme-kit/astro` publishes on `<html>`).
+ *
+ * @example
+ * ```astro
+ * ---
+ * import ThemeScrollbar from "@theme-kit/astro/ThemeScrollbar.astro";
+ * ---
+ * <ThemeScrollbar thickness={10} autoHide smooth />
+ * ```
+ */
+interface Props {
+  /** Hide the scrollbar when idle. */
+  autoHide?: boolean;
+  /** Widen the thumb while the pointer is over the scroll region. */
+  hoverExpand?: boolean;
+  /** Allow dragging the thumb. */
+  draggable?: boolean;
+  /** Clicking the track jumps to that position. */
+  clickToJump?: boolean;
+  /** Animate thumb movement. */
+  smooth?: boolean;
+  /** Rubber-band past the ends. */
+  overscroll?: boolean;
+  /** Render arrow buttons at each end. */
+  arrows?: boolean;
+  /** Enable drag handling on touch pointers too (off by default). */
+  touch?: boolean;
+  /** Thumb/track thickness in px. */
+  thickness?: number;
+  /** Thickness while hovered, in px. */
+  hoverThickness?: number;
+  /** Thumb corner radius in px. */
+  radius?: number;
+  /** Minimum thumb length in px. */
+  minThumbSize?: number;
+  /** Distance from the viewport edge, in px. */
+  offset?: number;
+  /** Auto-hide delay in ms. */
+  duration?: number;
+  /** Transition duration in ms. */
+  animationDuration?: number;
+}
+
+const props = Astro.props as Props;
+
+// Kebab-case: the element parses its options from attributes.
+const attrNames: Record<keyof Props, string> = {
+  autoHide: "auto-hide",
+  hoverExpand: "hover-expand",
+  draggable: "draggable",
+  clickToJump: "click-to-jump",
+  smooth: "smooth",
+  overscroll: "overscroll",
+  arrows: "arrows",
+  touch: "touch",
+  thickness: "thickness",
+  hoverThickness: "hover-thickness",
+  radius: "radius",
+  minThumbSize: "min-thumb-size",
+  offset: "offset",
+  duration: "duration",
+  animationDuration: "animation-duration",
+};
+
+const attrs: Record<string, string> = {};
+for (const [key, attr] of Object.entries(attrNames)) {
+  const value = (props as Record<string, unknown>)[key];
+  if (value == null) continue;
+  // Booleans are presence/absence attributes; a bare `auto-hide` means true.
+  attrs[attr] = value === true ? "" : String(value);
+}
+---
+
+<theme-kit-scrollbar {...attrs}></theme-kit-scrollbar>
+
+<script>
+  import { ThemeKitScrollbar } from "@theme-kit/web";
+  ThemeKitScrollbar.define();
+</script>

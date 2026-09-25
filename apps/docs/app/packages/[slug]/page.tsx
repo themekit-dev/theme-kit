@@ -9,9 +9,14 @@ import {
   InstallCommand,
   type PackageManager,
 } from "../../../components/install-command";
+import { Prerequisites } from "../../../components/ui/prerequisites";
+import { NextSteps } from "../../../components/ui/next-step-card";
+import { RelatedLinks } from "../../../components/ui/related-links";
+import { InlineCode } from "../../../components/ui/inline-code";
 import { packages } from "../../../lib/packages";
 import { highlightCode } from "../../../lib/highlight";
-import { npmPackageUrl, sourceUrlForPackage } from "../../../lib/site";
+import { docsUrl, npmPackageUrl, sourceUrlForPackage } from "../../../lib/site";
+import { PKG_VERSION } from "../../../lib/version";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -43,6 +48,7 @@ export async function generateMetadata({
   return {
     title: `${pkg.pkg}`,
     description: pkg.tagline,
+    alternates: { canonical: docsUrl(`/packages/${slug}`) },
   };
 }
 
@@ -61,115 +67,142 @@ export default async function PackagePage({ params }: PageProps) {
     ]),
   ) as Record<PackageManager, { code: string; html: string }>;
 
+  // Determine if this is a framework package
+  const isFrameworkPackage = !["core", "cli", "devtools"].includes(pkg.slug);
+  const isCorePackage = pkg.slug === "core";
+
   return (
     <DocsLayout>
       <article className="min-w-0 max-w-3xl">
-          <PageHeader
-            icon={pkg.icon}
-            title={pkg.name}
-            subtitle={pkg.pkg}
-            description={pkg.tagline}
-            badges={[
-              ...pkg.tags.map((tag) => ({ label: tag })),
-              { label: `${pkg.featureCount} exports` },
-            ]}
-          />
+        <PageHeader
+          icon={pkg.icon}
+          title={pkg.name}
+          subtitle={pkg.pkg}
+          description={pkg.tagline}
+          badges={[
+            ...pkg.tags.map((tag) => ({ label: tag })),
+            { label: `${pkg.featureCount} exports` },
+          ]}
+          verified={{ version: PKG_VERSION, date: "2026-09-17" }}
+        />
 
-          <section id="install" className="scroll-mt-24">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold tracking-tight">
-                Installation
-              </h2>
-              <div className="flex items-center gap-3 text-xs">
-                <a
-                  href={npmPackageUrl(pkg.pkg)}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="text-primary hover:underline no-underline"
-                >
-                  View on npm ↗
-                </a>
-                <a
-                  href={sourceUrlForPackage(pkg.pkg)}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="text-foreground/70 hover:text-primary hover:underline no-underline"
-                >
-                  Source ↗
-                </a>
-              </div>
-            </div>
-            <p className="text-sm opacity-70 mt-1 mb-3">
-              {pkg.pkg === "@theme-kit/core" ? (
-                "Install the framework-agnostic core directly."
-              ) : (
-                <>
-                  Install the integration alongside{" "}
-                  <code className="mono text-[0.9em]">@theme-kit/core</code>.
-                </>
-              )}
-            </p>
-            <InstallCommand commands={commands} />
-          </section>
+        <Prerequisites
+          items={[
+            {
+              label: "Package Manager",
+              value: "npm, pnpm, yarn, or bun",
+            },
+            {
+              label: "Dependencies",
+              value: isCorePackage
+                ? "None — this is the core package"
+                : "@theme-kit/core (peer dependency)",
+            },
+            {
+              label: "Use Case",
+              value: isCorePackage
+                ? "Framework-agnostic runtime and tooling"
+                : isFrameworkPackage
+                  ? `${pkg.name} projects with theme support`
+                  : "Theme Kit development and CI/CD",
+            },
+          ]}
+        />
 
-          <section id="quick-start" className="mt-10 scroll-mt-24">
+        <section id="install" className="scroll-mt-24 mt-8">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg font-semibold tracking-tight">
-              Quick Start
+              Installation
+            </h2>
+            <div className="flex items-center gap-3 text-xs">
+              <a
+                href={npmPackageUrl(pkg.pkg)}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="text-primary hover:underline no-underline"
+              >
+                View on npm ↗
+              </a>
+              <a
+                href={sourceUrlForPackage(pkg.pkg)}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="text-foreground/70 hover:text-primary hover:underline no-underline"
+              >
+                Source ↗
+              </a>
+            </div>
+          </div>
+          <p className="text-sm opacity-70 mt-1 mb-3">
+            {pkg.pkg === "@theme-kit/core" ? (
+              "Install the framework-agnostic core directly."
+            ) : (
+              <>
+                Install the integration —{" "}
+                <code className="mono text-[0.9em]">@theme-kit/core</code> is
+                pulled in automatically as a dependency.
+              </>
+            )}
+          </p>
+          <InstallCommand commands={commands} />
+        </section>
+
+        <section id="quick-start" className="mt-10 scroll-mt-24">
+          <h2 className="text-lg font-semibold tracking-tight">Quick Start</h2>
+          <p className="text-sm opacity-70 mt-1 mb-3">
+            Complete copy-paste usage for this package.
+          </p>
+          <CodeBlock
+            html={pkg.html}
+            code={pkg.snippet.code}
+            language={pkg.snippet.lang}
+            filename={pkg.snippet.title}
+            className="rounded-lg"
+          />
+        </section>
+
+        {pkg.snippet2 && (
+          <section id="more-examples" className="mt-10 scroll-mt-24">
+            <h2 className="text-lg font-semibold tracking-tight">
+              More Examples
             </h2>
             <p className="text-sm opacity-70 mt-1 mb-3">
-              Complete copy-paste usage for this package.
+              Additional patterns for {pkg.name}.
             </p>
             <CodeBlock
-              html={pkg.html}
-              code={pkg.snippet.code}
-              language={pkg.snippet.lang}
-              filename={pkg.snippet.title}
-              className="rounded-lg"
+              html={pkg.html2!}
+              code={pkg.snippet2.code}
+              language={pkg.snippet2.lang}
+              filename={pkg.snippet2.title}
+              className="rounded-lg m-0"
             />
           </section>
+        )}
 
-          {pkg.snippet2 && (
-            <section id="more-examples" className="mt-10 scroll-mt-24">
-              <h2 className="text-lg font-semibold tracking-tight">
-                More Examples
-              </h2>
-              <p className="text-sm opacity-70 mt-1 mb-3">
-                Additional patterns for {pkg.name}.
-              </p>
-              <CodeBlock
-                html={pkg.html2!}
-                code={pkg.snippet2.code}
-                language={pkg.snippet2.lang}
-                filename={pkg.snippet2.title}
-                className="rounded-lg m-0"
-              />
-            </section>
-          )}
-
-          <section id="api" className="mt-10 scroll-mt-24">
-            <h2 className="text-lg font-semibold tracking-tight">
-              API Reference
-            </h2>
-            <p className="text-sm opacity-70 mt-1 mb-3">
-              Curated highlights below. The complete generated reference — every
-              signature, parameter and type — is at{" "}
-              <Link
-                href={`/api-reference/${pkg.slug}`}
-                className="no-underline font-medium"
-                style={{ color: "var(--theme-color-primary)" }}
-              >
-                /api-reference/{pkg.slug}
-              </Link>
-              .
-            </p>
-            <div className="flex flex-col gap-8 mt-4">
-              {pkg.groups.map((group, groupIndex) => {
-                const base = anchor(group.label);
-                const count = pkg.groups
-                  .slice(0, groupIndex)
-                  .filter((g) => anchor(g.label) === base).length;
-                const sectionId = `api-${base}${count > 0 ? `-${count + 1}` : ""}`;
-                return (
+        <section id="api" className="mt-10 scroll-mt-24">
+          <h2 className="text-lg font-semibold tracking-tight">
+            API Reference
+          </h2>
+          <p className="text-sm opacity-70 mt-1 mb-3">
+            Curated highlights below. The complete generated reference — every
+            signature, parameter and type — is at{" "}
+            <Link
+              href={`/api-reference/${pkg.slug}`}
+              className="no-underline font-medium"
+              style={{ color: "var(--theme-color-primary)" }}
+            >
+              /api-reference/{pkg.slug}
+            </Link>
+            .
+          </p>
+          <div className="flex flex-col gap-8 mt-4">
+            {pkg.groups.map((group, groupIndex) => {
+              const base = anchor(group.label);
+              const count = pkg.groups
+                .slice(0, groupIndex)
+                .filter((g) => anchor(g.label) === base).length;
+              const sectionId = `api-${base}${count > 0 ? `-${count + 1}` : ""}`;
+              return (
                 <section
                   key={`${group.label}-${groupIndex}`}
                   id={sectionId}
@@ -207,7 +240,7 @@ export default async function PackagePage({ params }: PageProps) {
                               </code>
                             </td>
                             <td className="px-4 py-3 opacity-70 leading-relaxed">
-                              {feature.desc}
+                              <InlineCode>{feature.desc}</InlineCode>
                             </td>
                           </tr>
                         ))}
@@ -215,11 +248,49 @@ export default async function PackagePage({ params }: PageProps) {
                     </table>
                   </div>
                 </section>
-                );
-              })}
-            </div>
-          </section>
-        </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <NextSteps
+          className="mt-10"
+          steps={[
+            {
+              title: "View Full API",
+              description:
+                "Complete generated reference with all signatures and types",
+              href: `/api-reference/${pkg.slug}`,
+            },
+            {
+              title: isCorePackage
+                ? "Framework Integration"
+                : "Quick Start Guide",
+              description: isCorePackage
+                ? "Choose your framework and get started"
+                : `Complete ${pkg.name} setup guide`,
+              href: isCorePackage
+                ? "/get-started"
+                : `/framework-guides/${pkg.slug}`,
+            },
+            {
+              title: "Explore Examples",
+              description: "See real-world implementations and patterns",
+              href: "/showcase",
+            },
+          ]}
+        />
+
+        <RelatedLinks
+          className="mt-10"
+          links={[
+            { title: "Compatibility Matrix", href: "/reference/compatibility" },
+            { title: "Troubleshooting", href: "/troubleshooting" },
+            { title: "Migration Guide", href: "/migration" },
+            { title: "API Reference", href: `/api-reference/${pkg.slug}` },
+          ]}
+        />
+      </article>
     </DocsLayout>
   );
 }

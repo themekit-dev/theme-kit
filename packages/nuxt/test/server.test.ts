@@ -125,6 +125,21 @@ describe("resolveThemeFromCookies", () => {
     expect(resolution.theme.name).toBe("forest-light");
   });
 
+  it("honours mode/family cookies that arrive without a fingerprint cookie", () => {
+    // The blocking script's guard is `if (fp && fp !== F)`, so a *missing*
+    // fingerprint does not invalidate the selection. The server has to apply the
+    // same rule or the two disagree: the server would render the fallback theme
+    // while the script painted the persisted one, which React reports as a
+    // hydration mismatch. Same rule as `@theme-kit/remix`.
+    const cookies = {
+      [themeKitCookieNames.mode]: "dark",
+      [themeKitCookieNames.family]: "forest",
+    };
+    const resolution = resolveThemeFromCookies({ ...base, cookies });
+    expect(resolution.selection.mode).toBe("dark");
+    expect(resolution.theme.name).toBe("forest-dark");
+  });
+
   it("applies initialFamily when no family cookie is present", () => {
     const resolution = resolveThemeFromCookies({
       ...base,
@@ -182,6 +197,92 @@ describe("createNuxtThemeBootstrapScript", () => {
     expect(effects.classListAdd).toBe("dark");
     expect((effects.style as Record<string, string>)["--theme-color-background"]).toBe("#002200");
     expect((effects.attrs as Record<string, string>)["data-theme-mode"]).toBe("dark");
+  });
+});
+
+describe("createNuxtThemeBootstrapScript — fallback identity", () => {
+  const fingerprint = computeFingerprint(themes, "forest-light");
+
+  function executeScript(
+    script: string,
+    env: { cookie?: string; matchMedia?: boolean } = {},
+  ) {
+    const { cookie = "", matchMedia = true } = env;
+    const attrs: Record<string, string> = {};
+    const classes = new Set<string>();
+    const style: Record<string, string> = {};
+    let colorScheme = "";
+
+    const documentElement = {
+      classList: {
+        add: (name: string) => classes.add(name),
+        remove: (name: string) => classes.delete(name),
+      },
+      style: {
+        setProperty: (name: string, value: string) => {
+          style[name] = value;
+        },
+        get colorScheme() {
+          return colorScheme;
+        },
+        set colorScheme(value: string) {
+          colorScheme = value;
+        },
+      },
+      setAttribute: (name: string, value: string) => {
+        attrs[name] = String(value);
+      },
+    };
+
+    const window: Record<string, unknown> = {};
+    if (matchMedia) {
+      // A light OS: `"system"` resolves to light unless a cookie overrides it.
+      window.matchMedia = () => ({ matches: false });
+    }
+
+    const vm = require("node:vm");
+    vm.runInNewContext(script, { document: { documentElement, cookie }, window });
+
+    return { attrs, classes, style, colorScheme };
+  }
+
+  const script = createNuxtThemeBootstrapScript({
+    themes,
+    defaultTheme: "forest-light",
+    initialMode: "system",
+  });
+
+  it("names the resolved default theme, not a synthetic placeholder", () => {
+    // The legacy Nuxt script wrote `data-theme="theme-kit-default-light"` — a
+    // name no theme in the registry has. The client runtime writes the real
+    // theme name, so the pre-paint script has to as well.
+    const dom = executeScript(script);
+
+    expect(dom.attrs["data-theme"]).toBe("forest-light");
+    expect(dom.attrs["data-theme-family"]).toBe("forest");
+    expect(dom.attrs["data-theme-mode"]).toBe("light");
+    expect(dom.classes.has("dark")).toBe(false);
+  });
+
+  it("writes the resolved family when the persisted family is unknown", () => {
+    const dom = executeScript(script, {
+      cookie: `${themeKitCookieNames.mode}=dark; ${themeKitCookieNames.family}=plum; ${themeKitCookieNames.fingerprint}=${fingerprint}`,
+    });
+
+    expect(dom.attrs["data-theme"]).toBe("forest-dark");
+    // Legacy wrote the raw `plum`, which disagrees with both the painted theme
+    // and the client runtime.
+    expect(dom.attrs["data-theme-family"]).toBe("forest");
+  });
+
+  it("still applies the fallback when matchMedia is unavailable", () => {
+    // Legacy called `window.matchMedia(...)` unguarded, so a host without it
+    // threw inside the applier and NOTHING was applied.
+    const dom = executeScript(script, { matchMedia: false });
+
+    expect(dom.attrs["data-theme"]).toBe("forest-light");
+    expect(dom.attrs["data-theme-mode"]).toBe("light");
+    expect(dom.colorScheme).toBe("light");
   });
 });
 

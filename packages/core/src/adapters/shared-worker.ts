@@ -33,6 +33,25 @@ function getSharedWorkerUrl(): string {
   return blobUrl;
 }
 
+/**
+ * Create a theme-selection broadcast adapter backed by a `SharedWorker`.
+ *
+ * The adapter relays theme selections between tabs/windows through a shared
+ * worker, so every tab connected to the same worker receives the selection.
+ * It requires `SharedWorker` support; when unavailable (or when the worker
+ * cannot be created) it returns `null` (e.g. during SSR).
+ *
+ * @returns A `ThemeSelectionBroadcastAdapter`, or `null` when `SharedWorker`
+ *   is unavailable.
+ *
+ * @example
+ * ```ts
+ * const sync = createSharedWorkerSync();
+ * sync?.post({ mode: "dark", family: "plum" });
+ * ```
+ *
+ * @see {@link destroySharedWorkerUrl}
+ */
 export function createSharedWorkerSync(): ThemeSelectionBroadcastAdapter | null {
   if (typeof SharedWorker === "undefined") return null;
 
@@ -65,6 +84,14 @@ export function createSharedWorkerSync(): ThemeSelectionBroadcastAdapter | null 
   }
 }
 
+/**
+ * Release the shared worker's blob URL.
+ *
+ * Revokes the object URL created for the shared worker script and resets the
+ * cached URL, so a subsequent {@link createSharedWorkerSync} call creates a
+ * fresh worker. Safe to call multiple times; it is a no-op when no URL is
+ * cached.
+ */
 export function destroySharedWorkerUrl(): void {
   if (blobUrl) {
     URL.revokeObjectURL(blobUrl);

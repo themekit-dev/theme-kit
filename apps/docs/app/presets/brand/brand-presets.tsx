@@ -1,69 +1,70 @@
 "use client";
 
 import Link from "next/link";
-import { CodeBlock } from "../../../components/code-block";
-import { highlightCode } from "../../../lib/highlight";
 import { DocsLayout } from "../../../components/docs-layout";
 import {
-  PRESET_KIND_META,
-  BRAND_PRESET_SNIPPET,
-  PresetCard,
   PresetsHeader,
-  CurrentThemeInspector,
   usePresetGroups,
 } from "../../../components/presets";
-import { buildPageHeadings } from "../../../lib/toc";
-
-// One heading renders inside PresetsHeader and one is a direct h2 here —
-// neither is visible to the layout's RSC tree walk (client components + the
-// template serialization), so provide them for the TOC rail.
-const brandPresetsHeadings = buildPageHeadings([
-  { text: "Applied now on this site", level: 2 },
-  { text: "Use them in code", level: 2 },
-]);
+import { PresetComparison } from "../../../components/preset-preview";
 
 export function BrandPresetsView() {
   const groups = usePresetGroups("brand");
+  // The default preset's neutral family is the "Changes from Default"
+  // baseline — same token vocabulary, so the diff is meaningful.
+  const defaultGroups = usePresetGroups("default");
+  const baseline =
+    defaultGroups.find((g) => g.key === "neutral") ?? defaultGroups[0];
 
   return (
-    <DocsLayout headings={brandPresetsHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PresetsHeader kind="brand" />
 
-        <CurrentThemeInspector />
-
-        <p className="text-sm opacity-70 mb-4 leading-relaxed">
-          {PRESET_KIND_META.brand.hint}
-        </p>
-
-        {groups.length === 0 ? (
-          <p className="text-sm opacity-50">No themes in this group.</p>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {groups.map((group) => (
-              <PresetCard key={group.key} group={group} />
-            ))}
-          </div>
-        )}
-
-        <section className="mt-10">
+        <section className="mb-10">
           <h2 className="text-lg font-semibold tracking-tight mb-1">
-            Use them in code
+            What &ldquo;Brand&rdquo; means
           </h2>
-          <p className="text-sm opacity-70 mb-4">
-            All presets come from{" "}
-            <code className="mono text-[0.9em]">@theme-kit/core</code>. Grab
-            what you need — no styling required.
+          <p className="text-sm opacity-70 mb-4 leading-relaxed">
+            Brand presets are <strong>real-world palettes</strong> — Apple,
+            GitHub, Vercel, Slack, and Discord — each shipped as a complete
+            light/dark family with the same semantic token vocabulary as the
+            default preset. They are read-only starting points: apply one, then
+            override individual tokens in your own theme.
           </p>
-          <CodeBlock
-            html={highlightCode(BRAND_PRESET_SNIPPET, "ts")}
-            code={BRAND_PRESET_SNIPPET}
-            language="ts"
-            className="rounded-lg m-0"
+        </section>
+
+        <section className="mb-10">
+          <h2 className="text-lg font-semibold tracking-tight mb-1">
+            Compare against Default
+          </h2>
+          <p className="text-sm opacity-70 mb-4 leading-relaxed">
+            The same interface as the default preset, under a brand palette.
+            &ldquo;Show changes from Default&rdquo; isolates exactly which
+            tokens differ. This changes only the preview, not the documentation
+            site. The snippet below the preview follows your selection.
+          </p>
+          <PresetComparison
+            groups={groups}
+            kind="brand"
+            {...(baseline ? { baseline } : {})}
           />
+        </section>
+
+        <section className="mb-10">
+          <h2 className="text-lg font-semibold tracking-tight mb-1">
+            Use it in your app
+          </h2>
+          <p className="text-sm opacity-70 mb-4 leading-relaxed">
+            Brand presets ship inside{" "}
+            <code className="mono text-[0.9em]">@theme-kit/core</code> via{" "}
+            <code className="mono text-[0.9em]">getBrandPresets()</code> — one
+            light/dark family per brand. Pick your framework in the preview
+            above and copy the snippet for the brand you were looking at.
+          </p>
           <Link
             href="/custom-themes#presets"
-            className="inline-flex items-center gap-1.5 text-sm text-primary no-underline font-medium mt-4 hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm text-primary no-underline font-medium hover:underline"
           >
             Learn how to define your own themes →
           </Link>

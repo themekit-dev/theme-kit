@@ -1,6 +1,17 @@
+/**
+ * Theme Kit Vue integration.
+ *
+ * Provides the `ThemeProvider`, `ThemeScope`, `ThemeScrollbar` and
+ * `ThemeInspector` components, the `provideThemeRuntime` helper, the
+ * `ThemeScheduleController`, the `useTheme*` composables, and the SSR
+ * bootstrap-script helper.
+ *
+ * @packageDocumentation
+ */
 import type { App, InjectionKey, Component } from "vue";
 import {
   createThemeRuntime,
+  resolveRuntimeOptions,
   createCSSVariablesBinding,
   createDOMBinding,
   createScopedThemeBinding,
@@ -37,26 +48,68 @@ import {
   type PropType,
   type Ref,
 } from "vue";
-import type { AdapterStrategy } from "@theme-kit/core";
-import { createShadcnAdapter } from "@theme-kit/shadcn/factory";
-import { createBootstrapAdapter } from "@theme-kit/bootstrap/factory";
-import { createDaisyAdapter } from "@theme-kit/daisyui/factory";
-import { createOpenPropsAdapter } from "@theme-kit/open-props/factory";
 
+/**
+ * Props accepted by the Vue `<ThemeProvider>` component.
+ *
+ * Extends {@link ThemeRuntimeOptions} with an optional pre-built runtime. When
+ * `runtime` is omitted, the provider creates and owns its own runtime from the
+ * remaining props and destroys it on unmount.
+ */
 export interface ThemeProviderProps<T extends ThemeDefinition = ThemeDefinition>
   extends ThemeRuntimeOptions<T> {
+  /**
+   * An existing runtime to provide. When omitted, the provider creates and
+   * owns a runtime from the other props.
+   */
   runtime?: ThemeRuntime<T> | undefined;
 }
 
+/**
+ * Vue `InjectionKey` used to provide and inject the active Theme Kit runtime.
+ *
+ * @see {@link provideThemeRuntime}
+ * @see {@link useThemeRuntime}
+ */
 export const ThemeKitSymbol: InjectionKey<ThemeRuntime<any>> =
   Symbol("theme-kit");
 
+/**
+ * Provides a Theme Kit runtime to the current Vue component subtree.
+ *
+ * Call inside a component's `setup` scope (typically the app root) so
+ * descendant composables can resolve it via {@link useThemeRuntime}.
+ *
+ * @param runtime The runtime to make available to the subtree.
+ *
+ * @see {@link useThemeRuntime}
+ * @see {@link ThemeProvider}
+ */
 export function provideThemeRuntime<T extends ThemeDefinition>(
   runtime: ThemeRuntime<T>,
 ) {
   provide(ThemeKitSymbol, runtime);
 }
 
+/**
+ * Resolves the active Theme Kit runtime from the Vue injection context.
+ *
+ * Call inside Vue `setup` scope, within a component that is a descendant of a
+ * `<ThemeProvider>` (or after {@link provideThemeRuntime}).
+ *
+ * @returns The injected runtime.
+ * @throws {Error} When no runtime has been provided in the current context.
+ *
+ * @example
+ * ```ts
+ * const runtime = useThemeRuntime();
+ * runtime.selection.setMode("dark");
+ * ```
+ *
+ * @see {@link provideThemeRuntime}
+ * @see {@link ThemeProvider}
+ * @see {@link useThemeValue}
+ */
 export function useThemeRuntime<T extends ThemeDefinition>() {
   const runtime = inject(ThemeKitSymbol) as ThemeRuntime<T> | undefined;
   if (!runtime) {
@@ -65,6 +118,17 @@ export function useThemeRuntime<T extends ThemeDefinition>() {
   return runtime;
 }
 
+/**
+ * Reactive ref of the currently selected theme definition.
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`. The returned ref
+ * updates whenever the active theme changes and is cleaned up on unmount.
+ *
+ * @returns A `Ref` holding the active theme.
+ *
+ * @see {@link useTheme}
+ * @see {@link useThemeTokens}
+ */
 export function useThemeValue<T extends ThemeDefinition>() {
   const runtime = useThemeRuntime<T>();
   const theme: Ref<T> = ref(runtime.store.get()) as Ref<T>;
@@ -79,6 +143,17 @@ export function useThemeValue<T extends ThemeDefinition>() {
   return theme;
 }
 
+/**
+ * Reactive ref of the active theme's token group.
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`. The returned ref
+ * updates as the active theme changes and is cleaned up on unmount.
+ *
+ * @returns A `Ref` holding the active theme's tokens, or `undefined` when the
+ *   theme defines none.
+ *
+ * @see {@link useThemeValue}
+ */
 export function useThemeTokens<T extends ThemeDefinition>() {
   const runtime = useThemeRuntime<T>();
   const tokens: Ref<import("@theme-kit/core").ThemeTokens | undefined> = ref(runtime.store.get().tokens);
@@ -93,6 +168,17 @@ export function useThemeTokens<T extends ThemeDefinition>() {
   return tokens;
 }
 
+/**
+ * Reactive ref of the current theme mode (`system`, `light`, or `dark`).
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`. The returned ref
+ * tracks both store and selection changes and is cleaned up on unmount.
+ *
+ * @returns A `Ref` holding the current mode.
+ *
+ * @see {@link useThemeFamily}
+ * @see {@link useTheme}
+ */
 export function useThemeMode() {
   const runtime = useThemeRuntime();
   const mode: Ref<ThemeMode> = ref(runtime.selection.getMode());
@@ -115,6 +201,17 @@ export function useThemeMode() {
   return mode;
 }
 
+/**
+ * Reactive ref of the current theme family.
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`. The returned ref
+ * tracks both store and selection changes and is cleaned up on unmount.
+ *
+ * @returns A `Ref` holding the current theme family.
+ *
+ * @see {@link useThemeMode}
+ * @see {@link useTheme}
+ */
 export function useThemeFamily() {
   const runtime = useThemeRuntime();
   const family: Ref<string> = ref(runtime.selection.getFamily());
@@ -137,6 +234,25 @@ export function useThemeFamily() {
   return family;
 }
 
+/**
+ * Reactive access to the active theme, mode, and family plus selection
+ * controls.
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`. Returns reactive
+ * refs for `theme`, `mode`, and `family`, along with `setMode`, `setFamily`,
+ * and `toggleTheme` helpers that operate on the runtime's selection.
+ *
+ * @returns An object of reactive state and selection helpers.
+ *
+ * @example
+ * ```ts
+ * const { theme, mode, family, setMode, toggleTheme } = useTheme();
+ * ```
+ *
+ * @see {@link useThemeValue}
+ * @see {@link useThemeMode}
+ * @see {@link useThemeFamily}
+ */
 export function useTheme<T extends ThemeDefinition>() {
   const runtime = useThemeRuntime<T>();
 
@@ -186,6 +302,19 @@ export function useTheme<T extends ThemeDefinition>() {
   };
 }
 
+/**
+ * Reactive access to the runtime's theme history (undo/redo).
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`. Returns reactive
+ * `canUndo`, `canRedo`, and `history` refs plus `undo`, `redo`, `clear`, and
+ * `jump` actions that operate on the runtime's history.
+ *
+ * @returns An object of reactive history state and actions.
+ *
+ * @see {@link useThemeSnapshot}
+ * @see {@link useThemeRestore}
+ * @see {@link useThemeBatch}
+ */
 export function useThemeHistory<T extends ThemeDefinition>() {
   const runtime = useThemeRuntime<T>();
 
@@ -229,21 +358,62 @@ export function useThemeHistory<T extends ThemeDefinition>() {
   };
 }
 
+/**
+ * Returns a function that batches multiple runtime mutations into a single
+ * history entry and notification.
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`.
+ *
+ * @returns A batch function taking a callback to run inside the batch.
+ *
+ * @see {@link useThemeSnapshot}
+ * @see {@link useTheme}
+ */
 export function useThemeBatch() {
   const runtime = useThemeRuntime();
   return (callback: () => void) => runtime.batch(callback);
 }
 
+/**
+ * Returns a function that captures a serializable snapshot of the runtime's
+ * current state.
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`.
+ *
+ * @returns A function returning the current runtime snapshot.
+ *
+ * @see {@link useThemeRestore}
+ */
 export function useThemeSnapshot() {
   const runtime = useThemeRuntime();
   return () => runtime.snapshot();
 }
 
+/**
+ * Returns a function that restores the runtime to a previously captured
+ * snapshot.
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`.
+ *
+ * @returns A function taking a snapshot to restore.
+ *
+ * @see {@link useThemeSnapshot}
+ */
 export function useThemeRestore() {
   const runtime = useThemeRuntime();
   return (snapshot: import("@theme-kit/core").ThemeRuntimeSnapshot) => runtime.restore(snapshot);
 }
 
+/**
+ * Returns an object for subscribing to runtime lifecycle events.
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`.
+ *
+ * @returns An object with an `on` method to register a lifecycle listener.
+ *
+ * @see {@link useThemeRuntime}
+ * @see {@link useTheme}
+ */
 export function useThemeLifecycle() {
   const runtime = useThemeRuntime();
   return {
@@ -251,11 +421,27 @@ export function useThemeLifecycle() {
   };
 }
 
+/**
+ * Returns a function that installs a theme pack onto the runtime.
+ *
+ * Call inside Vue `setup` scope within a `<ThemeProvider>`.
+ *
+ * @returns A function taking a theme pack to install.
+ *
+ * @see {@link useThemeRuntime}
+ * @see {@link useTheme}
+ */
 export function useThemePacks() {
   const runtime = useThemeRuntime();
   return (pack: import("@theme-kit/core").ThemePack<any>) => runtime.use(pack);
 }
 
+/**
+ * Controller returned by {@link useThemeSchedule} for the runtime's
+ * sunrise/sunset scheduling engine.
+ *
+ * @see {@link useThemeRuntime}
+ */
 export interface ThemeScheduleController {
   /** The underlying controller (`null` when the provider has no `scheduled`
    *  option). Methods below are safe no-ops in that case. */
@@ -263,8 +449,11 @@ export interface ThemeScheduleController {
   /** Reactive state snapshot: `enabled`, `active`, `status`, `sunrise`,
    *  `sunset`, `nextTransition`, `nextActivation`, `nextDeactivation`. */
   state: Ref<ThemeScheduleState>;
+  /** Enables the schedule engine. */
   enable: () => void;
+  /** Disables the schedule engine. */
   disable: () => void;
+  /** Updates the schedule configuration. */
   set: (options: ThemeScheduleSetOptions) => void;
 }
 
@@ -311,107 +500,6 @@ export function useThemeSchedule<T extends ThemeDefinition = ThemeDefinition>():
   };
 }
 
-export interface UseAdapterOptions {
-  strategy?: AdapterStrategy;
-}
-
-function installAdapterOnRuntime<T extends ThemeDefinition>(
-  runtime: ThemeRuntime<T>,
-  create: () => import("@theme-kit/core").ThemeAdapter<T>,
-) {
-  const adapter = create();
-  let handle: import("@theme-kit/core").AdapterRegistration | null = null;
-  onMounted(() => {
-    handle = runtime.adapters.use(adapter);
-  });
-  onUnmounted(() => {
-    handle?.dispose();
-    handle = null;
-  });
-  return adapter;
-}
-
-/**
- * Vue composable that installs the shadcn/ui adapter onto the active Theme Kit
- * runtime. Maintains a tagged `:root` style element with concrete `--*`
- * variables, kept in sync as the active theme changes.
- *
- * Call once in your app root:
- *
- * ```ts
- * import { useShadcnTheme } from "@theme-kit/vue";
- *
- * function App() {
- *   useShadcnTheme();
- *   return <YourApp />;
- * }
- * ```
- */
-export function useShadcnTheme<T extends ThemeDefinition = ThemeDefinition>(
-  options: UseAdapterOptions = {},
-): import("@theme-kit/core").ThemeAdapter<T> {
-  return installAdapterOnRuntime(
-    useThemeRuntime<T>(),
-    () =>
-      createShadcnAdapter(
-        options.strategy ? { strategy: options.strategy } : {},
-      ) as import("@theme-kit/core").ThemeAdapter<T>,
-  );
-}
-
-/**
- * Vue composable that installs the Bootstrap adapter onto the active Theme Kit
- * runtime. Maintains a tagged `:root` style element with concrete `--bs-*`
- * variables (including `-rgb` triplets), kept in sync as the active theme
- * changes.
- */
-export function useBootstrapTheme<T extends ThemeDefinition = ThemeDefinition>(
-  options: UseAdapterOptions = {},
-): import("@theme-kit/core").ThemeAdapter<T> {
-  return installAdapterOnRuntime(
-    useThemeRuntime<T>(),
-    () =>
-      createBootstrapAdapter(
-        options.strategy ? { strategy: options.strategy } : {},
-      ) as import("@theme-kit/core").ThemeAdapter<T>,
-  );
-}
-
-/**
- * Vue composable that installs the daisyUI adapter onto the active Theme Kit
- * runtime. Maintains a tagged `:root` style element with concrete `--color-*`
- * variables, kept in sync as the active theme changes.
- */
-export function useDaisyTheme<T extends ThemeDefinition = ThemeDefinition>(
-  options: UseAdapterOptions = {},
-): import("@theme-kit/core").ThemeAdapter<T> {
-  return installAdapterOnRuntime(
-    useThemeRuntime<T>(),
-    () =>
-      createDaisyAdapter(
-        options.strategy ? { strategy: options.strategy } : {},
-      ) as import("@theme-kit/core").ThemeAdapter<T>,
-  );
-}
-
-/**
- * Vue composable that installs the Open Props adapter onto the active Theme
- * Kit runtime. Maintains a tagged `:root` style element with concrete
- * `--brand`, `--link`, `--size-*` and related variables, kept in sync as the
- * active theme changes.
- */
-export function useOpenPropsTheme<T extends ThemeDefinition = ThemeDefinition>(
-  options: UseAdapterOptions = {},
-): import("@theme-kit/core").ThemeAdapter<T> {
-  return installAdapterOnRuntime(
-    useThemeRuntime<T>(),
-    () =>
-      createOpenPropsAdapter(
-        options.strategy ? { strategy: options.strategy } : {},
-      ) as import("@theme-kit/core").ThemeAdapter<T>,
-  );
-}
-
 interface Props extends Record<string, any> {
   runtime?: ThemeRuntime<any> | undefined;
   themes?: ThemeDefinition[];
@@ -436,6 +524,8 @@ interface Props extends Record<string, any> {
  * Vue `ThemeProvider` persistence and CSS variables use), so the persisted
  * theme is applied before first paint. Emit the returned string as a
  * blocking `<script>` inside `<head>`.
+ *
+ * @see `buildThemeCssMap`
  */
 export function createVueThemeBootstrapScript<T extends ThemeDefinition>(
   options: ThemeBootstrapScriptOptions<T>,
@@ -443,6 +533,31 @@ export function createVueThemeBootstrapScript<T extends ThemeDefinition>(
   return createThemeBootstrapScript(options);
 }
 
+/**
+ * Vue component that provides a Theme Kit runtime to its subtree and applies
+ * the active theme to the DOM.
+ *
+ * Renders only its default slot (no wrapper element). When no `runtime` prop
+ * is given, it creates and owns a runtime from the other props, injects a
+ * blocking zero-flash bootstrap script, and binds DOM/CSS variables on mount.
+ * The owned runtime is destroyed on unmount. Can be registered globally via
+ * `app.use(ThemeProvider)`.
+ *
+ * @remarks
+ * SSR-safe: the runtime is created in `setup` and DOM/CSS bindings are applied
+ * only in `onMounted`, so server rendering produces deterministic markup.
+ *
+ * @example
+ * ```vue
+ * <ThemeProvider :themes="themes" default-theme="light">
+ *   <App />
+ * </ThemeProvider>
+ * ```
+ *
+ * @see {@link ThemeProviderProps}
+ * @see {@link useThemeRuntime}
+ * @see {@link ThemeScope}
+ */
 const ThemeProvider = defineComponent({
   name: "ThemeProvider",
   inheritAttrs: false,
@@ -472,8 +587,12 @@ const ThemeProvider = defineComponent({
 
     if (ownsRuntime && !runtimeRef.value) {
       const { runtime, dom, cssVariables, ...coreOptions } = props;
+      // Merges the configuration a build integration transported under these
+      // props, so a provider with no `themes` still has a registry. Undefined
+      // props are dropped by the helper — Vue hands us every declared prop, so
+      // an absent one would otherwise clobber the transported value.
       runtimeRef.value = createThemeRuntime({
-        ...coreOptions,
+        ...resolveRuntimeOptions(coreOptions),
         dom: false,
         cssVariables: false,
       } as any);
@@ -574,6 +693,9 @@ ThemeProvider.install = (app: App) => {
 
 export { ThemeProvider };
 
+/**
+ * Props accepted by the Vue `<ThemeScope>` component.
+ */
 export interface ThemeScopeProps {
   /** Exact theme name or family name. When `family`/`mode` are also set,
    *  `theme` wins. Omit to follow the provider's selection inside a boundary. */
@@ -593,6 +715,30 @@ export interface ThemeScopeProps {
 
 let scopeIdCounter = 0;
 
+/**
+ * Vue component that applies a scoped theme to its subtree.
+ *
+ * Renders a `div` wrapper carrying a `data-v-tk-scope` attribute and applies
+ * the resolved theme's CSS variables to that element, overriding the
+ * provider's selection for the subtree. Supports an exact theme, a theme
+ * family, local theme definitions, and per-scope transitions. Can be
+ * registered globally via `app.use(ThemeScope)`.
+ *
+ * @remarks
+ * The scope follows the provider's mode for family/boundary scopes and
+ * re-applies when the provider's selection changes. Local themes are resolved
+ * first, falling back to the parent registry; no second runtime is created.
+ *
+ * @example
+ * ```vue
+ * <ThemeScope family="brand" mode="dark">
+ *   <Dashboard />
+ * </ThemeScope>
+ * ```
+ *
+ * @see {@link ThemeScopeProps}
+ * @see {@link useTheme}
+ */
 export const ThemeScope = defineComponent({
   name: "ThemeScope",
   props: {
@@ -692,7 +838,16 @@ ThemeScope.install = (app: App) => {
   app.component("ThemeScope", ThemeScope);
 };
 
+/**
+ * Props accepted by the Vue `<ThemeScrollbar>` component.
+ *
+ * Extends {@link OverlayScrollbarOptions} with an optional custom element tag.
+ */
 export interface ThemeScrollbarProps extends OverlayScrollbarOptions {
+  /**
+   * The element tag to apply the overlay scrollbar to. Defaults to the
+   * provider's scroll container.
+   */
   tag?: string;
 }
 
@@ -723,10 +878,38 @@ function pickDefined(prefs: ThemeScrollbarProps): OverlayScrollbarOptions {
     opts.animationDuration = prefs.animationDuration;
   if (prefs.axes !== undefined) opts.axes = prefs.axes;
   if (prefs.touch !== undefined) opts.touch = prefs.touch;
+  if (prefs.thumbColor !== undefined) opts.thumbColor = prefs.thumbColor;
+  if (prefs.trackColor !== undefined) opts.trackColor = prefs.trackColor;
+  if (prefs.activeThumbColor !== undefined)
+    opts.activeThumbColor = prefs.activeThumbColor;
+  if (prefs.thumbHoverColor !== undefined)
+    opts.thumbHoverColor = prefs.thumbHoverColor;
+  if (prefs.zIndex !== undefined) opts.zIndex = prefs.zIndex;
   if (prefs.dir !== undefined) opts.dir = prefs.dir;
   return opts;
 }
 
+/**
+ * Vue component that replaces the native scrollbar with a themed overlay
+ * scrollbar.
+ *
+ * Renders nothing (returns `null`) and instead installs an overlay scrollbar
+ * on the target element (see {@link ThemeScrollbarProps.tag}) once mounted.
+ * Injects the pre-paint hiding CSS synchronously during `setup` so the native
+ * bar never flashes. Can be registered globally via `app.use(ThemeScrollbar)`.
+ *
+ * @remarks
+ * The pre-paint injection is idempotent: when the Vite plugin or an SSR
+ * adapter already emitted it, this no-ops.
+ *
+ * @example
+ * ```vue
+ * <ThemeScrollbar :thickness="10" hover-expand />
+ * ```
+ *
+ * @see {@link ThemeScrollbarProps}
+ * @see {@link ThemeProvider}
+ */
 export const ThemeScrollbar = defineComponent({
   name: "ThemeScrollbar",
   props: {
@@ -753,6 +936,11 @@ export const ThemeScrollbar = defineComponent({
     animationDuration: { type: Number, required: false, default: undefined },
     axes: { type: Array, required: false, default: undefined },
     touch: { type: Boolean, required: false, default: undefined },
+    thumbColor: { type: String, required: false, default: undefined },
+    trackColor: { type: String, required: false, default: undefined },
+    activeThumbColor: { type: String, required: false, default: undefined },
+    thumbHoverColor: { type: String, required: false, default: undefined },
+    zIndex: { type: Number, required: false, default: undefined },
     dir: {
       type: String,
       required: false,
@@ -783,6 +971,18 @@ export const ThemeScrollbar = defineComponent({
       handle = createOverlayScrollbar(runtime.store as any, pickDefined(props));
     });
 
+    // The engine resolves its options once, when the overlay is created, so a
+    // changed prop only takes effect if the overlay is rebuilt — otherwise the
+    // new value is ignored until the page is reloaded.
+    watch(
+      () => JSON.stringify(pickDefined(props)),
+      () => {
+        if (!handle) return; // not mounted yet; onMounted uses the latest props
+        handle.destroy();
+        handle = createOverlayScrollbar(runtime.store as any, pickDefined(props));
+      },
+    );
+
     onUnmounted(() => {
       handle?.destroy();
       handle = null;
@@ -800,6 +1000,9 @@ ThemeScrollbar.install = (app: App) => {
 
 import { ThemeKitInspector } from "@theme-kit/web";
 
+/**
+ * Props accepted by the Vue `<ThemeInspector>` component.
+ */
 export interface ThemeInspectorProps {
   /** Distance from the bottom of the viewport, in px. Default 104. */
   bottom?: number;
@@ -811,6 +1014,22 @@ export interface ThemeInspectorProps {
   zIndex?: number;
 }
 
+/**
+ * Vue component that renders the framework-agnostic Theme Inspector.
+ *
+ * Renders a `<theme-kit-inspector>` custom element (defined on mount) that
+ * shows a floating toggle opening a panel inspecting the active theme —
+ * identity, selection, tokens, and resolved CSS variables. Can be registered
+ * globally via `app.use(ThemeInspector)`.
+ *
+ * @example
+ * ```vue
+ * <ThemeInspector :bottom="24" :right="24" />
+ * ```
+ *
+ * @see {@link ThemeInspectorProps}
+ * @see {@link useTheme}
+ */
 export const ThemeInspector = defineComponent({
   name: "ThemeInspector",
   props: {

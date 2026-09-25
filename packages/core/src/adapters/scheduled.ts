@@ -3,25 +3,44 @@ import {
   type SolarLocationInput,
 } from "./timezone-location";
 
+/**
+ * Options for {@link createScheduledThemeBinding}.
+ *
+ * The binding applies a light theme during daytime and a dark theme at night,
+ * based on sunrise/sunset at a resolved location, re-checking on an interval.
+ */
 export interface ScheduledThemeBindingOptions<T> {
+  /** Theme applied between sunrise and sunset. */
   lightTheme: T;
+  /** Theme applied between sunset and sunrise. */
   darkTheme: T;
-  /** Explicit coordinates. Optional — when omitted the binding resolves the
+  /** Explicit latitude. Optional — when omitted the binding resolves the
    *  location from `timeZone` or the visitor's browser timezone. */
   latitude?: number;
+  /** Explicit longitude. Optional — see `latitude`. */
   longitude?: number;
   /** IANA timezone to resolve coordinates from when `latitude`/`longitude`
    *  are omitted (e.g. `"Asia/Kathmandu"`). */
   timeZone?: string;
   /** Auto-detect the visitor's location from their browser timezone when no
-   *  explicit coordinates/timezone are given. Default `true`. */
+   *  explicit coordinates/timezone are given. Default `true`.
+   *  @defaultValue `true` */
   autoDetectLocation?: boolean;
+  /** How often (ms) the binding re-checks solar time.
+   *  @defaultValue `60000` */
   checkInterval?: number;
+  /** Override the sunrise/sunset computation. Defaults to
+   *  {@link calculateSunTimes}. */
   getTimes?: (date: Date, latitude: number, longitude: number) => { sunrise: Date; sunset: Date };
+  /** Ignore schedule-driven applies within this many ms after a manual
+   *  selection (e.g. a cross-tab sync). @defaultValue `0` */
   skipApplyMs?: number;
+  /** Called before the binding applies a theme. Return `false` to block the
+   *  switch for this cycle. */
   onBeforeApply?: (theme: T) => boolean;
   /** Whether the binding should apply themes and run its timer. Defaults to
-   *  `true`. Toggle at runtime via the returned `setEnabled`. */
+   *  `true`. Toggle at runtime via the returned `setEnabled`.
+   *  @defaultValue `true` */
   enabled?: boolean;
 }
 
@@ -146,6 +165,34 @@ function calculateSunTimesAt(
   };
 }
 
+/**
+ * Create a scheduled theme binding that applies a light theme during daytime
+ * and a dark theme at night.
+ *
+ * The binding resolves a location (explicit coordinates, an explicit
+ * `timeZone`, or browser auto-detection), computes sunrise/sunset, applies
+ * the matching theme immediately, and re-checks on `checkInterval`. It can be
+ * toggled at runtime via `setEnabled` and stopped via `destroy` (which is
+ * idempotent and clears the timer).
+ *
+ * @param store The store the scheduled theme is applied to.
+ * @param options The scheduled-binding configuration.
+ * @returns A controller exposing `destroy`, `setLastSyncTime`, `setEnabled`,
+ *   `getEnabled` and `getLocation`.
+ *
+ * @example
+ * ```ts
+ * const binding = createScheduledThemeBinding(store, {
+ *   lightTheme,
+ *   darkTheme,
+ *   timeZone: "Asia/Kathmandu",
+ * });
+ * // ... later
+ * binding.destroy();
+ * ```
+ *
+ * @see {@link ScheduledThemeBindingOptions}
+ */
 export function createScheduledThemeBinding<T>(
   store: { get(): T; set(theme: T, options?: { force?: boolean; suppressTransition?: boolean }): void },
   options: ScheduledThemeBindingOptions<T>,

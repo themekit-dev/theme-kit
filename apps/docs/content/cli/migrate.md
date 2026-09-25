@@ -1,20 +1,33 @@
 # `theme-kit migrate`
 
+## Prerequisites
+- Node.js 22+
+- Theme file(s) with legacy versions to migrate
+- Project with @theme-kit/cli installed or npx access
+
 Migrate a legacy theme to the current Theme Kit format. Theme schemas evolve;
 `migrate` (via `migrateTheme`) applies the registered version migrations so a
 theme from an older format still loads today.
 
-```
-theme-kit migrate <file> [options]
+<!-- cli-command:generated:start -->
+## Synopsis
+
+Migrates a legacy theme file to the current Theme Kit format.
+
+```text
+Usage:
+  theme-kit migrate <file> [options]
 ```
 
 ## Options
 
-| Option            | Description                                                |
-| ----------------- | ---------------------------------------------------------- |
-| `--file <path>`   | Legacy theme file to migrate (or pass positionally). |
-| `--output <file>` | Write the migrated theme to a new file.             |
+| Option | Description | Default |
+| ------ | ----------- | ------- |
+| `--file <path>` | Legacy theme file to migrate (or pass positionally) | — |
+| `--output <file>` | Write the migrated theme to a file | — |
 
+> Generated from `packages/cli/src/cli.ts` — the same text `theme-kit migrate --help` prints.
+<!-- cli-command:generated:end -->
 ## Examples
 
 ```bash
@@ -44,5 +57,15 @@ themes before a bulk migration.
 | `0`  | Migrated (file written or printed). |
 | `1`  | Migrating the file failed. |
 | `2`  | No theme file supplied. |
+
+## Next Steps
+- [Export migrated tokens](./export)
+- [Validate migrated themes](./validate)
+- [CLI reference](./reference)
+
+## Related
+- [Theme Kit Quick Start](../quickstart)
+- [Migration Docs](../../migration)
+- [API Reference](../../api-reference)
 
 Next: [export](/cli/export).

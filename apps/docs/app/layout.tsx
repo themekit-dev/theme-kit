@@ -1,6 +1,5 @@
 import { cache } from "react";
 import type { ReactNode } from "react";
-import { Geist, Geist_Mono, Outfit } from "next/font/google";
 
 import { type Metadata } from "next";
 
@@ -21,28 +20,15 @@ import {
   scheduleConfig,
   transitionConfig,
 } from "./theme/theme-config";
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, docsUrl } from "../lib/site";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "../lib/site";
 
 import "./globals.css";
+import "./fonts.css";
 
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-  weight: "variable",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  weight: "variable",
-});
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  display: "swap",
-  variable: "--font-outfit",
-});
+const FONT_PRELOADS = [
+  "/fonts/geist-latin.woff2",
+  "/fonts/geist-mono-latin.woff2",
+];
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -63,9 +49,6 @@ export const metadata: Metadata = {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
   },
-  alternates: {
-    canonical: docsUrl("/"),
-  },
 };
 
 const getSearchEntries = cache(buildSearchIndex);
@@ -76,11 +59,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       lang="en"
       themes={themes}
       defaultTheme="theme-kit-default-light"
-      className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable}`}
       transition={transitionConfig}
       scrollbar
       scheduled={scheduleConfig}
     >
+      {FONT_PRELOADS.map((href) => (
+        <link
+          key={href}
+          rel="preload"
+          href={href}
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      ))}
+
       <ThemeScrollbar {...scrollbarConfig} />
 
       <SearchProvider entries={getSearchEntries()}>
@@ -101,11 +94,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
       <SiteToolbar />
 
-      {/* pre-paint restore for the docs sidebar */}
-      <script
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{ __html: SIDEBAR_PRE_PAINT_SCRIPT }}
-      />
+      {/* Pre-paint positioning for the docs rail. */}
+      <script dangerouslySetInnerHTML={{ __html: SIDEBAR_PRE_PAINT_SCRIPT }} />
     </ThemeProvider>
   );
 }

@@ -4,8 +4,31 @@ Signals-first theming for Solid with a context provider and scoped subtrees.
 
 ## Reference snippet
 
+```ts
+// theme/themes.ts — one definition per mode, grouped by meta.family
+import { defineTheme } from "@theme-kit/core";
+
+export const themes = [
+  defineTheme({
+    name: "mint-light",
+    meta: { family: "mint", mode: "light" },
+    tokens: {
+      colors: { background: "#ffffff", foreground: "#0f172a", primary: "#0d9488" },
+    },
+  }),
+  defineTheme({
+    name: "mint-dark",
+    meta: { family: "mint", mode: "dark" },
+    tokens: {
+      colors: { background: "#042f2e", foreground: "#ccfbf1", primary: "#5eead4" },
+    },
+  }),
+] as const;
+```
+
 ```tsx
 import { ThemeProvider, useTheme } from "@theme-kit/solid";
+import { themes } from "./theme/themes";
 
 function ThemeSwitcher() {
   const { theme, mode, toggleTheme } = useTheme();

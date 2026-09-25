@@ -9,10 +9,13 @@
  *  - files[] entries exist
  *  - dist entry files exist (index.js / index.cjs / index.d.ts)
  *  - bin targets exist
- *  - workspace:* dependencies resolve to packages that can be published
+ *  - workspace dependencies resolve to packages that can be published, and use
+ *    caret ranges (`workspace:^`) rather than exact pins
  *    (i.e. not `private: true`)
  *  - framework-neutral packages don't hard-depend on framework packages
- *  - version coherence (everything should be 1.0.0 for a coherent release)
+ *  - version coherence within each release group (from .changeset/config.json
+ *    `fixed`), plus caret ranges for internal workspace dependencies so
+ *    independent versioning stays possible
  *
  * Usage: node scripts/release/audit-packages.mjs
  * Output: console report + scripts/release/reports/audit.json
@@ -98,7 +101,26 @@ const REQUIRED_METADATA = [
 ];
 
 const report = [];
-let firstPkgVersion = null;
+const groupVersions = new Map();
+
+// Release groups come from .changeset/config.json `fixed`. Only packages that
+// genuinely share a compatibility contract are versioned together; everything
+// else versions independently, so a scoped break (e.g. @theme-kit/astro) does
+// not force a major on unrelated packages.
+let releaseGroups = [];
+try {
+  releaseGroups = JSON.parse(
+    readFileSync(join(repoRoot, ".changeset", "config.json"), "utf8"),
+  ).fixed ?? [];
+} catch {
+  releaseGroups = [];
+}
+
+function releaseGroupOf(name) {
+  const idx = releaseGroups.findIndex((g) => g.includes(name));
+  if (idx === -1) return null;
+  return { key: `group-${idx}`, label: releaseGroups[idx].join(" + ") };
+}
 
 function check(rel, label, ok, detail = "") {
   report.push({ package: rel, check: label, ok, detail });
@@ -125,11 +147,26 @@ for (const pkg of packages) {
   // --- identity ---
   check(rel, "name", Boolean(json.name), json.name ?? "MISSING");
   check(rel, "version", Boolean(json.version), json.version ?? "MISSING");
-  // All publishable packages must share the same version (coherent release).
+  // Version coherence is enforced per release group, not globally.
   if (publishable) {
-    const firstVersion = firstPkgVersion ?? json.version;
-    firstPkgVersion = firstPkgVersion ?? json.version;
-    check(rel, "version:coherent", json.version === firstVersion, `version ${json.version} != ${firstVersion}`);
+    const group = releaseGroupOf(json.name);
+    if (group) {
+      const seen = groupVersions.get(group.key);
+      if (seen === undefined) {
+        groupVersions.set(group.key, { version: json.version, members: [json.name] });
+        check(rel, "version:coherent", true, `group "${group.label}" @ ${json.version}`);
+      } else {
+        check(
+          rel,
+          "version:coherent",
+          json.version === seen.version,
+          json.version === seen.version
+            ? `group "${group.label}" @ ${json.version}`
+            : `version ${json.version} != ${seen.version} within group "${group.label}" (${seen.members.join(", ")})`,
+        );
+        seen.members.push(json.name);
+      }
+    }
   }
 
   // CLI version constant must match the package version (theme-kit --version)
@@ -247,6 +284,18 @@ for (const pkg of packages) {
         );
       } else {
         check(rel, `dep:${dep.name}:workspace`, true, `${dep.kind}`);
+      }
+      // Internal deps must use caret ranges: `workspace:^` publishes as
+      // "^x.y.z", while `workspace:*` publishes as an exact pin (x.y.z). Exact
+      // pins force every dependent to republish on every upstream release, which
+      // re-couples the versions the release groups exist to decouple.
+      if (dep.version === "workspace:*") {
+        check(
+          rel,
+          `dep:${dep.name}:range`,
+          false,
+          `${dep.kind} uses "workspace:*" (publishes as an exact pin) — use "workspace:^" so dependents accept compatible releases`,
+        );
       }
       continue;
     }

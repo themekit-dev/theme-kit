@@ -2,8 +2,10 @@ import Link from "next/link";
 import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
 import { apiPackages, submoduleLabels } from "../../lib/api-reference";
+import { docsUrl } from "../../lib/site";
 
 export const metadata = {
+  alternates: { canonical: docsUrl("/api-reference") },
   title: "API Reference",
   description:
     "Generated API reference for every Theme Kit package, produced from source with typedoc so it never drifts from the code.",
@@ -65,7 +67,7 @@ export default function ApiReferenceIndexPage() {
                         badge.core
                           ? {
                               background: "var(--theme-color-primary)",
-                              color: "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                              color: "var(--theme-color-primaryForeground)",
                             }
                           : undefined
                       }

@@ -32,7 +32,7 @@ export function ScrollbarDemo() {
                 className="w-6 h-6 shrink-0 rounded-md grid place-items-center text-[10px] font-bold"
                 style={{
                   background: "var(--theme-color-secondary)",
-                  color: "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
+                  color: "var(--theme-color-secondaryForeground)",
                 }}
               >
                 {i + 1}

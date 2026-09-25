@@ -52,6 +52,20 @@ function mergeThemeColors(
   return Object.keys(colors).length > 0 ? colors : undefined;
 }
 
+/**
+ * Merge two token objects, deep-merging the `colors` group and shallowly
+ * merging every other group.
+ *
+ * `override` wins over `base`. Within `colors`, an explicit `undefined`
+ * value removes a key; nested color objects merge recursively. Groups not
+ * present in either input are omitted from the result.
+ *
+ * @param base Base tokens (typically the inherited/extended theme's).
+ * @param override Override tokens (typically the theme's own).
+ * @returns The merged tokens, or `undefined` when both inputs are empty.
+ * @see {@link flattenTokens}
+ * @see {@link resolveTokens}
+ */
 export function mergeTokens(
   base: ThemeTokens | undefined,
   override: ThemeTokens | undefined,
@@ -110,6 +124,16 @@ export function mergeTokens(
   return Object.keys(tokens).length > 0 ? tokens : undefined;
 }
 
+/**
+ * Merge two theme definitions, deep-merging their `meta` and `tokens`.
+ *
+ * `override` wins for scalar fields; `meta` and `tokens` are merged via
+ * {@link mergeTokens} semantics.
+ *
+ * @param base Base definition (typically the inherited theme).
+ * @param override Override definition (typically the theme's own).
+ * @returns A new merged definition. The inputs are not mutated.
+ */
 export function mergeThemeDefinitions<Name extends ThemeName>(
   base: ThemeDefinition<Name>,
   override: ThemeDefinition<Name>,
@@ -182,6 +206,24 @@ function resolveThemeRecursive<Name extends ThemeName>(
   return mergeThemeDefinitions(resolvedParents, theme);
 }
 
+/**
+ * Resolve a theme definition to its fully inherited form.
+ *
+ * Walks the `extends` chain (multiple parents merge in order), producing the
+ * effective `meta` and `tokens`. When `resolveTokenRefs` is true, token
+ * references (`${token.path}`) and derived expressions are also resolved.
+ *
+ * @param themes All registered themes.
+ * @param themeName Name of the theme to resolve.
+ * @param resolveTokenRefs Whether to resolve token references in the result.
+ *   Default `true`.
+ * @returns The resolved theme definition.
+ * @throws {Error} When the theme is not registered, or when the `extends`
+ *   chain is circular.
+ *
+ * @see {@link mergeThemeDefinitions}
+ * @see {@link resolveThemeRegistry}
+ */
 export function resolveTheme<Name extends ThemeName>(
   themes: readonly ThemeDefinition<Name>[],
   themeName: Name,

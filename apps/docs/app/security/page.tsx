@@ -9,6 +9,7 @@ import { GITHUB_SECURITY } from "../../lib/site";
 export const metadata = legalMetadata(
   "Security",
   "How to report a security vulnerability in Theme Kit.",
+  "/security",
 );
 
 const updated = "August 24, 2026";
@@ -40,7 +41,7 @@ export default function SecurityPage() {
             <>
               <strong>Email:</strong>{" "}
               <a
-                href="mailto:thememkproductions@gmail.com"
+                href="mailto:themekitproductions@gmail.com"
                 className="underline"
               >
                 themekitproductions@gmail.com

@@ -103,18 +103,32 @@ function contrastForeground(hex: string, darkInk: string): string {
   return relativeLuminance(hex) > 0.3 ? darkInk : "#ffffff";
 }
 
+/**
+ * Options for {@link generateTheme}.
+ */
 export interface GenerateThemeOptions {
+  /** Hex color seed (e.g. `"#d97706"`) that drives the generated palette. */
   seed: string;
+  /**
+   * Theme family name used for the generated themes' `meta.family` and names.
+   * @defaultValue `"generated"`
+   */
   family?: string;
   /**
    * Also generate a `tokens.code` block (syntax-highlighting colors) alongside
    * the color tokens. Opt-in — most themes don't need code tokens.
+   * @defaultValue `false`
    */
   withCode?: boolean;
 }
 
+/**
+ * The light and dark themes produced by {@link generateTheme}.
+ */
 export interface GeneratedThemePair {
+  /** The generated light theme. */
   light: ThemeDefinition;
+  /** The generated dark theme. */
   dark: ThemeDefinition;
 }
 
@@ -160,6 +174,25 @@ function generateCodeTokens(
   };
 }
 
+/**
+ * Generate a cohesive light/dark theme pair from a single seed color.
+ *
+ * The seed drives the primary, accent, and supporting surface colors; the
+ * foreground colors are chosen for contrast so generated themes stay
+ * accessible regardless of the seed's lightness. When `withCode` is set, a
+ * matching syntax-highlighting palette is also produced.
+ *
+ * @param options The seed color and generation options.
+ * @returns A `{ light, dark }` pair of theme definitions sharing one family.
+ *
+ * @example
+ * ```ts
+ * const { light, dark } = generateTheme({ seed: "#d97706", family: "brand" });
+ * ```
+ *
+ * @see {@link validateTheme}
+ * @see {@link defineTheme}
+ */
 export function generateTheme(options: GenerateThemeOptions): GeneratedThemePair {
   const seed = options.seed;
   const family = options.family ?? "generated";

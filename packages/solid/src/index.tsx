@@ -1,5 +1,15 @@
+/**
+ * Theme Kit Solid integration.
+ *
+ * Provides the `ThemeProvider`, `ThemeScope`, `ThemeScrollbar`, and
+ * `ThemeInspector` components, the `useTheme*` hooks, and the SSR
+ * bootstrap-script helper.
+ *
+ * @packageDocumentation
+ */
 import {
   createThemeRuntime,
+  resolveRuntimeOptions,
   createCSSVariablesBinding,
   createDOMBinding,
   createOverlayScrollbar,
@@ -39,16 +49,22 @@ import {
   type JSX,
 } from "solid-js";
 import { insert } from "solid-js/web";
-import type { AdapterStrategy } from "@theme-kit/core";
-import { createShadcnAdapter } from "@theme-kit/shadcn/factory";
-import { createBootstrapAdapter } from "@theme-kit/bootstrap/factory";
-import { createDaisyAdapter } from "@theme-kit/daisyui/factory";
-import { createOpenPropsAdapter } from "@theme-kit/open-props/factory";
 
+/**
+ * Props accepted by {@link ThemeProvider}.
+ *
+ * Extends {@link ThemeRuntimeOptions} so the provider can build and own a
+ * runtime from the same options used by `createThemeRuntime`. When `runtime`
+ * is supplied the provider adopts that caller-owned runtime instead of
+ * creating one.
+ */
 export interface ThemeProviderProps<
   T extends ThemeDefinition = ThemeDefinition,
 > extends ThemeRuntimeOptions<T> {
+  /** An existing runtime to adopt. When omitted the provider creates and owns
+   *  its own runtime from the remaining props. */
   runtime?: ThemeRuntime<T>;
+  /** The subtree rendered inside the provider's context. */
   children?: JSX.Element;
 }
 
@@ -58,6 +74,21 @@ interface ThemeContextValue<T extends ThemeDefinition> {
 
 const ThemeKitContext = createContext<ThemeContextValue<any> | null>(null);
 
+/**
+ * Returns the active {@link ThemeRuntime} from the nearest {@link ThemeProvider}.
+ *
+ * Must be called inside a component (owner) rendered within a `ThemeProvider`;
+ * otherwise it throws. The returned runtime is the same object the provider
+ * owns or adopts, so it is not reactive by itself — use the dedicated hooks
+ * (`useThemeValue`, `useThemeMode`, …) for reactive reads.
+ *
+ * @returns The active theme runtime.
+ *
+ * @throws {Error} When called outside a `ThemeProvider`.
+ *
+ * @see {@link ThemeProvider}
+ * @see {@link useThemeValue}
+ */
 export function useThemeRuntime<T extends ThemeDefinition>() {
   const ctx = useContext(ThemeKitContext) as ThemeContextValue<T> | undefined;
   if (!ctx) {
@@ -66,6 +97,19 @@ export function useThemeRuntime<T extends ThemeDefinition>() {
   return ctx.runtime;
 }
 
+/**
+ * Reactive access to the current theme selection as a Solid signal.
+ *
+ * Returns a signal whose value tracks the runtime store's active theme. The
+ * signal is seeded from the store on mount and updated on every store change;
+ * the subscription is disposed automatically when the owning component is
+ * cleaned up.
+ *
+ * @returns A Solid signal holding the active theme.
+ *
+ * @see {@link useTheme}
+ * @see {@link useThemeRuntime}
+ */
 export function useThemeValue<T extends ThemeDefinition>() {
   const runtime = useThemeRuntime<T>();
 
@@ -81,6 +125,18 @@ export function useThemeValue<T extends ThemeDefinition>() {
   return theme;
 }
 
+/**
+ * Reactive access to the active theme's token group as a Solid signal.
+ *
+ * Returns a signal whose value is the `tokens` object of the current theme
+ * selection, or `undefined` when the active theme defines no tokens. The
+ * signal updates whenever the store's theme changes and the subscription is
+ * disposed on component cleanup.
+ *
+ * @returns A Solid signal holding the active theme's tokens.
+ *
+ * @see {@link useThemeValue}
+ */
 export function useThemeTokens<T extends ThemeDefinition>() {
   const runtime = useThemeRuntime<T>();
 
@@ -98,6 +154,17 @@ export function useThemeTokens<T extends ThemeDefinition>() {
   return tokens;
 }
 
+/**
+ * Reactive access to the current theme mode as a Solid signal.
+ *
+ * Returns a signal tracking the runtime selection's mode (`light`, `dark`, or
+ * `system`). The signal is seeded on mount and kept in sync with the store;
+ * the subscription is disposed on component cleanup.
+ *
+ * @returns A Solid signal holding the current theme mode.
+ *
+ * @see {@link useTheme}
+ */
 export function useThemeMode() {
   const runtime = useThemeRuntime();
 
@@ -115,6 +182,17 @@ export function useThemeMode() {
   return mode;
 }
 
+/**
+ * Reactive access to the current theme family as a Solid signal.
+ *
+ * Returns a signal tracking the runtime selection's theme family name. The
+ * signal is seeded on mount and kept in sync with the store; the subscription
+ * is disposed on component cleanup.
+ *
+ * @returns A Solid signal holding the current theme family name.
+ *
+ * @see {@link useTheme}
+ */
 export function useThemeFamily() {
   const runtime = useThemeRuntime();
 
@@ -132,6 +210,34 @@ export function useThemeFamily() {
   return family;
 }
 
+/**
+ * Reactive access to the current theme selection plus actions to change it.
+ *
+ * Combines the reactive signals from `useThemeValue`, `useThemeMode`, and
+ * `useThemeFamily` with imperative setters that drive the runtime selection.
+ * Must be called inside a component rendered within a `ThemeProvider`.
+ *
+ * @returns An object with reactive `theme`, `mode`, and `family` signals and
+ *   the `setMode`, `setFamily`, and `toggleTheme` actions.
+ *
+ * @example
+ * ```tsx
+ * import { useTheme } from "@theme-kit/solid";
+ *
+ * function ThemeToggle() {
+ *   const { mode, setMode, toggleTheme } = useTheme();
+ *   return (
+ *     <button onClick={toggleTheme}>
+ *       Current mode: {mode()}
+ *     </button>
+ *   );
+ * }
+ * ```
+ *
+ * @see {@link useThemeValue}
+ * @see {@link useThemeMode}
+ * @see {@link useThemeFamily}
+ */
 export function useTheme<T extends ThemeDefinition>() {
   const runtime = useThemeRuntime<T>();
 
@@ -161,6 +267,19 @@ export function useTheme<T extends ThemeDefinition>() {
   };
 }
 
+/**
+ * Reactive access to the runtime's theme history (undo/redo).
+ *
+ * Returns reactive `canUndo`, `canRedo`, and `history` getters plus the
+ * `undo`, `redo`, `clear`, and `jump` actions. The reactive state is seeded on
+ * mount and refreshed whenever the store changes; the subscription is disposed
+ * on component cleanup.
+ *
+ * @returns An object exposing the history state and navigation actions.
+ *
+ * @see {@link useThemeRuntime}
+ * @see {@link useThemeBatch}
+ */
 export function useThemeHistory<T extends ThemeDefinition>() {
   const runtime = useThemeRuntime<T>();
 
@@ -194,21 +313,65 @@ export function useThemeHistory<T extends ThemeDefinition>() {
   };
 }
 
+/**
+ * Returns a function that batches multiple runtime mutations into a single
+ * store update.
+ *
+ * The returned callback forwards to the runtime's `batch` method, coalescing
+ * several selection changes so subscribers observe one consolidated change.
+ *
+ * @returns A function accepting a callback whose mutations are batched.
+ *
+ * @see {@link useThemeRuntime}
+ * @see {@link useTheme}
+ */
 export function useThemeBatch() {
   const runtime = useThemeRuntime();
   return (callback: () => void) => runtime.batch(callback);
 }
 
+/**
+ * Returns a function that captures the runtime's current state as a snapshot.
+ *
+ * The returned callback forwards to the runtime's `snapshot` method, producing
+ * a {@link ThemeRuntimeSnapshot} that can later be passed to `useThemeRestore`.
+ *
+ * @returns A function returning the current runtime snapshot.
+ *
+ * @see {@link useThemeRestore}
+ */
 export function useThemeSnapshot() {
   const runtime = useThemeRuntime();
   return () => runtime.snapshot();
 }
 
+/**
+ * Returns a function that restores the runtime from a previously captured
+ * snapshot.
+ *
+ * The returned callback forwards to the runtime's `restore` method, applying
+ * the given {@link ThemeRuntimeSnapshot} back onto the runtime.
+ *
+ * @returns A function accepting a snapshot to restore.
+ *
+ * @see {@link useThemeSnapshot}
+ */
 export function useThemeRestore() {
   const runtime = useThemeRuntime();
   return (snapshot: ThemeRuntimeSnapshot) => runtime.restore(snapshot);
 }
 
+/**
+ * Returns a function that subscribes to runtime lifecycle events.
+ *
+ * The returned `on` callback forwards to the runtime's lifecycle emitter,
+ * registering a listener for the given {@link ThemeLifecycleEventName}.
+ *
+ * @returns An object exposing an `on` function to register lifecycle listeners.
+ *
+ * @see {@link useThemeRuntime}
+ * @see {@link useTheme}
+ */
 export function useThemeLifecycle() {
   const runtime = useThemeRuntime();
   return {
@@ -216,6 +379,17 @@ export function useThemeLifecycle() {
   };
 }
 
+/**
+ * Returns a function that installs a theme pack onto the runtime.
+ *
+ * The returned callback forwards to the runtime's `use` method, registering a
+ * {@link ThemePack} so its themes become available to the selection.
+ *
+ * @returns A function accepting a theme pack to install.
+ *
+ * @see {@link useThemeRuntime}
+ * @see {@link useTheme}
+ */
 export function useThemePacks() {
   const runtime = useThemeRuntime();
   return (pack: ThemePack<any>) => runtime.use(pack);
@@ -286,99 +460,42 @@ export function useThemeSchedule<T extends ThemeDefinition = ThemeDefinition>() 
   };
 }
 
-export interface UseAdapterOptions {
-  strategy?: AdapterStrategy;
-}
-
-function installAdapter<T extends ThemeDefinition>(
-  create: () => import("@theme-kit/core").ThemeAdapter<T>,
-) {
-  const runtime = useThemeRuntime<T>();
-  const adapter = create();
-  let handle: import("@theme-kit/core").AdapterRegistration | null = null;
-  onMount(() => {
-    handle = runtime.adapters.use(adapter);
-  });
-  onCleanup(() => {
-    handle?.dispose();
-    handle = null;
-  });
-  return adapter;
-}
-
 /**
- * Solid composable that installs the shadcn/ui adapter onto the active Theme
- * Kit runtime. Maintains a tagged `:root` style element with concrete `--*`
- * variables, kept in sync as the active theme changes.
+ * Provides a {@link ThemeRuntime} to the Solid component tree via context.
  *
- * Call once in your app root:
+ * When no `runtime` prop is given the provider creates and owns a runtime from
+ * the remaining {@link ThemeProviderProps} (which extend
+ * {@link ThemeRuntimeOptions}), wiring up DOM and CSS-variable bindings on
+ * mount and destroying the runtime on cleanup. When a `runtime` prop is
+ * supplied the provider adopts that caller-owned runtime and does not destroy
+ * it. Renders no DOM of its own — it only supplies context to its children.
  *
+ * @param props The provider options and children.
+ *
+ * @example
  * ```tsx
- * import { useShadcnTheme } from "@theme-kit/solid";
+ * import { ThemeProvider } from "@theme-kit/solid";
  *
  * function App() {
- *   useShadcnTheme();
- *   return <YourApp />;
+ *   return (
+ *     <ThemeProvider defaultTheme="light">
+ *       <YourApp />
+ *     </ThemeProvider>
+ *   );
  * }
  * ```
+ *
+ * @remarks
+ * The provider must be mounted before any hook that reads the runtime
+ * (`useTheme`, `useThemeRuntime`, …) is called, since those hooks throw when
+ * no provider context exists. On the server the provider renders its children
+ * without DOM bindings; the persisted selection is applied client-side before
+ * first paint via an injected bootstrap script.
+ *
+ * @see {@link useTheme}
+ * @see {@link ThemeScope}
+ * @see {@link useThemeRuntime}
  */
-export function useShadcnTheme<T extends ThemeDefinition = ThemeDefinition>(
-  options: UseAdapterOptions = {},
-): import("@theme-kit/core").ThemeAdapter<T> {
-  return installAdapter<T>(() =>
-    createShadcnAdapter(
-      options.strategy ? { strategy: options.strategy } : {},
-    ) as import("@theme-kit/core").ThemeAdapter<T>,
-  );
-}
-
-/**
- * Solid composable that installs the Bootstrap adapter onto the active Theme
- * Kit runtime. Maintains a tagged `:root` style element with concrete
- * `--bs-*` variables (including `-rgb` triplets), kept in sync as the active
- * theme changes.
- */
-export function useBootstrapTheme<T extends ThemeDefinition = ThemeDefinition>(
-  options: UseAdapterOptions = {},
-): import("@theme-kit/core").ThemeAdapter<T> {
-  return installAdapter<T>(() =>
-    createBootstrapAdapter(
-      options.strategy ? { strategy: options.strategy } : {},
-    ) as import("@theme-kit/core").ThemeAdapter<T>,
-  );
-}
-
-/**
- * Solid composable that installs the daisyUI adapter onto the active Theme Kit
- * runtime. Maintains a tagged `:root` style element with concrete
- * `--color-*` variables, kept in sync as the active theme changes.
- */
-export function useDaisyTheme<T extends ThemeDefinition = ThemeDefinition>(
-  options: UseAdapterOptions = {},
-): import("@theme-kit/core").ThemeAdapter<T> {
-  return installAdapter<T>(() =>
-    createDaisyAdapter(
-      options.strategy ? { strategy: options.strategy } : {},
-    ) as import("@theme-kit/core").ThemeAdapter<T>,
-  );
-}
-
-/**
- * Solid composable that installs the Open Props adapter onto the active Theme
- * Kit runtime. Maintains a tagged `:root` style element with concrete
- * `--brand`, `--link`, `--size-*` and related variables, kept in sync as the
- * active theme changes.
- */
-export function useOpenPropsTheme<T extends ThemeDefinition = ThemeDefinition>(
-  options: UseAdapterOptions = {},
-): import("@theme-kit/core").ThemeAdapter<T> {
-  return installAdapter<T>(() =>
-    createOpenPropsAdapter(
-      options.strategy ? { strategy: options.strategy } : {},
-    ) as import("@theme-kit/core").ThemeAdapter<T>,
-  );
-}
-
 export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
   props: ThemeProviderProps<T>,
 ) {
@@ -401,6 +518,16 @@ export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
     (runtimeOptions as Record<string, unknown>)[key] = propsRecord[key];
   }
 
+  const transitionOption = runtimeOptions.transition as boolean | ThemeTransitionOptions | undefined;
+  const resolvedTransition =
+    transitionOption === undefined
+      ? undefined
+      : typeof transitionOption === "object"
+        ? transitionOption
+        : transitionOption === true
+          ? {}
+          : { enabled: false };
+
   // `createMemo` (not `createSignal`): the runtime must be created synchronously
   // and be available on the very first render pass, because children read it via
   // `useContext` during that same render. A signal setter only takes effect after
@@ -409,11 +536,21 @@ export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
   const runtimeInstance = createMemo<ThemeRuntime<T> | null>(() => {
     if (!ownsRuntime) return extRuntime ?? null;
 
-    const { dom, cssVariables, ...coreOptions } = runtimeOptions as any;
+    const { dom, cssVariables, transition, ...coreOptions } = runtimeOptions as any;
+    // Merges the configuration a build integration transported under these
+    // props, so a provider with no `themes` still has a registry. Undefined
+    // props are dropped by the helper, so an absent prop cannot clobber a
+    // transported value.
     return createThemeRuntime({
-      ...coreOptions,
+      ...resolveRuntimeOptions(coreOptions),
       dom: false,
       cssVariables: false,
+      // The runtime's `transition` drives scoped themes and reads like the
+      // theme inspector; without it `runtime.transition` stays undefined even
+      // though the provider was given a transition config.
+      ...(resolvedTransition !== undefined
+        ? { transition: resolvedTransition }
+        : {}),
     } as any) as ThemeRuntime<T>;
   });
 
@@ -453,14 +590,20 @@ export function ThemeProvider<T extends ThemeDefinition = ThemeDefinition>(
       if (domOpts !== false) {
         domBinding = createDOMBinding(
           resolvedRuntime.store,
-          domOpts !== undefined ? (domOpts as DOMBindingOptions) : undefined,
+          {
+            ...(domOpts !== undefined ? (domOpts as DOMBindingOptions) : {}),
+            ...(resolvedTransition !== undefined ? { transition: resolvedTransition } : {}),
+          },
         );
       }
 
       if (cssOpts !== false) {
         cssBinding = createCSSVariablesBinding(
           resolvedRuntime.store,
-          cssOpts !== undefined ? (cssOpts as CSSVariablesOptions) : undefined,
+          {
+            ...(cssOpts !== undefined ? (cssOpts as CSSVariablesOptions) : {}),
+            ...(resolvedTransition !== undefined ? { transition: resolvedTransition } : {}),
+          },
         );
       }
     }
@@ -504,6 +647,13 @@ function withGlobalMode(
   return { ...selection, mode: selection.mode ?? mode };
 }
 
+/**
+ * Props accepted by {@link ThemeScope}.
+ *
+ * Configures a nested theme boundary that overrides the global selection for
+ * its subtree. `theme` wins over `family`/`mode`; when none are given the
+ * scope mirrors the provider's selection inside its own boundary.
+ */
 export interface ThemeScopeProps {
   /** Exact theme name, family name, or a `{ family, mode }`-style object.
    *  When `family`/`mode` are also passed, `theme` wins (it's the explicit
@@ -523,12 +673,34 @@ export interface ThemeScopeProps {
    *  `<ThemeProvider/>` transition, `false` disables it, `true` inherits, and
    *  an object is merged over the provider's config (local keys win). */
   transition?: boolean | ThemeTransitionOptions;
+  /** CSS class applied to the scope's wrapper `<div>`. */
   className?: string;
+  /** The subtree rendered inside the scope's wrapper. */
   children?: JSX.Element;
   /** Any additional attributes (e.g. `data-testid`) forwarded to the wrapper. */
   [key: string]: unknown;
 }
 
+/**
+ * Creates a nested theme boundary that overrides the selection for its subtree.
+ *
+ * Renders a wrapper `<div>` carrying the resolved theme's `data-theme`,
+ * `data-mode`, and CSS-variable inline styles, and keeps it in sync as the
+ * scope's props or the provider's selection change. On the server no wrapper
+ * is rendered — the children are returned directly so the provider's `:root`
+ * attributes apply client-side.
+ *
+ * @param props The scope configuration and children.
+ *
+ * @remarks
+ * The scope does not create a second runtime; it resolves against the
+ * provider's theme registry, with any `themes` prop shadowing same-named
+ * parent themes. Family-based and boundary-only scopes follow the provider's
+ * live mode, flipping light/dark when the global mode changes.
+ *
+ * @see {@link ThemeProvider}
+ * @see {@link useTheme}
+ */
 export function ThemeScope(props: ThemeScopeProps) {
   const runtime = useThemeRuntime();
   let ref: HTMLDivElement | null = null;
@@ -653,7 +825,14 @@ export function ThemeScope(props: ThemeScopeProps) {
   return wrapper;
 }
 
+/**
+ * Props accepted by {@link ThemeScrollbar}.
+ *
+ * Extends {@link OverlayScrollbarOptions} so the scrollbar can be configured
+ * with the same options used by `createOverlayScrollbar`.
+ */
 export interface ThemeScrollbarProps extends OverlayScrollbarOptions {
+  /** The subtree the scrollbar is applied to. */
   children?: JSX.Element;
 }
 
@@ -684,14 +863,51 @@ function pickOptions(props: ThemeScrollbarProps): OverlayScrollbarOptions {
     opts.animationDuration = props.animationDuration;
   if (props.axes !== undefined) opts.axes = props.axes;
   if (props.touch !== undefined) opts.touch = props.touch;
+  if (props.thumbColor !== undefined) opts.thumbColor = props.thumbColor;
+  if (props.trackColor !== undefined) opts.trackColor = props.trackColor;
+  if (props.activeThumbColor !== undefined)
+    opts.activeThumbColor = props.activeThumbColor;
+  if (props.thumbHoverColor !== undefined)
+    opts.thumbHoverColor = props.thumbHoverColor;
+  if (props.zIndex !== undefined) opts.zIndex = props.zIndex;
   if (props.dir !== undefined) opts.dir = props.dir;
   return opts;
 }
 
+/**
+ * A stable key for a set of options.
+ *
+ * Icons may be JSX, so they are reduced to a token rather than walked — a
+ * deeper traversal can meet a circular reference and the key only has to notice
+ * that the icon changed.
+ */
+function optionsKeyOf(opts: OverlayScrollbarOptions): string {
+  return JSON.stringify(opts, (_key, value) => {
+    if (typeof value === "function") return "fn";
+    if (value && typeof value === "object" && !Array.isArray(value)) return "obj";
+    return value;
+  });
+}
+
+/**
+ * Applies an overlay scrollbar to the runtime's scrollable content.
+ *
+ * Installs an overlay scrollbar bound to the active theme's store on mount and
+ * destroys it on cleanup. Renders no DOM of its own — it returns `null` and
+ * only manages the scrollbar lifecycle for the surrounding content.
+ *
+ * @param props The scrollbar options and children.
+ *
+ * @see {@link ThemeProvider}
+ */
 export function ThemeScrollbar(props: ThemeScrollbarProps) {
   const runtime = useThemeRuntime();
 
-  onMount(() => {
+  // `createEffect` rather than `onMount`: the engine resolves its options once,
+  // when the overlay is created, so a changed prop only takes effect if the
+  // overlay is rebuilt — otherwise it is ignored until the page is reloaded.
+  createEffect(() => {
+    optionsKeyOf(pickOptions(props)); // track every option
     const handle = createOverlayScrollbar(runtime.store, pickOptions(props));
     onCleanup(() => handle?.destroy());
   });
@@ -712,6 +928,8 @@ import { ThemeKitInspector } from "@theme-kit/web";
  * Solid `ThemeProvider` persistence and CSS variables use), so the persisted
  * theme is applied before first paint. Emit the returned string as a
  * blocking `<script>` inside `<head>`.
+ *
+ * @see `createThemeBootstrapScript`
  */
 export function createSolidThemeBootstrapScript<T extends ThemeDefinition>(
   options: ThemeBootstrapScriptOptions<T>,
@@ -732,6 +950,13 @@ declare module "solid-js" {
   }
 }
 
+/**
+ * Props accepted by {@link ThemeInspector}.
+ *
+ * Configures the floating theme inspector's position, size, and z-index, plus
+ * optional `class` and `style` forwarded to the underlying
+ * `<theme-kit-inspector>` element.
+ */
 export interface ThemeInspectorProps {
   /** Distance from the bottom of the viewport, in px. Default 104. */
   bottom?: number;
@@ -743,9 +968,23 @@ export interface ThemeInspectorProps {
   zIndex?: number;
   /** Forwarded to the underlying <theme-kit-inspector> element. */
   class?: string;
+  /** Inline styles forwarded to the underlying <theme-kit-inspector> element. */
   style?: string;
 }
 
+/**
+ * Renders the floating theme inspector for the active runtime.
+ *
+ * Defines and mounts the `<theme-kit-inspector>` custom element, forwarding the
+ * given position, size, z-index, `class`, and `style` props. The inspector
+ * reads the active theme from the runtime and lets users inspect and switch
+ * themes at runtime.
+ *
+ * @param props The inspector configuration.
+ *
+ * @see {@link ThemeProvider}
+ * @see {@link useTheme}
+ */
 export function ThemeInspector(props: ThemeInspectorProps) {
   ThemeKitInspector.define();
   return (

@@ -24,6 +24,18 @@ export interface ArrowButton {
   element: HTMLDivElement;
 }
 
+/**
+ * Configuration for the overlay scrollbar engine.
+ *
+ * All properties are optional; the engine applies sensible defaults for any
+ * omitted value. The browser always performs the actual scrolling — this
+ * engine only renders a theme-aware, animated overlay that represents the
+ * scrollbar and synchronizes with native scrolling.
+ *
+ * @remarks
+ * Options are resolved once when the scrollbar is created. `include`/`exclude`
+ * scope which inner scrollables are tracked; the window is always tracked.
+ */
 export interface OverlayScrollbarOptions {
   /** Fade the thumb/track out while idle. Default `true` (macOS-style). */
   autoHide?: boolean;
@@ -116,6 +128,17 @@ export interface OverlayScrollbarOptions {
   dir?: "ltr" | "rtl" | "auto";
 }
 
+/**
+ * Runtime handle to a live overlay scrollbar instance.
+ *
+ * Returned by the scrollbar factory, this handle lets callers force a
+ * re-synchronization of layout and physics, or tear down the scrollbar and
+ * release all of its DOM, observers, and listeners.
+ *
+ * @remarks
+ * `destroy` is idempotent: calling it more than once is safe and has no
+ * further effect.
+ */
 export interface OverlayScrollbarHandle {
   /** Force a synchronize of layout + physics. */
   update(): void;
@@ -123,7 +146,11 @@ export interface OverlayScrollbarHandle {
   destroy(): void;
 }
 
-/** Resolved (defaulted) options used internally. */
+/**
+ * Resolved (defaulted) options used internally.
+ *
+ * @internal
+ */
 export interface ScrollbarOptionsResolved {
     autoHide: boolean;
   autoHideDelay: number;

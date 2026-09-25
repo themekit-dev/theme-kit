@@ -1,8 +1,16 @@
 import type { ThemeDefinition, ThemeMode } from "../model";
-import { getThemeFamily, getThemeMode, type ThemeSelectionState } from "../model";
+import {
+  getThemeFamilies,
+  getThemeFamily,
+  getThemeMode,
+  normalizeThemeFamily,
+  type ThemeSelectionState,
+} from "../model";
 import { resolveSelectionTheme } from "../resolver";
 import { createSystemThemeBinding } from "./system";
 import type { ThemeStore } from "../types";
+import { isThemeMode } from "../diagnostics";
+import { emitInvalidModeDiagnostic } from "./mode-diagnostic";
 
 export interface ThemeSelectionPersistenceAdapter {
   get(): ThemeSelectionState | null;
@@ -44,9 +52,20 @@ export function createThemeSelectionController<T extends ThemeDefinition>(
 
   const saved = readPersistenceOnInit ? persistence?.get() : null;
 
-  let state: ThemeSelectionState = saved ?? {
-    mode: options.initialMode ?? "system",
-    family: options.initialFamily ?? getThemeFamily(initialTheme),
+  // A persisted family can be stale: a cookie or `localStorage` entry written
+  // before the registry changed its family set. Left as-is it matches no theme,
+  // so the store falls back to `themes[0]` while the selection keeps naming the
+  // old family — and every readout of the selection then contradicts the theme
+  // actually on screen. Normalise against the registry, the same invariant
+  // `resolveSelection` enforces. The mode is always valid on its own, so a saved
+  // mode still wins untouched.
+  let state: ThemeSelectionState = {
+    mode: saved?.mode ?? options.initialMode ?? "system",
+    family: normalizeThemeFamily(
+      options.themes,
+      saved?.family ?? options.initialFamily,
+      initialTheme,
+    ),
   };
 
   let systemBinding: { destroy(): void } | null = null;
@@ -134,6 +153,20 @@ export function createThemeSelectionController<T extends ThemeDefinition>(
   function setMode(nextMode: ThemeMode) {
     if (state.mode === nextMode) return;
 
+    // Refuse a mode the runtime cannot represent. `ThemeMode` keeps this out of
+    // TypeScript, but `setMode` is reachable from plain JavaScript, from a
+    // framework binding forwarding a prop, and from anything that read a mode
+    // out of storage — none of which the compiler can check. Accepting it would
+    // put an unrunnable mode into the selection: no theme matches, so the store
+    // silently falls back to the family's light theme while `getMode()` and
+    // every readout keep reporting the invalid value. Ignoring the call keeps
+    // the selection honest, the same way `setFamily` refuses an unregistered
+    // family below.
+    if (!isThemeMode(nextMode)) {
+      emitInvalidModeDiagnostic(nextMode);
+      return;
+    }
+
     state = {
       ...state,
       mode: nextMode,
@@ -144,6 +177,16 @@ export function createThemeSelectionController<T extends ThemeDefinition>(
 
   function setFamily(nextFamily: string) {
     if (state.family === nextFamily) return;
+
+    // Refuse a family the registry does not have. Accepting it would leave the
+    // selection naming a family that is not on screen — the store falls back to
+    // `themes[0]` — so `data-theme-selection-family` and any
+    // `data-tk-readout="family"` would contradict `data-theme-family`. Ignoring
+    // the request keeps the selection honest; silently switching the visitor to
+    // a *different* family than the one requested would be worse, and a caller
+    // that passes an unregistered family has a bug that a no-op does not hide
+    // from the readout.
+    if (!getThemeFamilies(options.themes).includes(nextFamily)) return;
 
     state = {
       ...state,

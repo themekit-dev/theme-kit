@@ -16,14 +16,34 @@ export function useChakraTheme<T extends ThemeDefinition>(
   return useRuntimeThemeFactory(runtime, createChakraTheme);
 }
 
+/**
+ * Props for {@link ChakraThemeProvider}.
+ */
 export interface ChakraThemeProviderProps<T extends ThemeDefinition> {
+  /** The Theme Kit runtime whose active theme drives the Chakra system. */
   runtime: ThemeRuntime<T>;
+  /** The React subtree rendered inside Chakra's `ChakraProvider`. */
   children: React.ReactNode;
 }
 
 /**
  * `<ChakraThemeProvider runtime={runtime}>` — wraps Chakra's own `ChakraProvider`
  * with a system derived from Theme Kit's semantic tokens.
+ *
+ * The provider owns the derived Chakra system: it subscribes to the runtime and
+ * rebuilds the system whenever the active theme changes, so the wrapped subtree
+ * always renders with the current theme selection.
+ *
+ * @example
+ * ```tsx
+ * import { ChakraThemeProvider } from "@theme-kit/chakra";
+ *
+ * <ChakraThemeProvider runtime={runtime}>
+ *   <App />
+ * </ChakraThemeProvider>
+ * ```
+ *
+ * @see {@link useChakraTheme}
  */
 export function ChakraThemeProvider<T extends ThemeDefinition>({
   runtime,

@@ -7,11 +7,16 @@ import { CodeBlock } from "../../../components/code-block";
 import { ApiExplorer } from "../../../components/api-explorer";
 import type { PackageManager } from "../../../components/install-command";
 import { PageHeader } from "../../../components/ui/page-header";
+import { Prerequisites } from "../../../components/ui/prerequisites";
+import { NextSteps } from "../../../components/ui/next-step-card";
+import { RelatedLinks } from "../../../components/ui/related-links";
+import { InlineCode } from "../../../components/ui/inline-code";
 import { libraries } from "../../../lib/libraries";
 import { libraryUseCases } from "../../../lib/use-cases-libraries";
 import { highlightCode } from "../../../lib/highlight";
 import { LibraryFrameworkGuide } from "../../../components/library-framework-guide";
-import { collectPageHeadings } from "../../../lib/toc-tree";
+import { PKG_VERSION } from "../../../lib/version";
+import { docsUrl } from "../../../lib/site";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -43,6 +48,7 @@ export async function generateMetadata({
   return {
     title: lib.name,
     description: lib.tagline,
+    alternates: { canonical: docsUrl(`/libraries/${slug}`) },
   };
 }
 
@@ -93,6 +99,24 @@ export default function LibraryGuidePage({ params }: PageProps) {  const { slug 
             badges={[
               { label: `${lib.mark} ${lib.name}` },
               ...lib.tags.map((tag) => ({ label: tag })),
+            ]}
+            verified={{ version: PKG_VERSION, date: "2026-09-17" }}
+          />
+
+          <Prerequisites
+            items={[
+              {
+                label: "Core Package",
+                value: "@theme-kit/core (peer dependency)",
+              },
+              {
+                label: "Library Version",
+                value: `Compatible with ${lib.name} v3+`,
+              },
+              {
+                label: "Adapter Type",
+                value: lib.kind,
+              },
             ]}
           />
 
@@ -154,7 +178,9 @@ export default function LibraryGuidePage({ params }: PageProps) {  const { slug 
                     <h3 className="text-sm font-semibold mb-0.5">
                       {useCase.title}
                     </h3>
-                    <p className="text-xs opacity-60 mb-2">{useCase.desc}</p>
+                    <p className="text-xs opacity-60 mb-2">
+                      <InlineCode>{useCase.desc}</InlineCode>
+                    </p>
                     <CodeBlock
                       html={html}
                       code={useCase.code}
@@ -237,7 +263,7 @@ export default function LibraryGuidePage({ params }: PageProps) {  const { slug 
                                 </code>
                               </td>
                               <td className="px-4 py-3 opacity-70 leading-relaxed">
-                                {feature.desc}
+                                <InlineCode>{feature.desc}</InlineCode>
                               </td>
                             </tr>
                           ))}
@@ -249,10 +275,37 @@ export default function LibraryGuidePage({ params }: PageProps) {  const { slug 
               })}
             </div>
           </section>
+
+          <NextSteps
+            steps={[
+              {
+                title: "Compatibility Check",
+                description: "Verify framework and library version compatibility",
+                href: "/reference/compatibility",
+              },
+              {
+                title: "Browse Components",
+                description: `See all ${lib.name} components with theming`,
+                href: "/showcase",
+              },
+              {
+                title: "Migration Guide",
+                description: "Upgrade from previous adapter versions",
+                href: "/migration",
+              },
+            ]}
+          />
+
+          <RelatedLinks
+            links={[
+              { title: "Core Package", href: "/packages/core" },
+              { title: "Framework Guides", href: "/framework-guides" },
+              { title: "Troubleshooting", href: "/troubleshooting" },
+              { title: "API Reference", href: `/api-reference/${lib.slug}` },
+            ]}
+          />
         </article>
   );
-  // Collect headings from the page's own tree (before RSC serialization hides
-  // subtrees that share a parent with client components from the layout walk).
-  const libraryHeadings = collectPageHeadings(content);
-  return <DocsLayout headings={libraryHeadings}>{content}</DocsLayout>;
+
+  return <DocsLayout>{content}</DocsLayout>;
 }

@@ -6,6 +6,8 @@ import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
 import {
   ScrollbarFrameworkProvider,
@@ -17,8 +19,10 @@ import {
   ARROW_SNIPPETS,
   CONTAINER_SNIPPETS,
 } from "../../components/custom-scrollbar/scrollbar-framework";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/custom-scrollbar") },
   title: "Custom Scrollbar",
   description:
     "Replace the default browser scrollbar with a theme-aware overlay that matches your design system — in any framework.",
@@ -112,10 +116,8 @@ const vanillaSnippet = {
   createThemeScrollbar,
 } from "@theme-kit/core";
 import "@theme-kit/core/scrollbar.css";
-import themes from "./themes";
 
 const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
 });
 
@@ -167,6 +169,26 @@ export default function CustomScrollbarPage() {
               anywhere in your app.
             </>
           }
+        />
+
+        <Prerequisites
+          items={[
+            {
+              label: "Core Package",
+              value: "@theme-kit/core",
+              href: "/packages/core",
+            },
+            {
+              label: "CSS Import",
+              value: "@theme-kit/core/scrollbar.css in your global styles",
+            },
+            {
+              label: "Provider",
+              value: "ThemeProvider configured with themes",
+              href: "/quick-start",
+            },
+          ]}
+          className="mb-8"
         />
 
         <section id="frameworks" className="scroll-mt-24 mb-10">
@@ -316,7 +338,7 @@ export default function CustomScrollbarPage() {
             num={4}
             desc="Hide the native bar before the first paint — only shown for frameworks that provide an SSR pre-paint hook."
           >
-            Zero flash (SSR)
+            Zero-flash (SSR)
           </SectionHeading>
           <ScrollbarFrameworkCode
             map={FLASHFREE_SNIPPETS}
@@ -325,10 +347,13 @@ export default function CustomScrollbarPage() {
                 <strong>This framework doesn&apos;t provide SSR zero-flash</strong>
                 <span className="mx-1 opacity-40">|</span>
                 It renders client-side, so there&apos;s no server pre-paint hook.
-                Hide the native bar before first paint with the blocking
-                pre-paint script (see{" "}
+                On Vite, pass{" "}
+                <code className="mono text-[0.9em]">scrollbar: true</code> to{" "}
+                <code className="mono text-[0.9em]">themeKitVitePlugin</code> and
+                it injects the blocking pre-paint script for you; otherwise add
+                the script yourself (see{" "}
                 <code className="mono text-[0.9em]">Framework-agnostic</code>) or
-                serve the page from an SSR framework (Next.js / Nuxt).
+                serve the page from an SSR framework (Next.js / Nuxt / Remix).
               </Callout>
             }
           />
@@ -560,6 +585,31 @@ export default function CustomScrollbarPage() {
             </Link>
           </div>
         </section>
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Zero Flash SSR",
+              href: "/zero-flash",
+              description: "Flash-free theme bootstrap",
+            },
+            {
+              title: "Animation & Transitions",
+              href: "/animation",
+              description: "Smooth theme change animations",
+            },
+            {
+              title: "Accessibility",
+              href: "/accessibility",
+              description: "Reduced motion and contrast support",
+            },
+            {
+              title: "Core API Reference",
+              href: "/api-reference/core",
+              description: "ThemeScrollbar API docs",
+            },
+          ]}
+        />
       </div>
       </ScrollbarFrameworkProvider>
     </DocsLayout>

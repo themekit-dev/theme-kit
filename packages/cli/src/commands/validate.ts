@@ -4,6 +4,19 @@ import type { ParsedArgs } from "../utils.js";
 import { readThemeJSON, toThemes, themeName } from "../theme-shared.js";
 import { ExitCodes, UsageError } from "../exit-codes.js";
 
+/**
+ * Implements the `validate` command: validates a theme file and reports any
+ * issues.
+ *
+ * Reads `--file`/`-f` (or the first positional), parses the theme JSON, and
+ * validates each theme. On success prints a confirmation; on failure prints
+ * the issues and exits with the validation-failed exit code.
+ *
+ * @param args The parsed command-line arguments.
+ * @throws {UsageError} When no file is provided.
+ *
+ * @see {@link parseArgs}
+ */
 export async function cmdValidate(args: ParsedArgs) {
   const file = getString(args, "file") || getString(args, "f") || args._[1];
 

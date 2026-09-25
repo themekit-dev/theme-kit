@@ -97,13 +97,20 @@ html.tk-scrollbar {
   pointer-events: auto !important;
 }
 
-/* CSS custom properties for scrollbar theming.
-   These can be overridden by users in their CSS. */
-[data-theme-kit-host] {
-  --tk-scrollbar-thumb: var(--theme-color-accent, var(--theme-color-primary, #737373));
-  --tk-scrollbar-thumb-hover: var(--theme-color-accent, var(--theme-color-primary, #737373));
-  --tk-scrollbar-thumb-active: var(--theme-color-accent, var(--theme-color-primary, #737373));
-}
+/* Scrollbar theming.
+ *
+ * There is deliberately no default for `--tk-scrollbar-thumb` here. The engine
+ * already derives one — the theme's `primary` at an alpha that suits an overlay
+ * (`thumbColor()` in `manager.ts`) — and setting the variable here *shadowed*
+ * that, because `var(--tk-scrollbar-thumb, …)` prefers the variable whenever it
+ * is defined. The value it used was `--theme-color-accent`, which every theme
+ * defines as a pale *surface* tint (`#fafafa` on `#ffffff` in Vercel light,
+ * `#e2e8f0` in the default family): an almost invisible scrollbar, and the alpha
+ * was lost too because the token is opaque.
+ *
+ * Set `--tk-scrollbar-thumb`, `-hover` and `-active` on `[data-theme-kit-host]`
+ * (or pass `appearance.thumbColor` to `ThemeScrollbar`) to override the engine.
+ */
 
 /* ── Phase 3: Ready — overlay fades in ────────────────────────── */
 

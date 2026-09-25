@@ -3,12 +3,47 @@ import type { ThemeSelectionState } from "../../model/selection";
 import type { ThemeSelectionPersistenceAdapter } from "../../adapters/theme-selection";
 import type { ThemePlugin } from "../types";
 
+/**
+ * Options for {@link createPersistencePlugin}.
+ */
 export interface PersistencePluginOptions {
+  /** Custom persistence adapter. When omitted, a `localStorage`-backed adapter
+   *  is used in browser environments; in non-browser (SSR) environments the
+   *  plugin is inert. Pass `null` to disable persistence entirely. */
   adapter?: ThemeSelectionPersistenceAdapter | null;
+  /** Storage key used by the default `localStorage` adapter. Default
+   *  `"theme-selection"`. */
   key?: string;
+  /** Whether to restore the saved theme selection when the runtime is created.
+   *  Default `true`. */
   readOnInit?: boolean;
 }
 
+/**
+ * Creates a plugin that persists the theme selection and restores it on
+ * startup.
+ *
+ * The plugin reads the saved selection when the runtime is created (if
+ * `readOnInit` is enabled) and writes the selection to the adapter after every
+ * persist. It uses a `localStorage`-backed adapter by default in the browser
+ * and is inert in non-browser environments unless a custom adapter is given.
+ *
+ * @param options - Persistence configuration.
+ * @returns A `"persistence"` theme plugin.
+ *
+ * @example
+ * ```ts
+ * const manager = createPluginManager();
+ * manager.use(createPersistencePlugin({ key: "my-app-theme" }));
+ * ```
+ *
+ * @remarks
+ * The default adapter also subscribes to cross-tab `storage` events so the
+ * selection stays in sync across tabs. `onDestroy` releases the adapter and
+ * runtime references.
+ *
+ * @see {@link PersistencePluginOptions}
+ */
 export function createPersistencePlugin<T extends ThemeDefinition>(
   options?: PersistencePluginOptions,
 ): ThemePlugin<T> {

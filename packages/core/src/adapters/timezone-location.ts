@@ -636,8 +636,18 @@ export function getTimeZoneList(): string[] {
   );
 }
 
+/**
+ * Input for resolving the coordinates a solar calculation should use.
+ *
+ * Priority: explicit `latitude`/`longitude` → explicit `timeZone` → browser
+ * timezone auto-detection → `DEFAULT_TIMEZONE_LOCATION`.
+ */
 export interface SolarLocationInput {
+  /** Explicit latitude. When present (alone or with `longitude`) it wins over
+   *  timezone resolution. */
   latitude?: number;
+  /** Explicit longitude. When present (alone or with `latitude`) it wins over
+   *  timezone resolution. */
   longitude?: number;
   /** IANA timezone to resolve coordinates from (e.g. `"Asia/Kathmandu"`).
    *  Takes precedence over auto-detection. */
@@ -645,12 +655,19 @@ export interface SolarLocationInput {
   /** Auto-detect the visitor's location from their browser timezone when no
    *  explicit coordinates/timezone are given. Default `true`. On the server
    *  (no `window`) detection is skipped and the default coordinates are used
-   *  so SSR output stays deterministic. */
+   *  so SSR output stays deterministic.
+   *  @defaultValue `true` */
   autoDetectLocation?: boolean;
 }
 
+/**
+ * The resolved coordinates a solar calculation should use, plus how they
+ * were derived.
+ */
 export interface ResolvedSolarLocation {
+  /** The resolved latitude. */
   latitude: number;
+  /** The resolved longitude. */
   longitude: number;
   /** The timezone the coordinates were resolved from, or `null` when explicit
    *  coordinates were used (or nothing could be detected). */

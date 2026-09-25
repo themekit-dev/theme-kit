@@ -1,29 +1,75 @@
 # @theme-kit/remix
 
-Remix loader/server-side theming with a blocking script and the full hook set.
+Remix owns the server/client boundary: loader SSR resolution, a blocking head
+script, and React hydration.
+
+```
+GET request
+    ↓
+root loader → getInitialThemeState(request, { themes })
+    ↓
+HTML document (themed <html> + <ThemeHead> bootstrap)
+    ↓
+browser hydration → <ThemeProvider initial> → React theme runtime
+```
 
 ## Reference snippet
 
 ```tsx
 // app/root.tsx
-import { ThemeProvider } from "@theme-kit/remix";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+} from "@remix-run/react";
+import { ThemeHead, ThemeProvider } from "@theme-kit/remix";
+import { getInitialThemeState } from "@theme-kit/remix/server";
+import { themes } from "./themes";
 
-export default function App() {
+export async function loader({ request }: { request: Request }) {
+  return { initial: await getInitialThemeState(request, { themes }) };
+}
+
+export function Layout({ children }: { children: React.ReactNode }) {
+  const { initial } = useLoaderData<typeof loader>();
   return (
-    <ThemeProvider>
-      <Outlet />
-    </ThemeProvider>
+    <html lang="en">
+      <head>
+        <Meta />
+        <Links />
+        <ThemeHead themes={themes} />
+      </head>
+      <body>
+        <ThemeProvider initial={initial} themes={themes}>
+          {children}
+        </ThemeProvider>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
   );
 }
 ```
 
 ## Server
 
-Loader/server-side theming resolves the theme from cookies and renders it before hydration; `blocking-script.tsx` applies the persisted theme before first paint; `createRemixThemePersistence()` adapter + `computeFingerprint()`; server entry helpers under `@theme-kit/remix/server`.
+`getInitialThemeState` (from `@theme-kit/remix/server`) reads the `theme-mode` /
+`theme-family` cookies off the request and resolves the initial state;
+`ThemeHead` emits the pre-paint blocking bootstrap plus the
+`prefers-color-scheme` dark fallback; `createRemixThemePersistence()` and
+`computeFingerprint()` handle persistence and stale-cookie rejection.
 
 ## Client
 
-`ThemeProvider` consumes the loader-resolved selection, with the full hook set and `ThemeScope`.
+`ThemeProvider` hydrates against the loader-resolved `initial` state and mirrors
+the selection back to cookies. The full React hook set and `ThemeScope` are
+re-exported from `@theme-kit/react`.
+
+> `createThemeRoot()` is a React-SPA-only bootstrap — don't use it in Remix.
+> Remix owns the application/document lifecycle.
 
 ## Documentation
 

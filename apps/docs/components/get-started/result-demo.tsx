@@ -115,7 +115,7 @@ export function ResultDemo() {
               className="w-10 h-10 rounded-xl grid place-items-center text-lg font-bold"
               style={{
                 background: "var(--theme-color-primary)",
-                color: "var(--theme-color-primary-foreground, #fff)",
+                color: "var(--theme-color-primaryForeground, #fff)",
               }}
             >
               T
@@ -130,7 +130,7 @@ export function ResultDemo() {
               className="ml-auto px-3 py-1.5 rounded-md text-xs font-semibold"
               style={{
                 background: "var(--theme-color-secondary)",
-                color: "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
+                color: "var(--theme-color-secondaryForeground)",
               }}
             >
               Live · no refresh
@@ -143,7 +143,7 @@ export function ResultDemo() {
               style={{
                 background: "var(--theme-color-card)",
                 borderColor: "var(--theme-color-border)",
-                color: "var(--theme-color-card-foreground, var(--theme-color-cardForeground))",
+                color: "var(--theme-color-cardForeground)",
               }}
             >
               <div className="text-[11px] font-semibold uppercase tracking-wider opacity-50 mb-3">
@@ -163,7 +163,7 @@ export function ResultDemo() {
                 className="px-3 py-2 rounded-lg text-xs font-semibold inline-block"
                 style={{
                   background: "var(--theme-color-primary)",
-                  color: "var(--theme-color-primary-foreground, #fff)",
+                  color: "var(--theme-color-primaryForeground, #fff)",
                 }}
               >
                 Get started
@@ -175,7 +175,7 @@ export function ResultDemo() {
               style={{
                 background: "var(--theme-color-card)",
                 borderColor: "var(--theme-color-border)",
-                color: "var(--theme-color-card-foreground, var(--theme-color-cardForeground))",
+                color: "var(--theme-color-cardForeground)",
               }}
             >
               <div className="text-[11px] font-semibold uppercase tracking-wider opacity-50 mb-3">

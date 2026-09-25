@@ -6,9 +6,13 @@ import { FrameworkTabs } from "../../components/framework-tabs";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/theme-inspector") },
   title: "Theme Inspector",
   description:
     "A floating panel that inspects the active theme live — identity, selection, tokens, and the resolved CSS variables — available in every framework.",
@@ -23,7 +27,7 @@ const snippets: Record<string, { lang: string; title: string; label: string; cod
 
 export function App() {
   return (
-    <ThemeProvider themes={themes} defaultTheme="plum-light">
+    <ThemeProvider defaultTheme="plum-light">
       <YourApp />
       <ThemeInspector />
     </ThemeProvider>
@@ -50,7 +54,7 @@ import { ThemeProvider, ThemeInspector } from "@theme-kit/vue";
 </script>
 
 <template>
-  <ThemeProvider :themes="themes" defaultTheme="plum-light">
+  <ThemeProvider defaultTheme="plum-light">
     <YourApp />
     <ThemeInspector :bottom="104" :right="32" />
   </ThemeProvider>
@@ -65,7 +69,7 @@ import { ThemeProvider, ThemeInspector } from "@theme-kit/vue";
   import { themeInspector } from "@theme-kit/svelte";
 </script>
 
-<ThemeProvider themes={themes} defaultTheme="plum-light">
+<ThemeProvider defaultTheme="plum-light">
   <YourApp />
   <!-- The action mounts a <theme-kit-inspector> into the div -->
   <div use:themeInspector={{ bottom: 104, right: 32 }} />
@@ -79,7 +83,7 @@ import { ThemeProvider, ThemeInspector } from "@theme-kit/vue";
 
 export function App() {
   return (
-    <ThemeProvider themes={themes} defaultTheme="plum-light">
+    <ThemeProvider defaultTheme="plum-light">
       <YourApp />
       <ThemeInspector bottom={104} right={32} />
     </ThemeProvider>
@@ -97,7 +101,7 @@ import { provideThemeKit, ThemeInspectorComponent } from "@theme-kit/angular";
   selector: "app-root",
   standalone: true,
   imports: [ThemeInspectorComponent],
-  providers: [provideThemeKit({ themes, defaultTheme: "plum-light" })],
+  providers: [provideThemeKit({ defaultTheme: "plum-light" })],
   template: \`
     <your-app />
     <theme-kit-inspector-component [bottom]="104" [right]="32" />
@@ -135,7 +139,7 @@ import ThemeInspector from "@theme-kit/astro/ThemeInspector.astro";
 
 export default function App() {
   return (
-    <ThemeProvider themes={themes} defaultTheme="plum-light">
+    <ThemeProvider defaultTheme="plum-light">
       <Outlet />
       <ThemeInspector />
     </ThemeProvider>
@@ -207,6 +211,26 @@ export default function ThemeInspectorPage() {
               producing.
             </>
           }
+        />
+
+        <Prerequisites
+          items={[
+            {
+              label: "Core Package",
+              value: "@theme-kit/core or framework package",
+              href: "/packages/core",
+            },
+            {
+              label: "Provider",
+              value: "ThemeProvider configured with themes",
+              href: "/quick-start",
+            },
+            {
+              label: "Component",
+              value: "ThemeInspector component from your framework package",
+            },
+          ]}
+          className="mb-8"
         />
 
         <section id="live" className="scroll-mt-24 mb-10">
@@ -386,6 +410,31 @@ theme-kit-inspector::part(inspector-panel) {
             </a>
           </div>
         </section>
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Theme Studio",
+              href: "/theme-studio",
+              description: "Generate and preview themes from a seed color",
+            },
+            {
+              title: "Playground",
+              href: "/playground",
+              description: "Interactive theme testing environment",
+            },
+            {
+              title: "DevTools",
+              href: "/devtools",
+              description: "Browser extension for theme debugging",
+            },
+            {
+              title: "Architecture",
+              href: "/architecture",
+              description: "Core runtime and token resolution pipeline",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

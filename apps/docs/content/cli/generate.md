@@ -1,28 +1,40 @@
 # `theme-kit generate`
 
+## Prerequisites
+- Node.js 22+
+- Project with @theme-kit/cli installed or npx access
+
 Generate a complete theme from a single **seed color**. By default it derives
 a light + dark pair; `--mode light|dark` writes a single theme.
 
-```
-theme-kit generate [options]
+<!-- cli-command:generated:start -->
+## Synopsis
+
+Derives a complete light + dark pair (or a single theme) from one seed color.
+
+```text
+Usage:
+  theme-kit generate [options]
 ```
 
 ## Options
 
-| Option      | Description                                                    | Default |
-| ----------- | -------------------------------------------------------------- | ------- |
-| `--seed <color>`    | Source color in hex (`#rrggbb`). The CLI checks this. | `#6366f1` |
-| `--family <name>`   | Family name; becomes the theme name and label prefix. | `default` |
-| `--mode <mode>`     | `light`, `dark`, or `both` (a pair). | `both` |
-| `--code`    | Also generate a `tokens.code` syntax-highlighting palette (opt-in). | off |
-| `--output <file>` | Write JSON to a file. Omit to print to stdin. | — |
+| Option | Description | Default |
+| ------ | ----------- | ------- |
+| `--seed <color>` | Source hex color (#rrggbb) | `#6366f1` |
+| `--family <name>` | Family name for the theme name | `"default"` |
+| `--mode <mode>` | light \| dark \| both | `both` |
+| `--code` | Also generate a tokens.code syntax palette (opt-in) | — |
+| `--output <file>` | Write JSON to a file instead of stdout | — |
+
+> Generated from `packages/cli/src/cli.ts` — the same text `theme-kit generate --help` prints.
+<!-- cli-command:generated:end -->
 
 > The CLI requires a hex seed (`#rrggbb`), e.g. `#6366f1`. In bash, zsh, and
 > PowerShell the leading `#` starts a comment, so always quote the seed in a
 > terminal: `--seed "#6366f1"`. Package managers (npm, pnpm, yarn) also run
 > `package.json` scripts through a shell, so keep the quotes there too — the
 > quotes are a shell concern, not part of the flag itself.
-
 ## What the generator derives
 
 Given a seed, `generate` (via `generateTheme`) derives the full semantic color
@@ -40,7 +52,7 @@ theme-kit generate --seed "#6366f1" --family indigo --output theme.json
 
 Writes:
 
-```json
+```json title="theme.json"
 {
   "light": {
     "name": "indigo-light",
@@ -167,5 +179,16 @@ theme-kit generate --seed "#10b981" --family mint
 | ---- | ------- |
 | `0`  | Generated (file written or printed). |
 | `2`  | Invalid `--seed` or `--mode`. |
+
+## Next Steps
+- [Validate generated themes](./validate)
+- [Inspect theme output](./inspect)
+- [Export as CSS or JSON](./export)
+- [CLI reference](./reference)
+
+## Related
+- [Theme Kit Quick Start](../quickstart)
+- [Custom Themes](../../custom-themes)
+- [API Reference](../../api-reference)
 
 Next: [validate](/cli/validate).

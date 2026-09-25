@@ -17,14 +17,34 @@ export function useAntdTheme<T extends ThemeDefinition>(
   return useRuntimeThemeFactory(runtime, createAntdTheme);
 }
 
+/**
+ * Props for {@link AntdThemeProvider}.
+ */
 export interface AntdThemeProviderProps<T extends ThemeDefinition> {
+  /** The Theme Kit runtime whose active theme drives the Ant Design theme. */
   runtime: ThemeRuntime<T>;
+  /** The React subtree rendered inside Ant Design's `ConfigProvider`. */
   children: React.ReactNode;
 }
 
 /**
  * `<AntdThemeProvider runtime={runtime}>` — wraps Ant Design's own
  * `ConfigProvider` with a theme derived from Theme Kit's semantic tokens.
+ *
+ * The provider owns the derived Ant Design theme: it subscribes to the runtime
+ * and rebuilds the theme whenever the active theme changes, so the wrapped
+ * subtree always renders with the current theme selection.
+ *
+ * @example
+ * ```tsx
+ * import { AntdThemeProvider } from "@theme-kit/antd";
+ *
+ * <AntdThemeProvider runtime={runtime}>
+ *   <App />
+ * </AntdThemeProvider>
+ * ```
+ *
+ * @see {@link useAntdTheme}
  */
 export function AntdThemeProvider<T extends ThemeDefinition>({
   runtime,

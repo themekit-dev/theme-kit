@@ -59,8 +59,7 @@ const enableExamples: Record<
     code: `import { ThemeProvider } from "@theme-kit/react";
 
 <ThemeProvider
-  themes={themes}
-  defaultTheme="theme-kit-default-light"
+  defaultTheme="light"
   transition={{ enabled: true, preset: "smooth" }}
 >
   <YourApp />
@@ -74,8 +73,7 @@ const enableExamples: Record<
 import { ThemeProvider } from "@theme-kit/next";
 
 <ThemeProvider
-  themes={themes}
-  defaultTheme="theme-kit-default-light"
+  defaultTheme="light"
   transition={{ enabled: true, preset: "smooth" }}
 >
   {children}
@@ -91,8 +89,7 @@ import { ThemeProvider } from "@theme-kit/vue";
 
 <template>
   <ThemeProvider
-    :themes="themes"
-    defaultTheme="theme-kit-default-light"
+    defaultTheme="light"
     :transition="{ enabled: true, preset: 'smooth' }"
   >
     <YourApp />
@@ -108,8 +105,7 @@ import { ThemeProvider } from "@theme-kit/vue";
 </script>
 
 <ThemeProvider
-  themes={themes}
-  defaultTheme="theme-kit-default-light"
+  defaultTheme="light"
   transition={{ enabled: true, preset: "smooth" }}
 >
   <YourApp />
@@ -124,8 +120,7 @@ import { ThemeProvider } from "@theme-kit/vue";
 export function App() {
   return (
     <ThemeProvider
-      themes={themes}
-      defaultTheme="theme-kit-default-light"
+      defaultTheme="light"
       transition={{ enabled: true, preset: "smooth" }}
     >
       <YourApp />
@@ -137,17 +132,18 @@ export function App() {
     label: "Angular",
     lang: "ts",
     title: "app.config.ts",
-    code: `import { provideThemeKit } from "@theme-kit/angular";
+    code: `// app.config.ts
+import { ApplicationConfig } from "@angular/core";
+import { provideThemeKit } from "@theme-kit/angular";
 
-bootstrapApplication(AppComponent, {
+export const appConfig: ApplicationConfig = {
   providers: [
     provideThemeKit({
-      themes,
-      defaultTheme: "theme-kit-default-light",
+      defaultTheme: "light",
       transition: { enabled: true, preset: "smooth" },
     }),
   ],
-});`,
+};`,
   },
   web: {
     label: "Web Components",
@@ -158,8 +154,7 @@ bootstrapApplication(AppComponent, {
   defineCustomElements();
 
   const provider = document.querySelector("theme-kit-provider");
-  provider.setAttribute("themes", JSON.stringify(themes));
-  provider.setAttribute("default-theme", "theme-kit-default-light");
+  provider.setAttribute("default-theme", "light");
   provider.setAttribute(
     "transition",
     JSON.stringify({ enabled: true, preset: "smooth" })
@@ -175,13 +170,11 @@ bootstrapApplication(AppComponent, {
     lang: "astro",
     title: "src/pages/index.astro",
     code: `---
-import { ThemeProviderClient } from "@theme-kit/astro";
-import { themes } from "./themes";
+import { ThemeProviderClient } from "@theme-kit/astro/client";
 ---
 
 <ThemeProviderClient
-  themes={themes}
-  defaultTheme="theme-kit-default-light"
+  defaultTheme="light"
   transition={{ enabled: true, preset: "smooth" }}
 />
 <ThemeSwitcher client:load />`,
@@ -192,13 +185,11 @@ import { themes } from "./themes";
     title: "runtime.ts",
     code: `import { createThemeRuntime } from "@theme-kit/core";
 import { synchronizeDarkClass } from "@theme-kit/tailwind";
-import { themes } from "./themes";
 
 // Tailwind maps tokens to CSS variables (via @import "@theme-kit/tailwind");
 // the actual transition is owned by the runtime in your framework shell.
 const runtime = createThemeRuntime({
-  themes,
-  defaultTheme: "theme-kit-default-light",
+  defaultTheme: "light",
   transition: { enabled: true, preset: "smooth" },
 });
 synchronizeDarkClass(runtime.store.get());`,
@@ -211,8 +202,7 @@ synchronizeDarkClass(runtime.store.get());`,
 export default defineNuxtConfig({
   modules: ["@theme-kit/nuxt"],
   themeKit: {
-    themes,
-    defaultTheme: "theme-kit-default-light",
+    defaultTheme: "light",
     transition: { enabled: true, preset: "smooth" },
   },
 });`,
@@ -226,8 +216,7 @@ export default defineNuxtConfig({
 export default function App() {
   return (
     <ThemeProvider
-      themes={themes}
-      defaultTheme="theme-kit-default-light"
+      defaultTheme="light"
       transition={{ enabled: true, preset: "smooth" }}
     >
       <Outlet />
@@ -240,11 +229,9 @@ export default function App() {
     lang: "ts",
     title: "main.ts",
     code: `import { createThemeRuntime } from "@theme-kit/core";
-import { themes } from "./themes";
 
 const runtime = createThemeRuntime({
-  themes,
-  defaultTheme: "theme-kit-default-light",
+  defaultTheme: "light",
   transition: { enabled: true, preset: "smooth" },
 });`,
   },
@@ -256,7 +243,6 @@ const viewTransitionSnippet = {
   code: `import { createThemeRuntime } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   transition: {
     enabled: true,
     useViewTransition: true,
@@ -312,13 +298,11 @@ const frameworkSnippets: Record<
     lang: "tsx",
     title: "App.tsx",
     code: `import { ThemeProvider, ThemeScope } from "@theme-kit/react";
-import { themes } from "./themes";
 
 export function App() {
   return (
     <ThemeProvider
-      themes={themes}
-      defaultTheme="theme-kit-default-light"
+      defaultTheme="light"
       transition={{ enabled: true, preset: "smooth" }}
     >
       <YourApp />
@@ -340,13 +324,11 @@ export function App() {
     title: "app/layout.tsx",
     code: `// app/layout.tsx
 import { ThemeProvider } from "@theme-kit/next";
-import { themes } from "./theme/themes";
 
 export default function RootLayout({ children }) {
   return (
     <ThemeProvider
-      themes={themes}
-      defaultTheme="theme-kit-default-light"
+      defaultTheme="light"
       transition={{ enabled: true, preset: "smooth" }}
     >
       {children}
@@ -360,13 +342,11 @@ export default function RootLayout({ children }) {
     title: "App.vue",
     code: `<script setup>
 import { ThemeProvider, ThemeScope } from "@theme-kit/vue";
-import { themes } from "./themes";
 </script>
 
 <template>
   <ThemeProvider
-    :themes="themes"
-    defaultTheme="theme-kit-default-light"
+    defaultTheme="light"
     :transition="{ enabled: true, preset: 'smooth' }"
   >
     <YourApp />
@@ -387,12 +367,10 @@ import { themes } from "./themes";
     title: "app.svelte",
     code: `<script>
   import { ThemeProvider, ThemeScope } from "@theme-kit/svelte";
-  import { themes } from "./themes";
 </script>
 
 <ThemeProvider
-  themes={themes}
-  defaultTheme="theme-kit-default-light"
+  defaultTheme="light"
   transition={{ enabled: true, preset: "smooth" }}
 >
   <YourApp />
@@ -411,13 +389,11 @@ import { themes } from "./themes";
     lang: "tsx",
     title: "App.tsx",
     code: `import { ThemeProvider, ThemeScope } from "@theme-kit/solid";
-import { themes } from "./themes";
 
 export function App() {
   return (
     <ThemeProvider
-      themes={themes}
-      defaultTheme="theme-kit-default-light"
+      defaultTheme="light"
       transition={{ enabled: true, preset: "smooth" }}
     >
       <YourApp />
@@ -437,20 +413,18 @@ export function App() {
     label: "Angular",
     lang: "ts",
     title: "app.config.ts",
-    code: `import { bootstrapApplication } from "@angular/platform-browser";
+    code: `// app.config.ts
+import { ApplicationConfig } from "@angular/core";
 import { provideThemeKit } from "@theme-kit/angular";
-import { AppComponent } from "./app.component";
-import { themes } from "./themes";
 
-bootstrapApplication(AppComponent, {
+export const appConfig: ApplicationConfig = {
   providers: [
     provideThemeKit({
-      themes,
-      defaultTheme: "theme-kit-default-light",
+      defaultTheme: "light",
       transition: { enabled: true, preset: "smooth" },
     }),
   ],
-});
+};
 
 // app.component.html
 <app-root>
@@ -469,15 +443,14 @@ bootstrapApplication(AppComponent, {
     label: "Web Components",
     lang: "html",
     title: "index.html",
-    code: `<!-- Themes register as a JSON attribute so they survive server render -->
+    code: `<!-- Custom themes register as a JSON attribute so they survive server
+     render. Omit the attribute to use the built-in light/dark pair. -->
 <script type="module">
   import { defineCustomElements } from "@theme-kit/web";
-  import { themes } from "./themes.js";
 
   defineCustomElements();
   const provider = document.querySelector("theme-kit-provider");
-  provider.setAttribute("themes", JSON.stringify(themes));
-  provider.setAttribute("default-theme", "theme-kit-default-light");
+  provider.setAttribute("default-theme", "light");
   provider.setAttribute(
     "transition",
     JSON.stringify({ enabled: true, preset: "smooth" })
@@ -518,8 +491,7 @@ bootstrapApplication(AppComponent, {
     lang: "astro",
     title: "src/pages/index.astro",
     code: `---
-import { ThemeProviderClient } from "@theme-kit/astro";
-import { themes } from "./themes";
+import { ThemeProviderClient } from "@theme-kit/astro/client";
 ---
 
 <html>
@@ -528,8 +500,7 @@ import { themes } from "./themes";
   </head>
   <body>
     <ThemeProviderClient
-      themes={themes}
-      defaultTheme="theme-kit-default-light"
+      defaultTheme="light"
       transition={{ enabled: true, preset: "smooth" }}
     />
     <ThemeSwitcher client:load />
@@ -544,8 +515,7 @@ import { themes } from "./themes";
 export default defineNuxtConfig({
   modules: ["@theme-kit/nuxt"],
   themeKit: {
-    themes,
-    defaultTheme: "theme-kit-default-light",
+    defaultTheme: "light",
     transition: { enabled: true, preset: "smooth" },
   },
 });
@@ -570,13 +540,11 @@ export default defineNuxtConfig({
     lang: "tsx",
     title: "app/root.tsx",
     code: `import { ThemeProvider } from "@theme-kit/remix";
-import { themes } from "./themes";
 
 export default function App() {
   return (
     <ThemeProvider
-      themes={themes}
-      defaultTheme="theme-kit-default-light"
+      defaultTheme="light"
       transition={{ enabled: true, preset: "smooth" }}
     >
       <Outlet />
@@ -588,13 +556,20 @@ export default function App() {
     label: "Vanilla JS",
     lang: "ts",
     title: "main.ts",
-    code: `import { createThemeRuntime, createScopedThemeBinding } from "@theme-kit/core";
-import { themes } from "./themes";
+    code: `import {
+  createThemeRuntime,
+  createScopedThemeBinding,
+  getBuiltInThemes,
+} from "@theme-kit/core";
+
+// createScopedThemeBinding takes the registry positionally; the built-in set
+// (the neutral light/dark pair plus the preset families) is a valid registry,
+// so no theme file is needed. createThemeRuntime falls back to it on its own.
+const themes = getBuiltInThemes();
 
 // The transition prop is set once, at runtime creation.
 const runtime = createThemeRuntime({
-  themes,
-  defaultTheme: "theme-kit-default-light",
+  defaultTheme: "light",
   transition: { enabled: true, preset: "smooth" },
 });
 
@@ -769,7 +744,14 @@ body {
               <code className="mono text-xs">@theme-kit/vue</code>, etc.).
             </li>
             <li>
-              <strong>Register</strong> your themes with the provider or runtime.
+              <strong>Pick your themes</strong> — omit the{" "}
+              <code className="mono text-xs">themes</code> prop to use the
+              built-in neutral <code className="mono text-xs">light</code>/
+              <code className="mono text-xs">dark</code> pair (and the built-in{" "}
+              <code className="mono text-xs">mint</code>,{" "}
+              <code className="mono text-xs">plum</code>, … families), or pass
+              your own registry — see{" "}
+              <Link href="/custom-themes" className="underline">custom themes</Link>.
             </li>
             <li>
               <strong>Enable</strong> transitions by adding the{" "}
@@ -906,6 +888,10 @@ body {
         >
           API Reference
         </SectionHeading>
+        <p className="text-sm leading-relaxed opacity-80 mt-3">
+          This table is a summary. The authoritative, generated reference is{" "}
+          <Link href="/api-reference/core" className="underline">@theme-kit/core API reference</Link>.
+        </p>
         <div className="flex flex-col gap-4 mt-4">
           <div className="rounded-xl border border-border overflow-hidden">
             <table className="w-full text-sm">

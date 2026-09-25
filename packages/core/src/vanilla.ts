@@ -1,12 +1,24 @@
+/**
+ * Theme Kit vanilla runtime — a thin imperative wrapper over the core
+ * runtime for plain-JavaScript applications.
+ *
+ * Imported from the `@theme-kit/core/vanilla` subpath. Avoids React
+ * dependency entirely and exposes the same runtime, DOM, CSS-variable, and
+ * transition machinery through a `ThemeKit` facade.
+ *
+ * @packageDocumentation
+ */
 import type { ThemeDefinition, ThemeMode } from "./model/theme";
 import type { ThemeTokens } from "./model/tokens";
 import { getBuiltInThemes } from "./built-in-themes";
-import { createThemeRuntime, type ThemeRuntime, type ScheduledThemeOptions } from "./runtime";
+import { resolveRuntimeOptions } from "./app-config";
+import { createThemeRuntime, type ThemeRuntime, type ScheduledThemeOptions, type ThemeRuntimeOptions } from "./runtime";
 import { createDOMBinding } from "./adapters/dom";
 import { createCSSVariablesBinding } from "./adapters/css-variables";
 import { themeToCSSVariables } from "./css";
 import type { ThemePack, ThemeRegistry } from "./registry";
 import type { ThemeSchedule } from "./adapters/schedule";
+import type { ThemeTransitionOptions } from "./transition";
 
 export type { ThemeDefinition, ThemeMode } from "./model/theme";
 export type { ThemeTokens } from "./model/tokens";
@@ -30,6 +42,8 @@ export interface ThemeKitOptions {
   scheduled?: false | ScheduledThemeOptions<ThemeDefinition>;
   /** Target element for CSS custom properties and `data-theme` attributes. Defaults to `document.documentElement`. */
   target?: HTMLElement | Document;
+  /** Theme transition config. `false` disables transitions, `true` enables defaults, an object customizes the transition. */
+  transition?: boolean | import("./transition").ThemeTransitionOptions;
 }
 
 type EventMap = {
@@ -63,22 +77,48 @@ export class ThemeKit {
    *                  takes precedence over `initialMode`/`initialFamily`.
    */
   constructor(options: ThemeKitOptions = {}) {
-    const themes: readonly ThemeDefinition[] = options.themes ?? (getBuiltInThemes() as unknown as ThemeDefinition[]);
+    // A build integration transports the application's `theme.config.ts` to the
+    // runtime, so a `ThemeKit` constructed with no theme data still has a
+    // registry. Explicit options win, which keeps a local override possible.
+    // `target` is a DOM concern, not a runtime option, so it is not merged.
+    const { target: _target, ...runtimeInput } = options;
+    const resolved = resolveRuntimeOptions(
+      runtimeInput as Partial<ThemeRuntimeOptions<ThemeDefinition>>,
+    );
+    const themes: readonly ThemeDefinition[] = resolved.themes!;
+
+    const transitionOption = options.transition;
+    const resolvedTransition: boolean | import("./transition").ThemeTransitionOptions | undefined =
+      transitionOption === undefined
+        ? undefined
+        : typeof transitionOption === "object"
+          ? transitionOption
+          : true;
 
     this._runtime = createThemeRuntime({
-      themes,
-      ...(options.defaultTheme !== undefined ? { defaultTheme: options.defaultTheme } : {}),
-      ...(options.initialMode !== undefined ? { initialMode: options.initialMode } : {}),
-      ...(options.initialFamily !== undefined ? { initialFamily: options.initialFamily } : {}),
+      ...resolved,
       ...(options.scheduled !== undefined ? { scheduled: options.scheduled } : {}),
+      ...(resolvedTransition !== undefined ? { transition: resolvedTransition } : {}),
       dom: false,
       cssVariables: false,
     } as any);
 
     if (typeof document !== "undefined") {
       const target = options.target ?? document.documentElement;
-      this.domBinding = createDOMBinding(this._runtime.store, { target } as any);
-      this.cssBinding = createCSSVariablesBinding(this._runtime.store, { target } as any);
+      this.domBinding = createDOMBinding(this._runtime.store, {
+        target: target as HTMLElement,
+        // Mirror the selection onto `data-theme-selection-mode` /
+        // `data-theme-selection-family`, the same as the runtime's own binding
+        // does. The runtime is created with `dom: false` here so that this class
+        // owns the binding, and without this the selection attributes would be
+        // the ones the pre-paint bootstrap wrote and never updated again.
+        selection: this._runtime.selection,
+        ...(resolvedTransition !== undefined ? { transition: resolvedTransition as any } : {}),
+      } as any);
+      this.cssBinding = createCSSVariablesBinding(this._runtime.store, {
+        target: target as HTMLElement,
+        ...(resolvedTransition !== undefined ? { transition: resolvedTransition as any } : {}),
+      } as any);
     }
 
     this._runtime.store.subscribe((theme) => {

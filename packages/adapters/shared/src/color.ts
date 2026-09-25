@@ -1,9 +1,28 @@
+/**
+ * An 8-bit RGB color triplet, each channel in the range `0`–`255`.
+ *
+ * @see {@link hexToRgb}
+ */
 export interface RGB {
+  /** Red channel, `0`–`255`. */
   r: number;
+  /** Green channel, `0`–`255`. */
   g: number;
+  /** Blue channel, `0`–`255`. */
   b: number;
 }
 
+/**
+ * Parses a hex color string into an {@link RGB} triplet.
+ *
+ * Accepts `#rgb` (3-digit) and `#rrggbb` (6-digit) forms. A leading `#` is
+ * required; any other input returns `null`.
+ *
+ * @param color The hex color string to parse.
+ * @returns The parsed triplet, or `null` when the input is not a valid hex color.
+ *
+ * @see {@link rgbToHex}
+ */
 export function hexToRgb(color: string): RGB | null {
   const trimmed = color.trim();
   if (!trimmed.startsWith("#")) return null;
@@ -26,6 +45,16 @@ export function hexToRgb(color: string): RGB | null {
   return null;
 }
 
+/**
+ * Serializes an {@link RGB} triplet to a `#rrggbb` hex string.
+ *
+ * Each channel is clamped to `0`–`255` and rounded before serialization.
+ *
+ * @param rgb The triplet to serialize.
+ * @returns The `#rrggbb` hex string.
+ *
+ * @see {@link hexToRgb}
+ */
 export function rgbToHex(rgb: RGB): string {
   const to = (n: number) => Math.max(0, Math.min(255, Math.round(n)))
     .toString(16)
@@ -33,6 +62,18 @@ export function rgbToHex(rgb: RGB): string {
   return `#${to(rgb.r)}${to(rgb.g)}${to(rgb.b)}`;
 }
 
+/**
+ * Linearly interpolates between two {@link RGB} triplets.
+ *
+ * Each channel is computed as `a + (b - a) * t` and clamped to `0`–`255`.
+ *
+ * @param a The starting triplet (`t = 0`).
+ * @param b The ending triplet (`t = 1`).
+ * @param t The interpolation factor, typically `0`–`1`.
+ * @returns The interpolated triplet.
+ *
+ * @see {@link mixColors}
+ */
 export function mixHex(a: RGB, b: RGB, t: number): RGB {
   const clamp = (n: number) => Math.max(0, Math.min(255, Math.round(n)));
   return {
@@ -42,6 +83,19 @@ export function mixHex(a: RGB, b: RGB, t: number): RGB {
   };
 }
 
+/**
+ * Mixes two hex colors by interpolating their RGB channels.
+ *
+ * When either input is not a valid hex color, the closer input (`t < 0.5`
+ * picks `a`, otherwise `b`) is returned unchanged.
+ *
+ * @param a The starting hex color (`t = 0`).
+ * @param b The ending hex color (`t = 1`).
+ * @param t The interpolation factor, typically `0`–`1`.
+ * @returns The mixed color as a `#rrggbb` hex string.
+ *
+ * @see {@link mixHex}
+ */
 export function mixColors(a: string, b: string, t: number): string {
   const rgbA = hexToRgb(a);
   const rgbB = hexToRgb(b);

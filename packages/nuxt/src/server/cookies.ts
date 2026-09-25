@@ -6,6 +6,8 @@
  *   theme-family     → selected family
  *   theme-mode       → selected mode (light | dark | system)
  *   theme-fingerprint→ theme-config fingerprint (stale cookies are rejected)
+ *
+ * @see {@link parseCookieHeader}
  */
 export const themeKitCookieNames = {
   name: "theme-name",
@@ -21,7 +23,11 @@ export interface ParsedCookies {
   [name: string]: string | undefined;
 }
 
-/** Minimal RFC 6265 header parser — enough for the four theme cookies. */
+/** Minimal RFC 6265 header parser — enough for the four theme cookies.
+ *
+ * @see {@link themeKitCookieNames}
+ * @see {@link resolveThemeFromCookies}
+ */
 export function parseCookieHeader(header: string): ParsedCookies {
   const cookies: ParsedCookies = {};
   if (!header) return cookies;
@@ -40,7 +46,10 @@ export function parseCookieHeader(header: string): ParsedCookies {
   return cookies;
 }
 
-/** Serialize a cookie value for `document.cookie` / `Set-Cookie`. */
+/** Serialize a cookie value for `document.cookie` / `Set-Cookie`.
+ *
+ * @see {@link parseCookieHeader}
+ */
 export function encodeCookieValue(value: string): string {
   return encodeURIComponent(value);
 }

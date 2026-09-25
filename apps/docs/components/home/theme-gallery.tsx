@@ -118,7 +118,7 @@ export function ThemeGallery() {
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide"
                     style={{
                       background: "var(--theme-color-secondary)",
-                      color: "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
+                      color: "var(--theme-color-secondaryForeground)",
                     }}
                   >
                     Brand

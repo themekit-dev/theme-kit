@@ -33,10 +33,3 @@ export const useThemeSchedule = useVueThemeSchedule;
 export function useThemeKitRuntime() {
   return useVueThemeRuntime();
 }
-
-export {
-  useShadcnTheme,
-  useBootstrapTheme,
-  useDaisyTheme,
-  useOpenPropsTheme,
-} from "@theme-kit/vue";

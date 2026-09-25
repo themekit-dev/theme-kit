@@ -1,0 +1,10 @@
+{
+  "feature": "basic-theme",
+  "framework": "react",
+  "packages": ["@theme-kit/core", "@theme-kit/react"],
+  "peerDependencies": ["react", "react-dom"],
+  "files": ["src/themes.ts", "src/App.tsx", "src/main.tsx"],
+  "entry": "src/App.tsx",
+  "prerequisites": [],
+  "expectedExportsUsed": ["defineTheme", "ThemeProvider", "useTheme"]
+}

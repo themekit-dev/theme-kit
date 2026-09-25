@@ -113,6 +113,9 @@ function walkAndResolveFlatMap(
 /**
  * Resolve a theme's token groups, evaluating expressions and references
  *    into concrete values.
+ *
+ * @see {@link flattenTokens}
+ * @see {@link evaluateExpression}
  */
 export function resolveTokens(tokens: ThemeTokens): ThemeTokens {
   if (!tokens) return tokens;

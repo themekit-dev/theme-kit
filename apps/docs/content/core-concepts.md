@@ -66,14 +66,27 @@ The active theme is always resolved from **family + mode** — the library picks
 
 ## Semantic Token Groups
 
-Nested tokens produce **recursive groups** that render as CSS variables:
+Nested token objects become **recursive groups**. The emitter walks each group,
+joins every nested level with `-`, and appends the key **verbatim**:
 
 ```
---theme-color-surface-default
---theme-color-surface-hover
+--theme-color-background          /* colors.background            */
+--theme-color-cardForeground      /* colors.cardForeground        */
+--theme-typography-font-size-2xl  /* typography.fontSizes["2xl"]  */
+--theme-shadow-md                 /* shadows.md                   */
+--theme-breakpoint-lg             /* breakpoints.lg               */
 --theme-radius-lg
 --theme-spacing-4
 ```
+
+Two naming rules follow from "verbatim", and both catch people out:
+
+- **Colour keys stay camelCase.** The real property is
+  `--theme-color-cardForeground`, not `--theme-color-card-foreground`. Only
+  *nested levels* gain a `-`; a key is never re-cased or split.
+- **Two group prefixes are singular.** `shadows` emits `--theme-shadow-*` and
+  `breakpoints` emits `--theme-breakpoint-*`, not `--theme-shadows-*` /
+  `--theme-breakpoints-*`.
 
 Every token maps to a `--theme-*` variable automatically via `themeToCSSVariables`:
 
@@ -140,7 +153,7 @@ Every registered theme lives in a registry — the engine behind dynamic theming
 ```ts
 import { createThemeRegistry } from "@theme-kit/core";
 
-const registry = createThemeRegistry({ themes });
+const registry = createThemeRegistry();
 
 registry.register(theme);
 registry.registerMany([a, b]);
@@ -153,7 +166,8 @@ registry.list();
 registry.getFamilies();                 // ["default", "oat", "plum", ...]
 registry.getThemesByFamily("plum");     // plum light + dark
 
-registry.use({ name: "brand", themes }); // install a theme pack
+// Install a theme pack — a named bundle of themes you supply.
+registry.use({ name: "brand", themes: [brandLight, brandDark] });
 ```
 
 A **theme pack** is a named bundle of themes; every theme it installs is stamped with a `pack:<name>` tag in its meta.
@@ -166,7 +180,6 @@ A **theme pack** is a named bundle of themes; every theme it installs is stamped
 import { createThemeRuntime } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
   transition: { enabled: true, duration: 300 },
   plugins: [createPersistencePlugin(), createHistoryPlugin()],
@@ -204,7 +217,7 @@ colors: {
 }
 ```
 
-Utilities: `flattenTokens`, `resolveFlatTokens`, `resolveTokens`, `hasTokenReferences`, `resolveValueReferences`, `evaluateExpression`.
+Utilities: `flattenTokens`, `resolveTokens`, `evaluateExpression`.
 
 ## Theme Generation
 
@@ -221,9 +234,10 @@ const { light, dark } = generateTheme({ seed: "#6366f1", family: "indigo" });
 Validate that a theme defines all required semantic color tokens, resolving `extends` chains when a theme list is provided.
 
 ```ts
-import { validateTheme } from "@theme-kit/core";
+import { getBuiltInThemes, validateTheme } from "@theme-kit/core";
 
-const result = validateTheme(theme, { themes });
+// Pass a theme list to resolve `extends` chains before validating.
+const result = validateTheme(theme, { themes: getBuiltInThemes() });
 // { valid: boolean, issues: [{ type: "missing", path, message }] }
 ```
 
@@ -302,7 +316,7 @@ interface ThemePlugin {
 - `createAccessibilityPlugin()` — contrast / accessibility enforcement
 - `createScheduledPlugin()` — auto light/dark by solar time
 - `createDebuggerPlugin()` — theme change logging
-- `createDevToolsPlugin()` — devtools inspector wiring
+- `createDevToolsPlugin()` — exposes the runtime on `window.__THEME_KIT_DEVTOOLS__` for a devtools extension. Core's version is the lightweight bridge (state only); the inspector that records entries and timings is `@theme-kit/devtools`'s `createDevToolsPlugin`.
 - `createGenerationPlugin()` — live theme generation from a seed
 
 ## Accessibility Toolkit
@@ -310,15 +324,12 @@ interface ThemePlugin {
 ```ts
 import {
   getContrastRatio,
-  checkContrastPair,
   validateThemeContrast,
   simulateCVD,
   simulateThemeForCVD,
-  getCVDLabel,
 } from "@theme-kit/core";
 
 const ratio = getContrastRatio("#ffffff", "#171123"); // 15.6...
-const ok = checkContrastPair("#fff", "#000", 4.5);     // WCAG check
 const audit = validateThemeContrast(theme);            // full theme audit
 
 // Color Vision Deficiency simulation (protanopia, deuteranopia, ...)
@@ -401,7 +412,6 @@ import { createPersistencePlugin } from "@theme-kit/core";
 
 // Recommended: full selection (mode + family) persistence
 const runtime = createThemeRuntime({
-  themes,
   plugins: [createPersistencePlugin({ key: "my-app-theme" })],
 });
 ```
@@ -410,18 +420,24 @@ const runtime = createThemeRuntime({
 
 - `createThemeBootstrapScript({ themes, defaultTheme, initialMode, initialFamily, storageKey, prefix })` — generates a **blocking inline script** that reads the persisted selection, resolves the effective mode (`system` → `prefers-color-scheme`), and applies CSS variables + DOM effects before first paint.
 - `buildThemeCssMap(themes)` — maps theme names and `family:mode` keys to flat CSS variable maps.
-- `darkModeCSSTemplate(variables)` — a `@media (prefers-color-scheme: dark)` block so dark-mode users get correct colors even before JS runs.
+- `darkModeCSSTemplate(variables)` — a `@media (prefers-color-scheme: dark)` block carrying one theme's variables. This is a **pre-script** fallback only. It cannot override an inline `style` on the same element — inline declarations outrank every stylesheet rule regardless of specificity — so do not pair it with a server render that inlines the *light* variables, or an OS-dark visitor keeps the light ones. When the resolved mode is `system`, express both schemes in CSS instead: `systemModeCSSTemplate(light, dark)` from `@theme-kit/core` — which emits light *and* dark media blocks and expects **no** inline variables. `@theme-kit/astro` re-exports the same two functions, and `@theme-kit/angular`'s `createBlockingScriptContent` applies the identical rule internally.
 
 ```ts
 import {
   createThemeBootstrapScript,
   buildThemeCssMap,
   darkModeCSSTemplate,
+  getBuiltInThemes,
 } from "@theme-kit/core";
+
+// buildThemeCssMap/createThemeBootstrapScript take the registry explicitly;
+// the built-in set is a valid registry, so no theme file is needed.
+const themes = getBuiltInThemes();
 
 const cssMap = buildThemeCssMap(themes);
 const script = createThemeBootstrapScript({ themes, defaultTheme: "light" });
-const fallbackCSS = darkModeCSSTemplate(cssMap["default:dark"] ?? {});
+// Neutral themes carry no family, so they are keyed by name only.
+const fallbackCSS = darkModeCSSTemplate(cssMap["dark"] ?? {});
 ```
 
 ## Built-in Themes
@@ -472,13 +488,45 @@ Events: `themeChange`, `modeChange`, `familyChange`. Exposes `.runtime`, `.regis
 `@theme-kit/core/vite` injects the blocking bootstrap script into `index.html` (`head-prepend`) so the persisted theme applies before first paint in client-rendered apps — no manual inline scripts.
 
 ```ts
-// vite.config.ts
+// theme.config.ts — the canonical application configuration
+import { defineTheme, defineThemeKitConfig } from "@theme-kit/core";
+
+const themes = [
+  defineTheme({
+    name: "brand-light",
+    meta: { family: "brand", mode: "light" },
+    tokens: { colors: { background: "#ffffff" } },
+  }),
+  defineTheme({
+    name: "brand-dark",
+    meta: { family: "brand", mode: "dark" },
+    tokens: { colors: { background: "#101014" } },
+  }),
+];
+
+export default defineThemeKitConfig({
+  themes,
+  defaultTheme: "brand-light",
+  // Opt in to following the OS. The plugin's bootstrap and the client runtime
+  // both read this one value, so there is nothing to keep in sync.
+  initialMode: "system",
+});
+```
+
+```ts
+// vite.config.ts — the plugin discovers the file above
 import { themeKitVitePlugin } from "@theme-kit/core/vite";
 
 export default defineConfig({
-  plugins: [react(), themeKitVitePlugin({ themes: customThemes })],
+  plugins: [react(), themeKitVitePlugin()],
 });
 ```
+
+The plugin **discovers** `theme.config.ts` at the project root, derives the
+bootstrap from it, and transports the same configuration to the runtime. Do not
+repeat `themes` / `defaultTheme` / `initialMode` in `vite.config.ts` — declaring
+them twice is how the script and the runtime drift apart, and a drift is visible
+as a flash of the wrong theme.
 
 ## Framework Integrations
 

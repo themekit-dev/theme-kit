@@ -5,9 +5,13 @@ import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
 
+import { docsUrl } from "../../lib/site";
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/multi-window-sync") },
   title: "Multi-Window Sync",
   description:
     "How Theme Kit synchronizes theme selection across browser tabs and windows using BroadcastChannel, SharedWorker, and StorageEvent fallbacks.",
@@ -31,7 +35,7 @@ sync.subscribe((selection) => {
 });
 
 // Post a change — all other tabs update instantly
-sync.post({ mode: "dark", family: "slate" });`,
+sync.post({ mode: "dark", family: "graphite" });`,
 };
 
 const broadcastAdapterSnippet = {
@@ -44,7 +48,7 @@ const channel = createThemeSelectionBroadcast({
 });
 
 if (channel) {
-  channel.post({ mode: "dark", family: "slate" });
+  channel.post({ mode: "dark", family: "graphite" });
 
   channel.subscribe((state) => {
     // state.family and state.mode are both available
@@ -62,7 +66,7 @@ const storageEventSnippet = {
 // Works in all browsers, no BroadcastChannel needed
 const sync = createStorageEventSync("theme-selection-state");
 
-sync.post({ mode: "dark", family: "slate" });
+sync.post({ mode: "dark", family: "graphite" });
 
 sync.subscribe((selection) => {
   // Fires in other tabs when localStorage changes
@@ -173,8 +177,8 @@ const storeSync = createMultiWindowSync({
 });
 
 // Changing admin theme does NOT affect storefront tabs
-adminSync.post({ mode: "dark", family: "slate" });
-storeSync.post({ mode: "light", family: "neutral" });`,
+adminSync.post({ mode: "dark", family: "graphite" });
+storeSync.post({ mode: "light", family: "default" });`,
 };
 
 export default function MultiWindowSyncPage() {
@@ -193,6 +197,26 @@ export default function MultiWindowSyncPage() {
               wiring required.
             </>
           }
+        />
+
+        <Prerequisites
+          items={[
+            {
+              label: "Core Package",
+              value: "@theme-kit/core",
+              href: "/packages/core",
+            },
+            {
+              label: "Runtime",
+              value: "Active ThemeRuntime with persistence adapter",
+              href: "/persistence",
+            },
+            {
+              label: "Browser API",
+              value: "BroadcastChannel (with fallbacks for older browsers)",
+            },
+          ]}
+          className="mb-8"
         />
 
         <section id="problem" className="scroll-mt-24 mb-10">
@@ -455,6 +479,45 @@ export default function MultiWindowSyncPage() {
             </a>
           </div>
         </section>
+        <section id="api-reference" className="scroll-mt-24 mb-10">
+          <SectionHeading
+            num={7}
+            desc="Every export used on this page is generated from source JSDoc — this guide links it rather than duplicating it."
+          >
+            API reference
+          </SectionHeading>
+          <p className="text-sm leading-relaxed opacity-80">The full surface:</p>
+          <p className="mt-3 text-sm">
+            <a href="/api-reference/core" className="underline">
+              @theme-kit/core API reference
+            </a>
+          </p>
+        </section>
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Persistence",
+              href: "/persistence",
+              description: "Save theme selection across reloads",
+            },
+            {
+              title: "Zero Flash SSR",
+              href: "/zero-flash",
+              description: "Server-side rendering without flash",
+            },
+            {
+              title: "Accessibility",
+              href: "/accessibility",
+              description: "Sync color-scheme and reduced-motion",
+            },
+            {
+              title: "Core API Reference",
+              href: "/api-reference/core",
+              description: "Multi-window sync API docs",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

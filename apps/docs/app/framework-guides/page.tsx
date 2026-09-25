@@ -5,8 +5,10 @@ import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
 import { Callout } from "../../components/ui/callout";
 import { frameworks } from "../../lib/frameworks";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/framework-guides") },
   title: "Framework Guides",
   description:
     "First-class integrations for React, Next.js, Vue, Svelte, Solid, Angular, Web Components, Tailwind, Astro, Nuxt and Remix — every feature of every framework.",
@@ -52,7 +54,7 @@ export default function FrameworkGuidesPage() {
                     background:
                       "linear-gradient(135deg, var(--theme-color-primary), color-mix(in srgb, var(--theme-color-primary) 40%, var(--theme-color-accent)))",
                     color:
-                      "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                      "var(--theme-color-primaryForeground)",
                   }}
                 >
                   <span className="grayscale group-hover:grayscale-0 transition-all duration-100">

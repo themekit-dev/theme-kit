@@ -106,7 +106,7 @@ const STATIC_ENTRIES: Omit<SearchEntry, "type">[] = [
   {
     title: "Accessibility Lab",
     route: "/accessibility",
-    text: "Live WCAG contrast checks with getContrastRatio, checkContrastPair and validateThemeContrast, color vision deficiency simulation with simulateCVD and simulateThemeForCVD, accessibility profiles (high contrast, large text), and a live demo of createAccessibilityPlugin reacting to a violating theme via onViolation with a one-click fix.",
+    text: "Live WCAG contrast checks with getContrastRatio and validateThemeContrast, color vision deficiency simulation with simulateCVD and simulateThemeForCVD, accessibility profiles (high contrast, large text), and a live demo of createAccessibilityPlugin reacting to a violating theme via onViolation with a one-click fix.",
   },
   {
     title: "Custom Scrollbar",

@@ -1,3 +1,13 @@
+/**
+ * Theme Kit Nuxt integration.
+ *
+ * The Nuxt module wires auto-imported `useTheme*` composables, the
+ * `ThemeScope` / `ThemeScrollbar` / `ThemeInspector` components, and the
+ * server-side cookie + bootstrap helpers (`defineNuxtTheme`,
+ * `resolveThemeFromCookies`, `NuxtThemeBootstrap`).
+ *
+ * @packageDocumentation
+ */
 import {
   defineNuxtModule,
   addImportsDir,
@@ -14,6 +24,27 @@ import type {
   ThemeTransitionOptions,
 } from "@theme-kit/core";
 
+/**
+ * Configuration options for the `@theme-kit/nuxt` module, set under the
+ * `themeKit` key in `nuxt.config.ts`. The module installs an app-wide theme
+ * runtime, registers the theme components and composables, and wires the
+ * SSR-first cookie contract so the browser paints already themed.
+ *
+ * @example
+ * ```ts
+ * // nuxt.config.ts
+ * export default defineNuxtConfig({
+ *   themeKit: {
+ *     defaultTheme: "light",
+ *     initialMode: "system",
+ *     scrollbar: true,
+ *   },
+ * });
+ * ```
+ *
+ * @see {@link ResolveThemeFromCookiesOptions}
+ * @see {@link NuxtThemeBootstrapOptions}
+ */
 export interface ModuleOptions {
   /** Theme registry. Defaults to the built-in themes when omitted. */
   themes?: ThemeDefinition[];
@@ -102,6 +133,10 @@ export {
   ThemeInspector,
   useTheme,
   useThemeRuntime,
+  useThemeValue,
+  useThemeTokens,
+  useThemeMode,
+  useThemeFamily,
   useThemeHistory,
   useThemeBatch,
   useThemeSnapshot,
@@ -110,7 +145,6 @@ export {
   useThemePacks,
   useThemeSchedule,
 } from "@theme-kit/vue";
-export { useShadcnTheme, useBootstrapTheme, useDaisyTheme, useOpenPropsTheme } from "@theme-kit/vue";
 export type { ThemeProviderProps, ThemeScrollbarProps, ThemeScopeProps, ThemeInspectorProps } from "@theme-kit/vue";
 export * from "@theme-kit/core";
 

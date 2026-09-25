@@ -6,6 +6,15 @@ import {
   type ThemeMode,
 } from "@theme-kit/core";
 
+/**
+ * Resolves the initial theme state server-side from the request's theme
+ * cookies, so the browser paints already themed (zero-flash). Pair with
+ * `ThemeProvider` (pass the result as `initial`) and `ThemeHead` in the
+ * document `<head>`.
+ *
+ * @see {@link ThemeProvider}
+ * @see {@link ThemeHead}
+ */
 export async function getInitialThemeState<T extends ThemeDefinition>(
   request: Request,
   options: ResolveInitialThemeOptions<T>,

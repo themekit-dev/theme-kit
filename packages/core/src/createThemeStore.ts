@@ -2,16 +2,25 @@ import type { ThemeDefinition } from "./model/theme";
 import type { ThemeStore, ThemeStoreOptions } from "./types";
 
 /**
- * Create a theme store. The store holds the current theme and notifies
- *    subscribers when it changes. Use the higher-level `createThemeRuntime`
- *    for the full runtime; use the store directly when you only need a
- *    reactive current-theme container.
- * 
- *    ```ts
- *    const store = createThemeStore({ initialTheme: lightTheme });
- *    store.subscribe((theme) => console.log(theme.name));
- *    store.set(darkTheme);
- *    ```
+ * Creates a theme store: a framework-free container for the active theme.
+ *
+ * The store holds the current theme and notifies subscribers when it
+ * changes. Use the higher-level `createThemeRuntime` for the full runtime;
+ * use the store directly when you only need a reactive current-theme
+ * container.
+ *
+ * @param options Store configuration, including the initial theme.
+ * @returns A new theme store.
+ *
+ * @example
+ * ```ts
+ * const store = createThemeStore({ initialTheme: lightTheme });
+ * store.subscribe((theme) => console.log(theme.name));
+ * store.set(darkTheme);
+ * ```
+ *
+ * @see {@link ThemeStore}
+ * @see {@link createThemeRuntime}
  */
 export function createThemeStore<T extends ThemeDefinition>(
   options: ThemeStoreOptions<T>,

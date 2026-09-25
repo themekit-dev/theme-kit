@@ -5,9 +5,14 @@ import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { NextSteps } from "../../components/ui/next-step-card";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/dom-adapters") },
   title: "DOM Adapters",
   description:
     "The bridge between Theme Kit's runtime and the DOM: CSS variables binding, DOM attribute binding, system theme detection, scoped themes, and the diff → plan → animate transition pipeline.",
@@ -20,7 +25,6 @@ const cssVariablesSnippet = {
 import { createCSSVariablesBinding } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
 });
 
@@ -66,7 +70,11 @@ const dom = createDOMBinding(runtime.store, {
 const systemBindingSnippet = {
   lang: "ts",
   title: "core — system theme binding",
-  code: `import { createSystemThemeBinding } from "@theme-kit/core";
+  code: `import { createSystemThemeBinding, getBuiltInThemes } from "@theme-kit/core";
+
+// \`runtime\` is the ThemeRuntime from your provider / createThemeRuntime().
+// The built-in set is a valid registry, so no theme file is needed.
+const themes = getBuiltInThemes();
 
 const system = createSystemThemeBinding(runtime.store, {
   lightTheme: themes.find(t => t.name === "light")!,
@@ -85,12 +93,12 @@ const system = createSystemThemeBinding(runtime.store, {
 const scopedBindingSnippet = {
   lang: "ts",
   title: "core — scoped theme binding",
-  code: `import { createScopedThemeBinding } from "@theme-kit/core";
+  code: `import { createScopedThemeBinding, getBuiltInThemes } from "@theme-kit/core";
 
 const sidebar = document.getElementById("sidebar")!;
 
 const scope = createScopedThemeBinding(
-  themes,
+  getBuiltInThemes(),
   sidebar,
   "plum-dark",  // or { family: "plum", mode: "dark" }
   {
@@ -158,7 +166,6 @@ const disableSnippet = {
   title: "core — disabling adapters",
   code: `// Disable DOM attribute binding entirely
 const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
   dom: false,  // no data-theme, no data-theme-family, no .dark class
 });
@@ -171,15 +178,16 @@ const cssVars = createCSSVariablesBinding(runtime.store, {
 // To skip CSS variables entirely, don't call this binding.
 
 // Disable transitions on a specific binding
-const dom = createDOMBinding(runtime.store, {
+const instantAttributes = createDOMBinding(runtime.store, {
   transition: { enabled: false },  // instant attribute swap
 });
 
-// Combine: attributes + variables, no transition
-const dom = createDOMBinding(runtime.store, {
-  subscribe: false, // driven by CSS-variables binding's pipeline
+// Combine: let the variables binding drive the pipeline, so the attributes
+// binding does not subscribe on its own.
+const attributes = createDOMBinding(runtime.store, {
+  subscribe: false,
 });
-const cssVars = createCSSVariablesBinding(runtime.store, {
+const instantVariables = createCSSVariablesBinding(runtime.store, {
   transition: { enabled: false },
 });`,
 };
@@ -200,6 +208,20 @@ export default function DOMAdaptersPage() {
               browser.
             </>
           }
+        />
+
+        <Prerequisites
+          items={[
+            {
+              label: "Runtime concepts",
+              value: "Understanding the theme store and subscription model",
+              href: "/architecture",
+            },
+            {
+              label: "CSS variables knowledge",
+              value: "Basic understanding of CSS custom properties",
+            },
+          ]}
         />
 
         <section id="overview" className="scroll-mt-24 mb-10">
@@ -380,7 +402,7 @@ export default function DOMAdaptersPage() {
                       i === 1
                         ? {
                             background: "var(--theme-color-primary)",
-                            color: "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                            color: "var(--theme-color-primaryForeground)",
                           }
                         : undefined
                     }
@@ -431,6 +453,41 @@ export default function DOMAdaptersPage() {
             className="m-0"
           />
         </section>
+
+        <NextSteps
+          steps={[
+            {
+              title: "Build custom plugins",
+              description: "Hook into adapter lifecycle events",
+              href: "/plugins",
+            },
+            {
+              title: "Explore animation system",
+              description: "Control transition behavior and timing",
+              href: "/animation",
+            },
+          ]}
+        />
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Architecture",
+              description: "How adapters fit into the runtime",
+              href: "/architecture",
+            },
+            {
+              title: "View Transitions",
+              description: "Native browser transitions for theme changes",
+              href: "/animation",
+            },
+            {
+              title: "Scoped Themes",
+              description: "Apply different themes to different DOM regions",
+              href: "/scoped-theme",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

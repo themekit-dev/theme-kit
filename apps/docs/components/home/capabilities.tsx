@@ -81,7 +81,7 @@ const capabilities: Capability[] = [
   },
   {
     title: "Component-library adapters",
-    desc: "Bridge tokens into MUI, Chakra, Ant Design, shadcn/ui, Bootstrap, DaisyUI, and Mantine — Theme Kit powers your library, it doesn't replace it.",
+    desc: "Bridge tokens into MUI, Chakra, Ant Design, shadcn/ui, Bootstrap, daisyUI, and Mantine — Theme Kit powers your library, it doesn't replace it.",
     href: "/adapters",
     tag: "adapters",
     icon: (
@@ -120,7 +120,7 @@ export function Capabilities() {
                 className="w-8 h-8 rounded-lg grid place-items-center"
                 style={{
                   background: "var(--theme-color-secondary)",
-                  color: "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
+                  color: "var(--theme-color-secondaryForeground)",
                 }}
               >
                 {cap.icon}

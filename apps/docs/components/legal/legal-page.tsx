@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
+import { docsUrl } from "../../lib/site";
 
 const wrapperClass =
   "mx-auto max-w-3xl px-6 py-14 sm:py-20";
@@ -54,8 +55,13 @@ export function LegalList({ items }: { items: ReactNode[] }) {
   );
 }
 
-export const legalMetadata = (title: string, description: string): Metadata => ({
+export const legalMetadata = (
+  title: string,
+  description: string,
+  path: string,
+): Metadata => ({
   title,
   description,
   robots: { index: true, follow: true },
+  alternates: { canonical: docsUrl(path) },
 });

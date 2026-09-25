@@ -1,0 +1,10 @@
+{
+  "feature": "zero-flash",
+  "framework": "core",
+  "packages": ["@theme-kit/core"],
+  "peerDependencies": [],
+  "files": ["src/example.ts"],
+  "entry": "src/example.ts",
+  "prerequisites": [],
+  "expectedExportsUsed": ["createThemeBootstrapScript", "defineTheme"]
+}

@@ -5,6 +5,19 @@ import type { ParsedArgs } from "../utils.js";
 import { UsageError } from "../exit-codes.js";
 import { readThemeJSON, isThemePair } from "../theme-shared.js";
 
+/**
+ * Implements the `migrate` command: migrates a theme file to the current
+ * schema and prints the result as JSON or writes it to a file.
+ *
+ * Reads `--file`/`-f` (or the first positional) and `--output`/`-o`. Migrates
+ * a single theme or a light/dark pair and prints the migrated JSON to stdout,
+ * or writes it to the output file when provided.
+ *
+ * @param args The parsed command-line arguments.
+ * @throws {UsageError} When no file is provided.
+ *
+ * @see {@link parseArgs}
+ */
 export async function cmdMigrate(args: ParsedArgs) {
   const file = getString(args, "file") || getString(args, "f") || args._[1];
   const output = getString(args, "output") || getString(args, "o") || null;

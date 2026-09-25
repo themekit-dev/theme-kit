@@ -1,3 +1,13 @@
+/**
+ * Theme Kit devtools.
+ *
+ * Provides the runtime plugin (`createDevToolsPlugin`) that records
+ * theme-change entries and performance measurements per runtime, the
+ * standalone `createDevToolsInspector`, and the `createDevToolsPanel`
+ * UI factory for custom devtools integrations.
+ *
+ * @packageDocumentation
+ */
 import type { ThemeRuntime, ThemeDefinition } from "@theme-kit/core";
 import { createDevToolsInspector } from "./inspector";
 import { createDevToolsPanel } from "./panel";
@@ -6,6 +16,33 @@ import type { DevToolsInspector, DevToolsEntry, DevToolsPerformanceEntry, DevToo
 export { createDevToolsInspector, createDevToolsPanel };
 export type { DevToolsInspector, DevToolsEntry, DevToolsPerformanceEntry, DevToolsInspectorOptions, DevToolsState };
 
+/**
+ * Creates a Theme Kit devtools plugin.
+ *
+ * The plugin binds an inspector to each runtime it is applied to, records
+ * theme-change events and performance measurements, and registers the
+ * inspector on `window.__THEME_KIT_DEVTOOLS__` in the browser. Use it with the
+ * runtime's plugin system.
+ *
+ * @param options Optional limits for the inspector's retained entries.
+ * @returns A plugin object with `onRuntimeCreated`, `getInspector`, and
+ *   `onDestroy` hooks.
+ *
+ * @example
+ * ```ts
+ * import { createDevToolsPlugin } from "@theme-kit/devtools";
+ * import { createThemeRuntime, getBuiltInThemes } from "@theme-kit/core";
+ *
+ * const runtime = createThemeRuntime({
+ *   themes: getBuiltInThemes(),
+ *   plugins: [createDevToolsPlugin()],
+ * });
+ * ```
+ *
+ * @see {@link createDevToolsInspector}
+ * @see {@link createDevToolsPanel}
+ * @see {@link DevToolsInspector}
+ */
 export function createDevToolsPlugin<T extends ThemeDefinition>(options?: DevToolsInspectorOptions) {
   const inspector = createDevToolsInspector<T>(options);
   const unsubscribe: Array<() => void> = [];

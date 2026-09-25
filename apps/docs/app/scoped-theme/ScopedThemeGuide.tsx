@@ -7,8 +7,14 @@ import { CodeBlock } from "../../components/code-block";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
 import { FrameworkPicker, getExample } from "../../components/framework-picker";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { NextSteps } from "../../components/ui/next-step-card";
+import { RelatedLinks } from "../../components/ui/related-links";
 
-const scopeExamples: Record<string, { lang: string; title: string; code: string }> = {
+const scopeExamples: Record<
+  string,
+  { lang: string; title: string; code: string }
+> = {
   react: {
     lang: "tsx",
     title: "app.tsx",
@@ -17,7 +23,7 @@ import type { ThemeTransitionOptions } from "@theme-kit/core";
 
 const scopeTransition: ThemeTransitionOptions = { duration: 300, easing: "cubic-bezier(0.4, 0, 0.2, 1)" };
 
-<ThemeProvider themes={themes}>
+<ThemeProvider>
   <ThemeScope theme="plum-dark" transition={scopeTransition}>
     <Sidebar />
   </ThemeScope>
@@ -67,7 +73,7 @@ import type { ThemeTransitionOptions } from "@theme-kit/core";
 const transition: ThemeTransitionOptions = { duration: 300, easing: "ease" };
 </script>
 
-<ThemeProvider themes={themes}>
+<ThemeProvider>
   <ThemeScope theme="plum-dark" {transition}>
     <YourComponent />
   </ThemeScope>
@@ -83,7 +89,7 @@ const transition: ThemeTransitionOptions = { duration: 300, easing: "ease" };
 
 export function App() {
   return (
-    <ThemeProvider themes={themes}>
+    <ThemeProvider>
       <ThemeScope theme="plum-dark" transition={transition}>
         <YourComponent />
       </ThemeScope>
@@ -152,7 +158,7 @@ export class BannerComponent {}`,
     lang: "astro",
     title: "src/components/Scoped.astro",
     code: `---
-import { ThemeScope } from "@theme-kit/astro";
+import { ThemeScope } from "@theme-kit/astro/client";
 ---
 
 <div class="scoped-region">
@@ -197,7 +203,10 @@ export function ScopedPanel() {
   },
 };
 
-const imperativeExamples: Record<string, { lang: string; title: string; code: string }> = {
+const imperativeExamples: Record<
+  string,
+  { lang: string; title: string; code: string }
+> = {
   react: {
     lang: "tsx",
     title: "useScopedTheme — imperative",
@@ -333,7 +342,11 @@ export class PreviewComponent {}`,
     title: "core — createScopedThemeBinding",
     code: `// Tailwind is a CSS layer — imperative scoping
 // uses the core binding, same as vanilla JS.
-import { createScopedThemeBinding } from "@theme-kit/core";
+import { createScopedThemeBinding, getBuiltInThemes } from "@theme-kit/core";
+
+// createScopedThemeBinding takes the registry positionally; the built-in set
+// is a valid registry, so no theme file is needed.
+const themes = getBuiltInThemes();
 
 const binding = createScopedThemeBinding(themes, el, "plum-dark");
 binding.destroy();`,
@@ -342,7 +355,7 @@ binding.destroy();`,
     lang: "astro",
     title: "Astro — ThemeScope",
     code: `---
-import { ThemeScope } from "@theme-kit/astro";
+import { ThemeScope } from "@theme-kit/astro/client";
 ---
 <ThemeScope theme="plum-dark">
   <div>Scoped to plum-dark</div>
@@ -359,7 +372,10 @@ import { ThemeScope } from "@theme-kit/astro";
   },
 };
 
-const localThemeExamples: Record<string, { lang: string; title: string; code: string }> = {
+const localThemeExamples: Record<
+  string,
+  { lang: string; title: string; code: string }
+> = {
   react: {
     lang: "tsx",
     title: "React — local themes",
@@ -501,7 +517,27 @@ const compactTheme: ThemeDefinition = defineTheme({
     title: "core — imperative local themes",
     code: `// The Angular ThemeScopeDirective doesn't support local themes.
 // Use the imperative core binding with localThemes:
-import { createScopedThemeBinding } from "@theme-kit/core";
+import {
+  createScopedThemeBinding,
+  defineTheme,
+  getBuiltInThemes,
+} from "@theme-kit/core";
+
+// A local theme is just a ThemeDefinition — define it wherever you like.
+const compactTheme = defineTheme({
+  name: "compact-light",
+  meta: { family: "compact", mode: "light" },
+  tokens: {
+    colors: {
+      background: "#ffffff",
+      foreground: "#18181b",
+      primary: "#6366f1",
+    },
+  },
+});
+
+// createScopedThemeBinding takes the registry positionally.
+const themes = getBuiltInThemes();
 
 const binding = createScopedThemeBinding(themes, el, "plum-dark", {
   localThemes: [compactTheme],
@@ -513,7 +549,27 @@ binding.destroy();`,
     title: "core — imperative local themes",
     code: `// The <theme-kit-scope> element doesn't support local themes.
 // Use the imperative core binding with localThemes:
-import { createScopedThemeBinding } from "@theme-kit/core";
+import {
+  createScopedThemeBinding,
+  defineTheme,
+  getBuiltInThemes,
+} from "@theme-kit/core";
+
+// A local theme is just a ThemeDefinition — define it wherever you like.
+const compactTheme = defineTheme({
+  name: "compact-light",
+  meta: { family: "compact", mode: "light" },
+  tokens: {
+    colors: {
+      background: "#ffffff",
+      foreground: "#18181b",
+      primary: "#6366f1",
+    },
+  },
+});
+
+// createScopedThemeBinding takes the registry positionally.
+const themes = getBuiltInThemes();
 
 const binding = createScopedThemeBinding(themes, el, "plum-dark", {
   localThemes: [compactTheme],
@@ -524,7 +580,27 @@ binding.destroy();`,
     lang: "ts",
     title: "core — imperative local themes",
     code: `// Tailwind is a CSS layer — local themes use the core binding.
-import { createScopedThemeBinding } from "@theme-kit/core";
+import {
+  createScopedThemeBinding,
+  defineTheme,
+  getBuiltInThemes,
+} from "@theme-kit/core";
+
+// A local theme is just a ThemeDefinition — define it wherever you like.
+const compactTheme = defineTheme({
+  name: "compact-light",
+  meta: { family: "compact", mode: "light" },
+  tokens: {
+    colors: {
+      background: "#ffffff",
+      foreground: "#18181b",
+      primary: "#6366f1",
+    },
+  },
+});
+
+// createScopedThemeBinding takes the registry positionally.
+const themes = getBuiltInThemes();
 
 const binding = createScopedThemeBinding(themes, el, "plum-dark", {
   localThemes: [compactTheme],
@@ -536,7 +612,27 @@ binding.destroy();`,
     title: "core — imperative local themes",
     code: `// Astro's ThemeScope doesn't support local themes.
 // Use the imperative core binding with localThemes:
-import { createScopedThemeBinding } from "@theme-kit/core";
+import {
+  createScopedThemeBinding,
+  defineTheme,
+  getBuiltInThemes,
+} from "@theme-kit/core";
+
+// A local theme is just a ThemeDefinition — define it wherever you like.
+const compactTheme = defineTheme({
+  name: "compact-light",
+  meta: { family: "compact", mode: "light" },
+  tokens: {
+    colors: {
+      background: "#ffffff",
+      foreground: "#18181b",
+      primary: "#6366f1",
+    },
+  },
+});
+
+// createScopedThemeBinding takes the registry positionally.
+const themes = getBuiltInThemes();
 
 const binding = createScopedThemeBinding(themes, el, "plum-dark", {
   localThemes: [compactTheme],
@@ -585,7 +681,10 @@ export function ScopedPanel() {
   },
 };
 
-const transitionExamples: Record<string, { lang: string; title: string; code: string }> = {
+const transitionExamples: Record<
+  string,
+  { lang: string; title: string; code: string }
+> = {
   react: {
     lang: "tsx",
     title: "React — transition prop",
@@ -700,7 +799,7 @@ export class ScopeComponent {}`,
     lang: "astro",
     title: "Astro — transition prop",
     code: `---
-import { ThemeScope } from "@theme-kit/astro";
+import { ThemeScope } from "@theme-kit/astro/client";
 ---
 
 <ThemeScope theme="plum-dark" />
@@ -739,11 +838,14 @@ import { ThemeScope } from "@theme-kit/remix";
   },
 };
 
-const nestedScopeExamples: Record<string, { lang: string; title: string; code: string }> = {
+const nestedScopeExamples: Record<
+  string,
+  { lang: string; title: string; code: string }
+> = {
   react: {
     lang: "tsx",
     title: "React — nested scopes",
-    code: `<ThemeProvider themes={themes}>
+    code: `<ThemeProvider>
   <ThemeScope theme="mint-light">
     <Dashboard />
 
@@ -756,7 +858,7 @@ const nestedScopeExamples: Record<string, { lang: string; title: string; code: s
   next: {
     lang: "tsx",
     title: "Next.js — nested scopes",
-    code: `<ThemeProvider themes={themes}>
+    code: `<ThemeProvider>
   <ThemeScope theme="mint-light">
     <Dashboard />
 
@@ -770,7 +872,7 @@ const nestedScopeExamples: Record<string, { lang: string; title: string; code: s
     lang: "vue",
     title: "Vue — nested scopes",
     code: `<template>
-  <ThemeProvider :themes="themes">
+  <ThemeProvider>
     <ThemeScope theme="mint-light">
       <Dashboard />
 
@@ -784,7 +886,7 @@ const nestedScopeExamples: Record<string, { lang: string; title: string; code: s
   svelte: {
     lang: "svelte",
     title: "Svelte — nested scopes",
-    code: `<ThemeProvider themes={themes}>
+    code: `<ThemeProvider>
   <ThemeScope theme="mint-light">
     <Dashboard />
 
@@ -797,7 +899,7 @@ const nestedScopeExamples: Record<string, { lang: string; title: string; code: s
   solid: {
     lang: "tsx",
     title: "Solid — nested scopes",
-    code: `<ThemeProvider themes={themes}>
+    code: `<ThemeProvider>
   <ThemeScope theme="mint-light">
     <Dashboard />
 
@@ -860,10 +962,10 @@ export class DashboardComponent {}`,
     lang: "astro",
     title: "Astro — nested scopes",
     code: `---
-import { ThemeProviderClient } from "@theme-kit/astro";
-import { ThemeScope } from "@theme-kit/astro";
+import { ThemeProviderClient } from "@theme-kit/astro/client";
+import { ThemeScope } from "@theme-kit/astro/client";
 ---
-<ThemeProviderClient themes={themes} defaultTheme="light">
+<ThemeProviderClient defaultTheme="light">
   <ThemeScope theme="mint-light">
     <Dashboard />
 
@@ -889,7 +991,7 @@ import { ThemeScope } from "@theme-kit/astro";
   remix: {
     lang: "tsx",
     title: "Remix — nested scopes",
-    code: `<ThemeProvider themes={themes}>
+    code: `<ThemeProvider>
   <ThemeScope theme="mint-light">
     <Dashboard />
 
@@ -922,12 +1024,34 @@ export function ScopedThemeGuide() {
 
   return (
     <>
-      <FrameworkPicker
-        value={selectedFramework}
-        onChange={setSelectedFramework}
-        label="Pick your framework"
-        scrollToId="theme-scope"
+      <Prerequisites
+        items={[
+          {
+            label: "Theme Kit provider mounted",
+            value: "A global ThemeProvider wrapping your app",
+            href: "/quick-start",
+          },
+          {
+            label: "Custom themes defined",
+            value: "At least one theme to apply to a scope",
+            href: "/custom-themes",
+          },
+          {
+            label: "Framework adapter installed",
+            value: "@theme-kit/react, /next, /vue, or /angular",
+            href: "/get-started",
+          },
+        ]}
       />
+
+      <div className="mt-10">
+        <FrameworkPicker
+          value={selectedFramework}
+          onChange={setSelectedFramework}
+          label="Pick your framework"
+          scrollToId="theme-scope"
+        />
+      </div>
 
       <section id="theme-scope" className="scroll-mt-24 mb-10">
         <SectionHeading
@@ -941,10 +1065,9 @@ export function ScopedThemeGuide() {
           <strong>How a scope selects its theme</strong>{" "}
           <span className="mx-1 opacity-40">|</span>
           Pass an exact theme name like{" "}
-          <code className="mono text-[0.9em]">plum-dark</code>, a family name
-          — the scope resolves the family&apos;s theme for the current mode —
-          or split them into{" "}
-          <code className="mono text-[0.9em]">family</code> +{" "}
+          <code className="mono text-[0.9em]">plum-dark</code>, a family name —
+          the scope resolves the family&apos;s theme for the current mode — or
+          split them into <code className="mono text-[0.9em]">family</code> +{" "}
           <code className="mono text-[0.9em]">mode</code> props. Omit both to
           mirror the global selection inside a fresh boundary. Every prop is
           reactive: when <code className="mono text-[0.9em]">theme</code>
@@ -966,17 +1089,21 @@ export function ScopedThemeGuide() {
           code: `import {
   createThemeRuntime,
   createScopedThemeBinding,
+  getBuiltInThemes,
 } from "@theme-kit/core";
 
-const runtime = createThemeRuntime({ themes, defaultTheme: "light" });
+// createScopedThemeBinding takes the registry positionally; the built-in set
+// is a valid registry, so no theme file is needed. createThemeRuntime falls
+// back to it on its own.
+const themes = getBuiltInThemes();
+
+const runtime = createThemeRuntime({ defaultTheme: "light" });
 
 const binding = createScopedThemeBinding(themes, el, "plum-dark");
 
 binding.destroy();`,
         })}
-        <div className="mt-3">
-          {snippetBlock(imperativeExample)}
-        </div>
+        <div className="mt-3">{snippetBlock(imperativeExample)}</div>
       </section>
 
       <section id="local-themes" className="scroll-mt-24 mb-10">
@@ -989,15 +1116,15 @@ binding.destroy();`,
         {snippetBlock(localThemeExample)}
         <Callout className="mt-3">
           <strong>local themes resolve first</strong>{" "}
-          <span className="mx-1 opacity-40">|</span>
-          A scope&apos;s <code className="mono text-[0.9em]">themes</code> are
-          layered on top of the provider&apos;s registry: a local theme with
-          the same name shadows the parent&apos;s, and anything a local theme
-          doesn&apos;t define falls through to the app&apos;s themes (its{" "}
-          <code className="mono text-[0.9em]">extends</code> chain is merged,
-          so inherited tokens resolve). Late-loaded packs work too — swapping
-          the <code className="mono text-[0.9em]">themes</code> array
-          re-resolves the scope in place. The imperative equivalent passes{" "}
+          <span className="mx-1 opacity-40">|</span>A scope&apos;s{" "}
+          <code className="mono text-[0.9em]">themes</code> are layered on top
+          of the provider&apos;s registry: a local theme with the same name
+          shadows the parent&apos;s, and anything a local theme doesn&apos;t
+          define falls through to the app&apos;s themes (its{" "}
+          <code className="mono text-[0.9em]">extends</code> chain is merged, so
+          inherited tokens resolve). Late-loaded packs work too — swapping the{" "}
+          <code className="mono text-[0.9em]">themes</code> array re-resolves
+          the scope in place. The imperative equivalent passes{" "}
           <code className="mono text-[0.9em]">localThemes</code> to{" "}
           <code className="mono text-[0.9em]">createScopedThemeBinding</code>.
         </Callout>
@@ -1014,9 +1141,10 @@ binding.destroy();`,
         <Callout className="mt-3">
           <strong>inheritance model</strong>{" "}
           <span className="mx-1 opacity-40">|</span>
-          <code className="mono text-[0.9em]">Provider transition → Scope →
-          inherited defaults → local overrides</code>. Passing an object merges
-          over the provider&apos;s{" "}
+          <code className="mono text-[0.9em]">
+            Provider transition → Scope → inherited defaults → local overrides
+          </code>
+          . Passing an object merges over the provider&apos;s{" "}
           <code className="mono text-[0.9em]">ThemeTransitionOptions</code>{" "}
           (duration, easing, preset, View Transitions), so a scoped change
           animates smoothly with the rest of the app while letting you tweak
@@ -1032,55 +1160,7 @@ binding.destroy();`,
           How a scope works
         </SectionHeading>
 
-        <div className="grid gap-4 lg:grid-cols-2 mb-4">
-          {snippetBlock(nestedScopeExample)}
-
-          <div className="rounded-xl border border-border bg-muted/20 p-4 font-mono text-xs leading-7">
-            <div className="text-[11px] font-sans font-semibold uppercase tracking-widest opacity-40 mb-2">
-              Scope tree
-            </div>
-            <div className="pl-2 border-l-2 border-border">
-              <div>
-                <span
-                  className="px-2 py-0.5 rounded font-sans font-semibold text-[11px]"
-                  style={{
-                    background: "var(--theme-color-secondary)",
-                    color: "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
-                  }}
-                >
-                  Global
-                </span>{" "}
-                <span className="opacity-60">ThemeProvider</span>
-              </div>
-              <div className="mt-1 ml-4 pl-3 border-l border-border">
-                <div>
-                  <span
-                    className="px-2 py-0.5 rounded font-sans font-semibold text-[11px]"
-                    style={{
-                      background: "var(--theme-color-primary)",
-                      color: "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
-                    }}
-                  >
-                    mint-light
-                  </span>{" "}
-                  <span className="opacity-60">Dashboard</span>
-                </div>
-                <div className="mt-1 ml-4 pl-3 border-l border-border">
-                  <span
-                    className="px-2 py-0.5 rounded font-sans font-semibold text-[11px]"
-                    style={{
-                      background: "var(--theme-color-accent)",
-                      color: "var(--theme-color-accent-foreground, var(--theme-color-accentForeground))",
-                    }}
-                  >
-                    plum-dark
-                  </span>{" "}
-                  <span className="opacity-60">CodeEditor</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="mb-4">{snippetBlock(nestedScopeExample)}</div>
 
         <ul className="text-sm opacity-80 leading-relaxed list-disc pl-5 space-y-1.5">
           <li>
@@ -1096,15 +1176,16 @@ binding.destroy();`,
             pick up the scoped palette.
           </li>
           <li>
-            Dark scoped themes add a <code className="mono text-[0.9em]">dark</code>{" "}
-            class to the scope element, keeping Theme Kit&apos;s "
-            <code className="mono text-[0.9em]">@custom-variant dark</code>
-            " Tailwind trick working inside the island.
+            Dark scoped themes add a{" "}
+            <code className="mono text-[0.9em]">dark</code> class to the scope
+            element, keeping Theme Kit&apos;s "
+            <code className="mono text-[0.9em]">@custom-variant dark</code>"
+            Tailwind trick working inside the island.
           </li>
           <li>
             Scopes nest arbitrarily — an inner{" "}
-            <code className="mono text-[0.9em]">ThemeScope</code> overrides
-            the outer one for its own subtree.
+            <code className="mono text-[0.9em]">ThemeScope</code> overrides the
+            outer one for its own subtree.
           </li>
           <li>
             The scope resolves its theme from the registry, so it updates
@@ -1117,60 +1198,55 @@ binding.destroy();`,
             variables inline, while an OS-dependent selection (a{" "}
             <code className="mono text-[0.9em]">system</code> mode, or a
             boundary scope following a system selection) ships a{" "}
-            <code className="mono text-[0.9em]">@media
-            (prefers-color-scheme: dark)</code> block so the first paint
-            already matches the OS — no flash of the wrong scoped theme
-            before hydration.
+            <code className="mono text-[0.9em]">
+              @media (prefers-color-scheme: dark)
+            </code>{" "}
+            block so the first paint already matches the OS — no flash of the
+            wrong scoped theme before hydration.
           </li>
         </ul>
       </section>
 
-      <section id="next" className="scroll-mt-24">
-        <SectionHeading
-          num={6}
-          desc="Scoped theming is one advanced feature — continue through the rest."
-        >
-          What&apos;s next
-        </SectionHeading>
-        <div className="flex flex-col gap-2">
-          <Link
-            href="/advanced-features"
-            className="glass-card card-lift p-4 no-underline flex items-center justify-between gap-3"
-          >
-            <div>
-              <div className="font-semibold">Advanced Features</div>
-              <div className="text-xs opacity-60">
-                History, plugins, scheduled solar themes, token resolution.
-              </div>
-            </div>
-            <span style={{ color: "var(--theme-color-primary)" }}>→</span>
-          </Link>
-          <Link
-            href="/playground"
-            className="glass-card card-lift p-4 no-underline flex items-center justify-between gap-3"
-          >
-            <div>
-              <div className="font-semibold">Playground</div>
-              <div className="text-xs opacity-60">
-                See scoped themes demoed against a live runtime.
-              </div>
-            </div>
-            <span style={{ color: "var(--theme-color-primary)" }}>→</span>
-          </Link>
-          <Link
-            href="/api-reference/react"
-            className="glass-card card-lift p-4 no-underline flex items-center justify-between gap-3"
-          >
-            <div>
-              <div className="font-semibold">API Reference</div>
-              <div className="text-xs opacity-60">
-                ThemeScopeProps and useScopedTheme for every adapter.
-              </div>
-            </div>
-            <span style={{ color: "var(--theme-color-primary)" }}>→</span>
-          </Link>
-        </div>
-      </section>
+      <NextSteps
+        steps={[
+          {
+            title: "Nest scopes for complex layouts",
+            description: "Apply multiple scoped themes in nested sections",
+            href: "#nested-scopes",
+          },
+          {
+            title: "Add scope transitions",
+            description: "Animate theme changes within a scope",
+            href: "#transitions",
+          },
+          {
+            title: "Explore advanced features",
+            description:
+              "History, plugins, scheduled themes, and token resolution",
+            href: "/advanced-features",
+          },
+        ]}
+      />
+
+      <RelatedLinks
+        links={[
+          {
+            title: "Playground",
+            description: "See scoped themes in action with a live runtime",
+            href: "/playground",
+          },
+          {
+            title: "API Reference",
+            description: "ThemeScopeProps and useScopedTheme for every adapter",
+            href: "/api-reference/react",
+          },
+          {
+            title: "Custom Themes",
+            description: "Define themes to apply in scoped contexts",
+            href: "/custom-themes",
+          },
+        ]}
+      />
     </>
   );
 }

@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/index.ts", "src/vanilla.ts", "src/vite-plugin.ts"],
+  entry: ["src/index.ts", "src/vanilla.ts", "src/vite-plugin.ts", "src/config.ts"],
   format: ["esm", "cjs"],
   sourcemap: true,
   clean: true,

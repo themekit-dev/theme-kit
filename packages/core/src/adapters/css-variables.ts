@@ -13,11 +13,31 @@ import {
   runThemeAnimation,
 } from "../animation";
 
+/**
+ * Options for {@link createCSSVariablesBinding}.
+ *
+ * The binding keeps CSS custom properties (`--theme-*`) on a target element
+ * (default `<html>`) in sync with the store, applying the current theme
+ * immediately on creation and diffing subsequent updates. It can write
+ * variables inline on the target or into a single `<style>` element wrapped
+ * in a cascade layer.
+ */
 export interface CSSVariablesOptions {
+  /** Element to write the CSS variables onto.
+   *  @defaultValue `document.documentElement` (when present) */
   target?: HTMLElement;
+  /** Prefix for the emitted custom properties.
+   *  @defaultValue `"theme-"` */
   prefix?: string;
+  /** Transition applied when the theme changes. When omitted, the default
+   *  theme transition is used. */
   transition?: ThemeTransitionOptions;
+  /** When `true`, write variables into a `<style>` element (in a cascade
+   *  layer) instead of inline on the target.
+   *  @defaultValue `false` */
   styleSheet?: boolean;
+  /** Cascade layer name used when `styleSheet` is enabled.
+   *  @defaultValue `"theme-kit"` */
   layerName?: string;
   /** Applied inside the single View Transition lightswitch right before the
    *  CSS variables are swapped, so the old snapshot shows the old attributes
@@ -42,6 +62,9 @@ function prefersReducedMotion(): boolean {
  * Create a binding that keeps CSS custom properties (`--theme-*`) on a
  *    target element (default `<html>`) in sync with the store. Applies the
  *    current theme immediately on creation and diffs updates.
+ *
+ * @see {@link themeToCSSVariables}
+ * @see {@link CSSVariablesOptions}
  */
 export function createCSSVariablesBinding(
   store: ThemeStore,

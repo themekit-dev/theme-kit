@@ -5,10 +5,14 @@ import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { NextSteps } from "../../components/ui/next-step-card";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
-import { collectPageHeadings } from "../../lib/toc-tree";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/token-resolution") },
   title: "Token Resolution",
   description:
     "How Theme Kit resolves token references, evaluates expressions, derives contrast-safe foreground colors, and the full resolution pipeline from base to final output.",
@@ -191,6 +195,21 @@ export default function TokenResolutionPage() {
           }
         />
 
+        <Prerequisites
+          items={[
+            {
+              label: "Theme definitions",
+              value: "Understanding of theme structure and token paths",
+              href: "/custom-themes",
+            },
+            {
+              label: "@theme-kit/core installed",
+              value: "Resolution utilities are part of core",
+              href: "/packages/core",
+            },
+          ]}
+        />
+
         <section id="references" className="scroll-mt-24 mb-10">
           <SectionHeading
             num={1}
@@ -329,7 +348,7 @@ export default function TokenResolutionPage() {
                       i === 5
                         ? {
                             background: "var(--theme-color-primary)",
-                            color: "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                            color: "var(--theme-color-primaryForeground)",
                           }
                         : undefined
                     }
@@ -435,10 +454,43 @@ export default function TokenResolutionPage() {
             </div>
           </div>
         </section>
+
+        <NextSteps
+          steps={[
+            {
+              title: "Build custom themes",
+              description: "Use resolution to create DRY, maintainable token sets",
+              href: "/custom-themes",
+            },
+            {
+              title: "Explore plugins",
+              description: "Hook into resolution with custom transformations",
+              href: "/plugins",
+            },
+          ]}
+        />
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Custom Themes",
+              description: "Define and structure themes with semantic tokens",
+              href: "/custom-themes",
+            },
+            {
+              title: "Plugins",
+              description: "Extend resolution with custom logic",
+              href: "/plugins",
+            },
+            {
+              title: "Tokens",
+              description: "Semantic token architecture and naming",
+              href: "/tokens",
+            },
+          ]}
+        />
       </div>
   );
-  // Collect headings from the page's own tree (before RSC serialization hides
-  // subtrees that share a parent with client components from the layout walk).
-  const tokenResolutionHeadings = collectPageHeadings(content);
-  return <DocsLayout headings={tokenResolutionHeadings}>{content}</DocsLayout>;
+
+  return <DocsLayout>{content}</DocsLayout>;
 }

@@ -1,0 +1,193 @@
+{
+  "_frozen": "FROZEN as the 1.0.0 dependency contract. Changes require updating scripts/release/audit-dependencies.mjs expectations in the same PR and re-running `npm run release:audit`.",
+  "version": 1,
+  "description": "Dependency-isolation allowlist for @theme-kit workspace packages. Enforced by scripts/release/audit-dependencies.mjs. This encodes the TARGET policy (not the current graph), so the audit is expected to fail until the dependency graph is cleaned up. Edit this file to change policy without touching code.",
+  "categories": {
+    "foundation": [
+      "@theme-kit/core",
+      "@theme-kit/web",
+      "@theme-kit/cli",
+      "@theme-kit/devtools",
+      "@theme-kit/tailwind",
+      "@theme-kit/adapters"
+    ],
+    "framework": [
+      "@theme-kit/react",
+      "@theme-kit/vue",
+      "@theme-kit/svelte",
+      "@theme-kit/solid",
+      "@theme-kit/angular",
+      "@theme-kit/next",
+      "@theme-kit/nuxt",
+      "@theme-kit/astro",
+      "@theme-kit/remix"
+    ],
+    "adapter": [
+      "@theme-kit/mui",
+      "@theme-kit/chakra",
+      "@theme-kit/antd",
+      "@theme-kit/mantine",
+      "@theme-kit/bootstrap",
+      "@theme-kit/daisyui",
+      "@theme-kit/open-props",
+      "@theme-kit/shadcn",
+      "@theme-kit/unocss"
+    ]
+  },
+  "thirdPartyForbiddenInRuntimeDeps": [
+    "react",
+    "react-dom",
+    "vue",
+    "svelte",
+    "solid-js",
+    "@angular/*",
+    "next",
+    "nuxt",
+    "astro",
+    "@remix-run/*",
+    "@mui/*",
+    "@emotion/*",
+    "@chakra-ui/*",
+    "antd",
+    "@mantine/*",
+    "@unocss/*",
+    "unocss",
+    "tailwindcss",
+    "bootstrap",
+    "daisyui"
+  ],
+  "companionPeers": {
+    "_note": "Peers a consumer's app supplies at runtime even though the package never imports them. Everything else declared in peerDependencies must be imported by src/** or referenced by the public .d.ts, otherwise it is an unused-peer violation. Add an entry here only with a one-line justification.",
+    "react-dom": "React DOM runtime the consumer's app renders through.",
+    "vue": "Vue runtime; @theme-kit/nuxt re-exports Vue composables.",
+    "nuxt": "Nuxt loads the module itself at runtime.",
+    "tailwindcss": "Tailwind invokes the plugin at build time.",
+    "unocss": "UnoCSS invokes the preset at build time.",
+    "@mantine/hooks": "Mantine runtime companion.",
+    "@emotion/react": "MUI styling runtime companion.",
+    "@emotion/styled": "MUI styling runtime companion.",
+    "@remix-run/react": "Remix's React runtime renders the integration's components."
+  },
+  "packages": {
+    "@theme-kit/core": {
+      "tier": "foundation",
+      "allowedDependencies": [],
+      "allowedPeers": []
+    },
+    "@theme-kit/web": {
+      "tier": "foundation",
+      "allowedDependencies": ["@theme-kit/core"],
+      "allowedPeers": []
+    },
+    "@theme-kit/cli": {
+      "tier": "foundation",
+      "allowedDependencies": ["@theme-kit/core"],
+      "allowedPeers": []
+    },
+    "@theme-kit/devtools": {
+      "tier": "foundation",
+      "allowedDependencies": ["@theme-kit/core"],
+      "allowedPeers": []
+    },
+    "@theme-kit/tailwind": {
+      "tier": "foundation",
+      "allowedDependencies": ["@theme-kit/core"],
+      "allowedPeers": ["tailwindcss"]
+    },
+    "@theme-kit/adapters": {
+      "tier": "foundation",
+      "allowedDependencies": ["@theme-kit/core"],
+      "allowedPeers": []
+    },
+    "@theme-kit/react": {
+      "tier": "framework",
+      "allowedDependencies": ["@theme-kit/core"],
+      "allowedPeers": ["react", "react-dom"]
+    },
+    "@theme-kit/vue": {
+      "tier": "framework",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/web"],
+      "allowedPeers": ["vue"]
+    },
+    "@theme-kit/svelte": {
+      "tier": "framework",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/web"],
+      "allowedPeers": ["svelte"]
+    },
+    "@theme-kit/solid": {
+      "tier": "framework",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/web"],
+      "allowedPeers": ["solid-js"]
+    },
+    "@theme-kit/angular": {
+      "tier": "framework",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/web"],
+      "allowedPeers": ["@angular/core", "@angular/common"]
+    },
+    "@theme-kit/next": {
+      "tier": "framework",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/react"],
+      "allowedPeers": ["next", "react", "react-dom"]
+    },
+    "@theme-kit/nuxt": {
+      "tier": "framework",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/vue"],
+      "allowedPeers": ["nuxt", "vue"]
+    },
+    "@theme-kit/astro": {
+      "tier": "framework",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/web"],
+      "allowedPeers": ["astro", "react", "react-dom"]
+    },
+    "@theme-kit/remix": {
+      "tier": "framework",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/react"],
+      "allowedPeers": ["@remix-run/react", "react", "react-dom"]
+    },
+    "@theme-kit/mui": {
+      "tier": "adapter",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/adapters"],
+      "allowedPeers": ["@emotion/react", "@emotion/styled", "@mui/material", "react", "react-dom"]
+    },
+    "@theme-kit/chakra": {
+      "tier": "adapter",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/adapters"],
+      "allowedPeers": ["@chakra-ui/react", "react", "react-dom"]
+    },
+    "@theme-kit/antd": {
+      "tier": "adapter",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/adapters"],
+      "allowedPeers": ["antd", "react", "react-dom"]
+    },
+    "@theme-kit/mantine": {
+      "tier": "adapter",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/adapters"],
+      "allowedPeers": ["@mantine/core", "@mantine/hooks", "react", "react-dom"]
+    },
+    "@theme-kit/bootstrap": {
+      "tier": "adapter",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/adapters"],
+      "allowedPeers": ["react", "react-dom", "vue", "svelte", "solid-js", "@angular/core"]
+    },
+    "@theme-kit/daisyui": {
+      "tier": "adapter",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/adapters"],
+      "allowedPeers": ["react", "react-dom", "vue", "svelte", "solid-js", "@angular/core"]
+    },
+    "@theme-kit/open-props": {
+      "tier": "adapter",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/adapters"],
+      "allowedPeers": ["react", "react-dom", "vue", "svelte", "solid-js", "@angular/core"]
+    },
+    "@theme-kit/shadcn": {
+      "tier": "adapter",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/adapters"],
+      "allowedPeers": ["react", "react-dom", "vue", "svelte", "solid-js", "@angular/core"]
+    },
+    "@theme-kit/unocss": {
+      "tier": "adapter",
+      "allowedDependencies": ["@theme-kit/core", "@theme-kit/adapters"],
+      "allowedPeers": ["unocss", "@unocss/core"]
+    }
+  }
+}

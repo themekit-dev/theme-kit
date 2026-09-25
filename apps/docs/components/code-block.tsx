@@ -65,7 +65,6 @@ export function CodeBlock({
           <CopyButton
             text={code}
             label="Copy"
-            copiedLabel="Copied"
             className="code-block-copy"
           />
         </div>

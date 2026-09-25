@@ -6,9 +6,10 @@ import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
 import { highlightCode } from "../../lib/highlight";
-import { buildPageHeadings } from "../../lib/toc";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/troubleshooting") },
   title: "Troubleshooting",
   description:
     "Common issues and fixes when working with Theme Kit: flash of unstyled content, hydration mismatches, theme persistence, CSS variable binding, and more.",
@@ -17,17 +18,24 @@ export const metadata: Metadata = {
 const foucFix = {
   lang: "tsx",
   title: "layout.tsx — bootstrap script in <head>",
-  code: `import { createThemeBootstrapScript } from "@theme-kit/core";
-import { themes } from "./themes";
+  code: `import { createThemeBootstrapScript, getBuiltInThemes } from "@theme-kit/core";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      data-theme="mint-light"
+      data-theme-mode="light"
+      data-theme-family="mint"
+      data-theme-selection-mode="light"
+      data-theme-selection-family="mint"
+      data-theme-ready="true"
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: createThemeBootstrapScript({
-              themes,
+              themes: getBuiltInThemes(),
               defaultTheme: "mint-light",
             }),
           }}
@@ -45,7 +53,6 @@ const persistenceFix = {
   code: `import { createThemeRuntime, createPersistencePlugin } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
   plugins: [createPersistencePlugin({ key: "my-app-theme" })],
 });`,
@@ -59,7 +66,6 @@ const cssVarsFix = {
 export default function RootLayout({ children }) {
   return (
     <ThemeProvider
-      themes={themes}
       defaultTheme="light"
       cssVariables={{ prefix: "theme-" }}
       dom={{}}
@@ -75,26 +81,38 @@ const hydrationFix = {
   title: "layout.tsx — matching server & client themes",
   code: `// 1. Resolve the theme server-side the same way the runtime does
 // 2. Pass it as defaultTheme to the provider
-// 3. suppressHydrationWarning on <html> handles the attribute diff
-import { createThemeBootstrapScript } from "@theme-kit/core";
+// 3. Render the attributes the bootstrap script writes, so React finds nothing
+//    the script added that the server did not already declare
+import { createThemeBootstrapScript, getBuiltInThemes } from "@theme-kit/core";
 import { ThemeProvider } from "@theme-kit/react";
-import { themes } from "./themes";
+
+const themes = getBuiltInThemes();
+const resolvedTheme = themes.find((t) => t.name === "mint-light")!;
+const family = resolvedTheme.meta?.family;
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      data-theme={resolvedTheme.name}
+      data-theme-mode={resolvedTheme.meta?.mode ?? "light"}
+      {...(family ? { "data-theme-family": family } : {})}
+      data-theme-selection-mode="light"
+      {...(family ? { "data-theme-selection-family": family } : {})}
+      data-theme-ready="true"
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: createThemeBootstrapScript({
-              themes,
+              themes: getBuiltInThemes(),
               defaultTheme: resolvedTheme,
             }),
           }}
         />
       </head>
       <body>
-        <ThemeProvider themes={themes} defaultTheme={resolvedTheme}>
+        <ThemeProvider defaultTheme={resolvedTheme}>
           {children}
         </ThemeProvider>
       </body>
@@ -108,25 +126,30 @@ const flickerFix = {
   title: "layout.tsx — provider wraps the router",
   code: `// Ensure the ThemeProvider is ABOVE the router so the runtime
 // survives client-side navigation without re-mounting.
-import { createThemeBootstrapScript } from "@theme-kit/core";
+import { createThemeBootstrapScript, getBuiltInThemes } from "@theme-kit/core";
 import { ThemeProvider } from "@theme-kit/react";
-import { themes } from "./themes";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      data-theme="light"
+      data-theme-mode="light"
+      data-theme-selection-mode="light"
+      data-theme-ready="true"
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: createThemeBootstrapScript({
-              themes,
+              themes: getBuiltInThemes(),
               defaultTheme: "light",
             }),
           }}
         />
       </head>
       <body>
-        <ThemeProvider themes={themes} defaultTheme="light">
+        <ThemeProvider defaultTheme="light">
           {/* AppRouter / layout from next/navigation lives here */}
           {children}
         </ThemeProvider>
@@ -159,7 +182,6 @@ const transitionsFix = {
   lang: "ts",
   title: "runtime — enabling transitions",
   code: `const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
   transition: {
     enabled: true,
@@ -188,8 +210,9 @@ const a11yFix = {
   title: "audit — validate contrast at build time",
   code: `import { validateThemeContrast } from "@theme-kit/core";
 
-// validateThemeContrast checks one theme against its registry
-const result = validateThemeContrast(theme, { themes });
+// validateThemeContrast checks one theme on its own; pass a themes option
+// (e.g. getBuiltInThemes()) to resolve \`extends\` chains first.
+const result = validateThemeContrast(theme);
 
 if (!result.valid) {
   console.error("Failing token pairs (AA large text):");
@@ -211,7 +234,6 @@ const multiWindowFix = {
   code: `import { createThemeRuntime, createMultiWindowSync } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
   // BroadcastChannel is used by default. If it is blocked or unavailable
   // the sync falls back to a SharedWorker, then to window "storage" events
@@ -221,27 +243,27 @@ const runtime = createThemeRuntime({
 });`,
 };
 
-// Headings render via SectionHeading (invisible to the layout's RSC walk).
-const troubleshootingHeadings = buildPageHeadings([
-  { text: "Flash of Unstyled Content (FOUC)", level: 2 },
-  { text: "Theme Not Persisting", level: 2 },
-  { text: "CSS Variables Not Updating", level: 2 },
-  { text: "Hydration Mismatch", level: 2 },
-  { text: "Theme Flicker on Navigation", level: 2 },
-  { text: "Scoped Theme Not Working", level: 2 },
-  { text: "Transitions Not Animating", level: 2 },
-  { text: "Build Error: Module Not Found", level: 2 },
-  { text: "Accessibility Audit Failing", level: 2 },
-  { text: "Multi-Window Out of Sync", level: 2 },
-]);
-
 export default function TroubleshootingPage() {
   return (
-    <DocsLayout headings={troubleshootingHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           eyebrow="Troubleshooting"
-          icon="alert-triangle"
+          icon={
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <path d="M12 9v4M12 17h.01" />
+            </svg>
+          }
           title="Common issues and fixes"
           description={
             <>
@@ -338,12 +360,33 @@ export default function TroubleshootingPage() {
           <Callout>
             During server rendering the theme is resolved from cookies, headers,
             or the default. On the client the bootstrap script resolves it
-            independently. If these two resolutions disagree, React detects a
-            mismatch. Ensure{" "}
-            <code className="mono text-[0.9em]">defaultTheme</code> matches
-            the server-side resolution and add{" "}
-            <code className="mono text-[0.9em]">suppressHydrationWarning</code> to{" "}
-            <code className="mono text-[0.9em]">&lt;html&gt;</code>.
+            independently. Two things keep them in agreement:{" "}
+            <code className="mono text-[0.9em]">defaultTheme</code> must match
+            the server-side resolution, and the server must render every
+            attribute the script writes onto{" "}
+            <code className="mono text-[0.9em]">&lt;html&gt;</code> —{" "}
+            <code className="mono text-[0.9em]">data-theme</code>,{" "}
+            <code className="mono text-[0.9em]">data-theme-mode</code>,{" "}
+            <code className="mono text-[0.9em]">data-theme-family</code>,{" "}
+            <code className="mono text-[0.9em]">data-theme-selection-mode</code>,{" "}
+            <code className="mono text-[0.9em]">data-theme-selection-family</code>{" "}
+            and{" "}
+            <code className="mono text-[0.9em]">data-theme-ready</code>. React
+            reports an attribute that is in the DOM but absent from the rendered
+            props as a mismatch, so leaving any of them out warns on every load
+            in development.
+          </Callout>
+          <Callout variant="tip" className="mt-3">
+            On the App Router you do not have to do either by hand:{" "}
+            <code className="mono text-[0.9em]">ThemeProvider</code> from{" "}
+            <code className="mono text-[0.9em]">@theme-kit/next</code> renders{" "}
+            <code className="mono text-[0.9em]">&lt;html&gt;</code> itself and
+            renders every attribute the bootstrap script writes, so there is
+            nothing for React to report. The snippet below is the manual{" "}
+            <code className="mono text-[0.9em]">@theme-kit/core</code> +
+            <code className="mono text-[0.9em]">@theme-kit/react</code> setup,
+            where <code className="mono text-[0.9em]">&lt;html&gt;</code> is
+            yours.
           </Callout>
           <CodeBlock
             html={highlightCode(hydrationFix.code, "tsx")}

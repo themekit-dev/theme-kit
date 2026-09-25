@@ -1,7 +1,6 @@
 # Theme Kit — docs system reference
 
-Canonical, machine-checkable artifacts for the documentation pipeline
-(`webpage-update.md` → "Theme Kit Documentation System — Implementation Brief").
+Canonical, machine-checkable artifacts for the documentation pipeline.
 
 ## What lives here
 
@@ -56,20 +55,14 @@ with `node`, or `npx --yes pnpm@10 <script>`.
 Run them **sequentially**: the audits spawn `scripts/release/snippet-audit.mjs`
 and share a temp report file.
 
-> **Sandbox note.** This environment injects a `node` safe-delete shim that blocks
-> more than 50 deletes per turn (`SAFE_DELETE_BULK_CONFIRM_REQUIRED`). Both
-> `next build` (it cleans `.next` and `.next/export`) and the audits' temp-file
-> cleanup trip it, so run the docs gates with the shim disabled:
-> `CODEBUDDY_SAFE_DELETE_ENABLED=0 node scripts/docs/release-gate.mjs [--full] [--dynamic]`.
->
 > **Windows lock caveat.** `apps/docs/.next` can intermittently end up locked, in
 > which case `next build` prints the full route table and exits 0 but leaves a
 > **partial** artifact (no `BUILD_ID`, no `app-path-routes-manifest.json`). The
-> gate now asserts those files exist after the build and fails with a clear
-> message instead of letting Audit H report hundreds of bogus failures. To clear
-> it, delete `.next` with Node rather than `rm` (msys `rm -rf` hangs on a locked
+> gate asserts those files exist after the build and fails with a clear message
+> instead of letting Audit H report hundreds of bogus failures. To clear a locked
+> tree, delete `.next` with Node rather than `rm` (msys `rm -rf` hangs on a locked
 > tree; `fs.rmSync` succeeds immediately):
-> `CODEBUDDY_SAFE_DELETE_ENABLED=0 node -e "require('fs').rmSync('apps/docs/.next',{recursive:true,force:true})"`.
+> `node -e "require('fs').rmSync('apps/docs/.next',{recursive:true,force:true})"`.
 
 ## Workflow when the public surface changes
 

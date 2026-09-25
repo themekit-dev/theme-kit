@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { ThemeSwitcher } from "./theme-switcher";
+import { PresetCards } from "./preset-cards";
 import { TokenTree } from "./token-tree";
 import { HistoryTimeline } from "./history-timeline";
 import { LivePreview } from "./live-preview";
@@ -77,7 +77,7 @@ export function Playground() {
       </nav>
 
       <div className="flex flex-col gap-6 min-w-0">
-        <ThemeSwitcher />
+        <PresetCards />
         <ThemeScope />
 
         <div className="grid gap-6 lg:grid-cols-2 items-start">

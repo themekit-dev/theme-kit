@@ -24,7 +24,7 @@ that works:
 ```ts
 import { createThemeRuntime, createMultiWindowSync } from "@theme-kit/core";
 
-const runtime = createThemeRuntime({ themes });
+const runtime = createThemeRuntime({});
 const sync = createMultiWindowSync({
   channelName: "my-app-themes",
 });

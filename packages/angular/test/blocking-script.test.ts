@@ -54,16 +54,16 @@ const themes = [
 describe("buildThemeCSSMap", () => {
   it("returns light and dark CSS maps for the default family", () => {
     const map = buildThemeCSSMap(themes);
-    expect(map.light).toHaveProperty("--theme-surface-default", "#ffffff");
-    expect(map.light).toHaveProperty("--theme-foreground-default", "#111111");
-    expect(map.dark).toHaveProperty("--theme-surface-default", "#1a1a1a");
-    expect(map.dark).toHaveProperty("--theme-foreground-default", "#eeeeee");
+    expect(map.light).toHaveProperty("--theme-color-surface-default", "#ffffff");
+    expect(map.light).toHaveProperty("--theme-color-foreground-default", "#111111");
+    expect(map.dark).toHaveProperty("--theme-color-surface-default", "#1a1a1a");
+    expect(map.dark).toHaveProperty("--theme-color-foreground-default", "#eeeeee");
   });
 
   it("includes semantic token groups (surface.foreground, brand)", () => {
     const map = buildThemeCSSMap(themes);
-    expect(map.light["--theme-brand-default"]).toBe("#0066cc");
-    expect(map.dark["--theme-brand-default"]).toBe("#3399ff");
+    expect(map.light["--theme-color-brand-default"]).toBe("#0066cc");
+    expect(map.dark["--theme-color-brand-default"]).toBe("#3399ff");
   });
 
   it("includes non-color tokens like radius", () => {
@@ -96,16 +96,30 @@ describe("createBlockingScriptContent", () => {
     expect(html).toContain("<script id=\"theme-kit-blocking\">");
   });
 
-  it("includes CSS for both prefers-color-scheme media queries", () => {
-    const html = createBlockingScriptContent(themes);
-    expect(html).toContain("prefers-color-scheme:dark");
-    expect(html).toContain("prefers-color-scheme:light");
+  it("expresses a system selection as media queries, a concrete mode as a plain :root rule", () => {
+    // `"system"` is the one mode the server cannot resolve, so it is the only
+    // one written as media queries. A concrete mode must NOT use them: both
+    // blocks target `:root`, so a `light` selection would still follow an
+    // OS-dark visitor when the blocking script is unavailable.
+    const system = createBlockingScriptContent(themes, {
+      mode: "system",
+      family: "default",
+    });
+    expect(system).toMatch(/@media\s*\(prefers-color-scheme:\s*dark\)/);
+    expect(system).toMatch(/@media\s*\(prefers-color-scheme:\s*light\)/);
+
+    const light = createBlockingScriptContent(themes, {
+      mode: "light",
+      family: "default",
+    });
+    expect(light).not.toMatch(/@media\s*\(prefers-color-scheme/);
+    expect(light).toContain(":root{");
   });
 
   it("includes CSS variable declarations in the style tag", () => {
     const html = createBlockingScriptContent(themes);
-    expect(html).toContain("--theme-surface-default");
-    expect(html).toContain("--theme-foreground-default");
+    expect(html).toContain("--theme-color-surface-default");
+    expect(html).toContain("--theme-color-foreground-default");
   });
 
   it("includes inline script that reads localStorage and sets attributes", () => {
@@ -133,6 +147,6 @@ describe("createBlockingScriptContent", () => {
   it("handles single-theme arrays gracefully", () => {
     const single = [defineTheme({ name: "mono", meta: { mode: "light" }, tokens: { colors: { bg: "#fff" } } })];
     const html = createBlockingScriptContent(single);
-    expect(html).toContain("--theme-bg");
+    expect(html).toContain("--theme-color-bg");
   });
 });

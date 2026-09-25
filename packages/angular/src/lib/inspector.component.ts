@@ -7,6 +7,17 @@ import {
 } from "@angular/core";
 import { ThemeKitInspector } from "@theme-kit/web";
 
+/**
+ * Angular wrapper component around the Theme Kit web inspector.
+ *
+ * Renders a `<theme-kit-inspector>` custom element and forwards the `bottom`,
+ * `right`, `size`, `zIndex`, `class`, and `style` inputs to it. The inspector
+ * element is defined on initialization.
+ *
+ * @see {@link injectTheme}
+ * @see {@link ThemeScopeDirective}
+ * @see {@link ThemeScrollbarDirective}
+ */
 @Component({
   selector: "theme-kit-inspector-component",
   standalone: true,
@@ -21,9 +32,13 @@ import { ThemeKitInspector } from "@theme-kit/web";
   ></theme-kit-inspector>`,
 })
 export class ThemeInspectorComponent implements OnInit {
+  /** Distance from the bottom of the viewport, in px. */
   @Input() bottom?: number;
+  /** Distance from the right edge of the viewport, in px. */
   @Input() right?: number;
+  /** Toggle button size (width and height), in px. */
   @Input() size?: number;
+  /** Z-index for the floating toggle and panel. */
   @Input() zIndex?: number;
   /** CSS classes forwarded to the <theme-kit-inspector> element. */
   @HostBinding("class") @Input() class?: string;

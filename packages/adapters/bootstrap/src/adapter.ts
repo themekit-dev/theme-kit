@@ -16,10 +16,43 @@ import {
 } from "./defaults";
 import bootstrapCss from "./bootstrap.css";
 
+/**
+ * Options for {@link createBootstrapAdapter}.
+ *
+ * @see {@link createBootstrapAdapter}
+ */
 export interface CreateBootstrapAdapterOptions extends BootstrapAdapterOptions {
+  /**
+   * Adapter plugins that customize how the Bootstrap CSS variables are
+   * generated. Defaults to no plugins.
+   */
   plugins?: AdapterPlugin[];
 }
 
+/**
+ * Creates a Bootstrap adapter.
+ *
+ * The adapter is a DOM-only, framework-free adapter: it depends only on
+ * `@theme-kit/core` and the DOM. On install it injects the Bootstrap
+ * compatibility stylesheet (when enabled) and a `<style>` element of CSS
+ * variables derived from the active theme, then subscribes to the runtime
+ * store and rewrites the variables whenever the theme selection changes. It
+ * does not render any component or require a React tree.
+ *
+ * On uninstall it removes the injected styles and unsubscribes from the store.
+ *
+ * @param options Adapter options. Defaults to `{}`.
+ * @returns A `ThemeAdapter` for Bootstrap.
+ *
+ * @example
+ * ```ts
+ * import { createBootstrapAdapter } from "@theme-kit/bootstrap";
+ *
+ * runtime.installAdapter(createBootstrapAdapter());
+ * ```
+ *
+ * @see {@link useBootstrapTheme}
+ */
 export function createBootstrapAdapter<T extends ThemeDefinition>(
   options: CreateBootstrapAdapterOptions = {},
 ): ThemeAdapter<T> {

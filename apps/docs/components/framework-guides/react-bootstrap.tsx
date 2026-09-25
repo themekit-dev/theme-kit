@@ -58,7 +58,7 @@ MUI provider         (<MuiThemeProvider>)
 App`;
 
 /**
- * "Which React setup should I use?" — shown near the top of the React guide.
+ * "Which React setup should I use?"
  */
 export function WhichReactSetupPanel() {
   const rows: { title: string; use: string; meta: string; tone: string }[] = [
@@ -83,8 +83,8 @@ export function WhichReactSetupPanel() {
   ];
 
   return (
-    <section id="which-react-setup" className="mt-10 scroll-mt-24">
-      <h2 className="text-lg font-semibold tracking-tight">
+    <section id="which-react-setup" className="mt-10 mb-6 scroll-mt-24">
+      <h2 className="text-lg font-semibold tracking-tight mb-2">
         Which React setup should I use?
       </h2>
       <div className="grid gap-3 sm:grid-cols-3">
@@ -115,11 +115,12 @@ export function WhichReactSetupPanel() {
 export function OptimizedCsrBootstrap(framework: FrameworkItem): ReactElement {
   const multiProvider = `// main.tsx — composition stays fully in your hands
 import { createThemeRoot } from "@theme-kit/react";
-import { createMuiTheme } from "@theme-kit/mui/factory";
-import { MuiThemeProvider } from "@mui/material/styles";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { MuiThemeProvider } from "@theme-kit/mui";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { themes } from "./themes";
 import App from "./App";
+
+const queryClient = new QueryClient();
 
 createThemeRoot({
   container: document.getElementById("root")!,
@@ -128,7 +129,7 @@ createThemeRoot({
   initialMode: "system",
 
   render: ({ runtime }) => (
-    <MuiThemeProvider theme={createMuiTheme(runtime)}>
+    <MuiThemeProvider runtime={runtime}>
       <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>
@@ -142,26 +143,25 @@ createThemeRoot({
         Optimized CSR bootstrap
       </h2>
       <p className="text-sm leading-relaxed opacity-80 mb-3">
-        React&apos;s <code className="mono text-[0.9em]">createRoot().render()</code>{" "}
-        may schedule the initial commit concurrently. In client-only applications
+        React&apos;s{" "}
+        <code className="mono text-[0.9em]">createRoot().render()</code> may
+        schedule the initial commit concurrently. In client-only applications
         where a delayed first commit creates a visible startup jerk, Theme Kit
         provides <code className="mono text-[0.9em]">createThemeRoot()</code> as
         an opt-in root bootstrap. Most applications should continue using{" "}
-        <code className="mono text-[0.9em]">&lt;ThemeProvider&gt;</code> directly
-        — this is a specialized tool, not a requirement.
+        <code className="mono text-[0.9em]">&lt;ThemeProvider&gt;</code>{" "}
+        directly — this is a specialized tool, not a requirement.
       </p>
 
       <div className="mt-4">
         {framework.snippet3 ? snippetBlock(framework.snippet3) : null}
       </div>
 
-      <Callout
-        className="mt-3"
-        title="ThemeProvider vs createThemeRoot"
-      >
+      <Callout className="mt-3" title="ThemeProvider vs createThemeRoot">
         <code className="mono text-[0.9em]">ThemeProvider</code> is the normal
-        React integration. <code className="mono text-[0.9em]">createThemeRoot()</code>{" "}
-        is an optional root-level bootstrap that owns the root boundary.
+        React integration.{" "}
+        <code className="mono text-[0.9em]">createThemeRoot()</code> is an
+        optional root-level bootstrap that owns the root boundary.
       </Callout>
 
       <h3 className="mt-6 text-sm font-semibold">
@@ -187,16 +187,14 @@ createThemeRoot({
       </p>
       {pre({ children: SSR_DIAGRAM })}
 
-      <h3 className="mt-6 text-sm font-semibold">
-        Composition stays yours
-      </h3>
+      <h3 className="mt-6 text-sm font-semibold">Composition stays yours</h3>
       <p className="text-sm leading-relaxed opacity-80 mb-3">
-        <code className="mono text-[0.9em]">createThemeRoot()</code> does not own
-        application composition. It owns the root; the{" "}
-        <code className="mono text-[0.9em]">render({"{ runtime }"})</code> callback
-        owns the tree, so arbitrary providers (MUI, Chakra, React Query, Redux,
-        Router, …) compose freely and can derive their configuration from the
-        Theme Kit runtime:
+        <code className="mono text-[0.9em]">createThemeRoot()</code> does not
+        own application composition. It owns the root; the{" "}
+        <code className="mono text-[0.9em]">render({"{ runtime }"})</code>{" "}
+        callback owns the tree, so arbitrary providers (MUI, Chakra, React
+        Query, Redux, Router, …) compose freely and can derive their
+        configuration from the Theme Kit runtime:
       </p>
       {pre({ children: RUNTIME_COMPOSITION })}
       <div className="mt-2">
@@ -207,13 +205,14 @@ createThemeRoot({
         Why doesn&apos;t ThemeProvider call flushSync()?
       </h3>
       <p className="text-sm leading-relaxed opacity-80 mb-3">
-        <code className="mono text-[0.9em]">ThemeProvider</code> lives inside the
-        React root. It cannot change how the owning root was scheduled, and calling{" "}
-        <code className="mono text-[0.9em]">flushSync()</code> from inside the
-        provider would couple the component to React&apos;s root scheduling
-        semantics. <code className="mono text-[0.9em]">createThemeRoot()</code>{" "}
-        exists specifically so the root-level behavior can be controlled at the
-        correct boundary.
+        <code className="mono text-[0.9em]">ThemeProvider</code> lives inside
+        the React root. It cannot change how the owning root was scheduled, and
+        calling <code className="mono text-[0.9em]">flushSync()</code> from
+        inside the provider would couple the component to React&apos;s root
+        scheduling semantics.{" "}
+        <code className="mono text-[0.9em]">createThemeRoot()</code> exists
+        specifically so the root-level behavior can be controlled at the correct
+        boundary.
       </p>
 
       <Callout variant="neutral" title="CSR only">

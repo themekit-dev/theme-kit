@@ -1,39 +1,42 @@
 import {
-  buildThemeCssMap,
-  resolveInitialTheme,
-  resolveSelectionTheme,
-  themeToCSSVariables,
+  buildBootstrapPlan,
+  serializeThemeBootstrapScript,
   type ThemeDefinition,
   type ThemeMode,
 } from "@theme-kit/core";
 import { computeFingerprint } from "./fingerprint";
 import { themeKitCookieNames } from "./cookies";
 
+/**
+ * Options for {@link createNuxtThemeBootstrapScript}. Describes the theme
+ * registry and the fallback selection used to build the blocking bootstrap
+ * script and its default light/dark CSS maps.
+ *
+ * @typeParam T - The theme definition type used by the application.
+ *
+ * @see `createThemeBootstrapScript`
+ * @see {@link createNuxtThemeBootstrapScript}
+ * @see {@link resolveThemeFromCookies}
+ */
 export interface NuxtThemeBootstrapOptions<T extends ThemeDefinition> {
+  /** The theme registry the bootstrap resolves against. */
   themes: readonly T[];
+  /** Fallback theme name when no selection is persisted. */
   defaultTheme?: T["name"];
+  /**
+   * Fallback mode when no valid mode cookie is present. Defaults to the fallback
+   * theme's own mode — the mode `defaultTheme` resolves to, so `"light"` for
+   * `mint-light` and `"dark"` for `mint-dark`. Pass `"system"` to follow
+   * `prefers-color-scheme` instead.
+   *
+   * @remarks
+   * Whatever you choose must also reach the client runtime, or it corrects the
+   * theme this script already painted. The Nuxt module supplies `"system"` on
+   * both sides; calling this helper directly means wiring both yourself.
+   */
   initialMode?: ThemeMode;
+  /** Initial theme family used when no valid family cookie is present. */
   initialFamily?: string;
-}
-
-function buildNames<T extends ThemeDefinition>(
-  themes: readonly T[],
-  map: Record<string, Record<string, string>>,
-): Record<string, string> {
-  const names: Record<string, string> = {};
-  for (const theme of themes) {
-    const themeName = String(theme.name);
-    names[themeName] = themeName;
-    if (theme.meta?.family && theme.meta?.mode) {
-      names[`${theme.meta.family}:${theme.meta.mode}`] = themeName;
-    }
-  }
-  for (const key of Object.keys(map)) {
-    if (key.startsWith("__default-")) {
-      names[key] = key.replace("__default-", "theme-kit-default-");
-    }
-  }
-  return names;
 }
 
 /**
@@ -44,79 +47,46 @@ function buildNames<T extends ThemeDefinition>(
  * The script reads the four theme cookies (same contract as Next), validates
  * the config fingerprint, resolves the theme for the effective mode
  * (`"system"` is resolved against `prefers-color-scheme`), and writes the CSS
- * variables plus DOM effects onto `document.documentElement`. All theme
- * knowledge (CSS maps, default resolution) comes from `@theme-kit/core` — this
- * file is only glue wiring the cookie contract into the rendered HTML.
+ * variables plus DOM effects onto `document.documentElement`. It delegates to
+ * the shared `@theme-kit/core` applier (`buildBootstrapPlan` +
+ * `serializeThemeBootstrapScript`), so every SSR integration emits the same
+ * correct script and cannot drift from the client runtime contract.
  *
  * Emit it in `<head>` with `tagPriority: "critical"` so it runs before the app
  * stylesheets and the browser paints already themed.
+ *
+ * @see {@link NuxtThemeBootstrapOptions}
+ * @see {@link resolveThemeFromCookies}
  */
 export function createNuxtThemeBootstrapScript<T extends ThemeDefinition>(
   options: NuxtThemeBootstrapOptions<T>,
 ): string {
   const { themes, defaultTheme, initialMode, initialFamily } = options;
 
-  const map = buildThemeCssMap(themes);
-
-  const resolution = resolveInitialTheme({
-    themes,
+  const plan = buildBootstrapPlan(themes, {
     ...(defaultTheme !== undefined ? { defaultTheme } : {}),
-    ...(initialFamily !== undefined ? { family: initialFamily } : {}),
-    ...(initialMode !== undefined ? { mode: initialMode } : {}),
-  });
-  const defaultFamily = resolution.selection.family;
-
-  const defaultLight = resolveSelectionTheme({
-    themes,
-    selection: { family: defaultFamily, mode: "light" },
-  });
-  const defaultDark = resolveSelectionTheme({
-    themes,
-    selection: { family: defaultFamily, mode: "dark" },
+    ...(initialMode !== undefined ? { initialMode } : {}),
+    ...(initialFamily !== undefined ? { initialFamily } : {}),
   });
 
-  map["__default-light"] = themeToCSSVariables(defaultLight.theme);
-  map["__default-dark"] = themeToCSSVariables(defaultDark.theme);
-
-  const names = buildNames(themes, map);
-  const fallbackMode = initialMode ?? "system";
-  const fingerprint = computeFingerprint(themes, defaultTheme);
-
-  const { mode: cMode, family: cFamily, fingerprint: cFingerprint } =
-    themeKitCookieNames;
-
-  return (
-    "(function(){try{" +
-    "function getCookie(n){var m=document.cookie.match(new RegExp('(^|; )'+n+'=([^;]+)'));" +
-    "return m?decodeURIComponent(m[2]):null}" +
-    "var mode=getCookie(" + JSON.stringify(cMode) + ");" +
-    "var family=getCookie(" + JSON.stringify(cFamily) + ");" +
-    "var fp=getCookie(" + JSON.stringify(cFingerprint) + ");" +
-    (fingerprint
-      ? "if(fp&&fp!==" + JSON.stringify(fingerprint) + "){mode=null;family=null;}"
-      : "") +
-    "var hasMode=mode==='light'||mode==='dark'||mode==='system';" +
-    "var selMode=hasMode?mode:" + JSON.stringify(fallbackMode) + ";" +
-    "var sysDark=window.matchMedia('(prefers-color-scheme: dark)').matches;" +
-    "var eff=selMode==='dark'||(selMode==='system'&&sysDark)?'dark':'light';" +
-    "var selFamily=family||" + JSON.stringify(initialFamily ?? null) + ";" +
-    "var map=" + JSON.stringify(map) + ";" +
-    "var names=" + JSON.stringify(names) + ";" +
-    "var key=(selFamily&&map[selFamily+':'+eff])?selFamily+':'+eff:'__default-'+eff;" +
-    "var vars=map[key]||map['__default-light'];" +
-    "var name=names[key]||names['__default-'+eff]||null;" +
-    "var el=document.documentElement;" +
-    "if(eff==='dark'){el.classList.add('dark');}else{el.classList.remove('dark');}" +
-    "el.style.colorScheme=eff;" +
-    "el.setAttribute('data-theme-mode',eff);" +
-    "if(selFamily){el.setAttribute('data-theme-family',selFamily);}" +
-    "if(name){el.setAttribute('data-theme',name);}" +
-    "if(vars){for(var p in vars){el.style.setProperty(p,vars[p]);}}" +
-    "}catch(e){}})()"
+  return serializeThemeBootstrapScript(
+    plan,
+    {
+      kind: "cookies",
+      names: {
+        mode: themeKitCookieNames.mode,
+        family: themeKitCookieNames.family,
+        fingerprint: themeKitCookieNames.fingerprint,
+      },
+    },
+    { fingerprint: computeFingerprint(themes, defaultTheme) },
   );
 }
 
-/** `:root { --a: b; ... }` style block for the resolved SSR theme. */
+/** `:root { --a: b; ... }` style block for the resolved SSR theme.
+ *
+ * @see {@link createNuxtThemeBootstrapScript}
+ */
 export function cssVariablesStyle(
   variables: Record<string, string>,
 ): string {

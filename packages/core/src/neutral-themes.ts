@@ -1,5 +1,15 @@
 import { defineTheme } from "./model";
 
+/**
+ * Build the neutral light and dark themes.
+ *
+ * These are the framework's baseline themes: a full token set (colors, radius,
+ * spacing, shadows, border widths, z-index, breakpoints, typography, and code)
+ * with no color family applied. They are the fallback when no family is
+ * selected.
+ *
+ * @returns A `[light, dark]` tuple of neutral theme definitions.
+ */
 export function getNeutralThemes() {
   return [
     defineTheme({

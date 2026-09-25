@@ -1,5 +1,113 @@
 # @theme-kit/remix
 
+## 2.0.0
+
+### Major Changes
+
+- Enforce dependency isolation: adapter framework bindings move out of framework
+  packages and off the adapter root entries.
+
+  **This is a breaking change. Please read the migration note.**
+
+  The dependency-isolation contract (`scripts/release/dependency-policy.json`,
+  enforced by `audit-dependencies.mjs` as part of `release:audit`) permits a
+  framework package to depend only on `core`/`web` (or its own renderer), and an
+  adapter package only on `core`/`adapters`. Both were violated: the framework
+  packages hard-depended on eight to eleven adapter packages each, and every
+  adapter's root entry imported `@theme-kit/react` because its hook was a React
+  hook.
+
+  Enforcing the contract required removing those dependencies, and the exports
+  that existed only to satisfy them went with them:
+
+  - **Adapter roots** (`shadcn`, `bootstrap`, `daisyui`, `open-props`) no longer
+    export `useShadcnTheme` / `useBootstrapTheme` / `useDaisyTheme` /
+    `useOpenPropsTheme`, and no longer depend on `@theme-kit/react`. Each adapter
+    gains per-framework subpaths instead: `./react`, `./vue`, `./svelte`,
+    `./solid`, `./angular`.
+  - **Framework roots** no longer re-export the adapter bindings:
+    `@theme-kit/vue`, `@theme-kit/svelte` and `@theme-kit/solid` each drop
+    `useShadcnTheme`, `useBootstrapTheme`, `useDaisyTheme`, `useOpenPropsTheme`
+    and `UseAdapterOptions`; `@theme-kit/nuxt` drops the four composables;
+    `@theme-kit/next/client` and `@theme-kit/remix` drop the four adapter
+    providers and their hooks.
+
+  ### Migration
+
+  The bindings still exist — they moved to the adapter package, one subpath per
+  framework:
+
+  ```ts
+  // before
+  import { useShadcnTheme } from "@theme-kit/shadcn"; // React
+  import { useShadcnTheme } from "@theme-kit/vue"; // Vue
+  useShadcnTheme(); // no argument
+  useShadcnTheme({ strategy: "exact" });
+
+  // after
+  import { useShadcnTheme } from "@theme-kit/shadcn/react"; // React
+  import { useShadcnTheme } from "@theme-kit/shadcn/vue"; // Vue
+  useShadcnTheme(runtime); // runtime is required
+  useShadcnTheme(runtime, { strategy: "exact" });
+  ```
+
+  Note the second change: the hook's first parameter is now the **runtime**, which
+  is a required argument, and the options object moved to second position. The
+  runtime is no longer read from framework context inside the adapter, which is
+  precisely what let the adapter drop its framework dependency. Callers obtain it
+  from their framework's own accessor (`useThemeRuntime()` in React,
+  `useThemeRuntime()` in Vue, `getThemeRuntime()` in Svelte, and so on).
+
+  Because the removed symbols cannot be re-exported from their old entries without
+  restoring the forbidden dependencies, this change is **not** shim-able: there is
+  no deprecated alias that keeps the old import paths working. That is why these
+  packages take a **major** rather than a minor.
+
+### Minor Changes
+
+- Read the persisted selection from cookies when `initial` is omitted, so the
+  client runtime adopts the theme the pre-paint script already painted.
+
+  `ThemeHead`'s bootstrap script resolves the selection from the `theme-mode` /
+  `theme-family` cookies (fingerprint-guarded). The client persistence, however,
+  read only `localStorage`. On the no-`initial` path — a valid setup for a purely
+  client-resolved app — the two looked at different stores, so a visitor whose
+  selection lived in a cookie had it painted correctly by the script and then
+  **overwritten** by the runtime on hydration.
+
+  Measured A/B on a production build: with the localStorage-only read the page
+  painted `rgb(15, 5, 32)` at 82 ms and was corrected to `rgb(248, 250, 252)` at
+  125 ms; with the cookie fallback it paints `rgb(15, 5, 32)` and is never
+  corrected. The same A/B surfaced a React hydration error (#418) on the
+  mismatching path, which the fallback also removes.
+
+  `get()` now reads `localStorage` first (cross-tab, offline) and falls back to the
+  cookie the script reads, validating the same fingerprint.
+
+  Also in this release:
+
+  - `ThemeHead` accepts `mode` so the script's fallback can match the runtime's
+    `initialMode`. Without it, `getInitialThemeState` and `ThemeHead` resolved
+    different modes and the runtime corrected the script's paint.
+  - `ThemeProvider` accepts `initialMode` and `initialFamily`, forwarded to the
+    React provider.
+
+  Note that the loader path (`getInitialThemeState`) remains the recommended setup:
+  it is the only one where the server knows the answer. The no-`initial` path is
+  now correct rather than merely tolerated, but it still cannot beat a server that
+  already resolved the theme.
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+  - @theme-kit/core@1.4.0
+  - @theme-kit/react@1.3.1
+
 ## 1.3.0
 
 ### Minor Changes

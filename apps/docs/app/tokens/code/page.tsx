@@ -6,9 +6,10 @@ import { CodeBlock } from "../../../components/code-block";
 import { PageHeader } from "../../../components/ui/page-header";
 import { SectionHeading } from "../../../components/ui/section-heading";
 import { highlightCode } from "../../../lib/highlight";
-import { buildPageHeadings } from "../../../lib/toc";
+import { docsUrl } from "../../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/tokens/code") },
   title: "Code Tokens",
   description:
     "Theme Kit's code-specific tokens for syntax highlighting: background, foreground, comment, keyword, string, number, function, variable, type, property, operator, punctuation, tag, attribute, lineNumber, selection, highlight, and gutter colors.",
@@ -77,24 +78,15 @@ const enableCodeTokensSnippet = {
   --tk-syntax-property: var(--theme-code-property, color-mix(...));
   --tk-syntax-operator: var(--theme-code-operator, color-mix(...));
   --tk-syntax-punctuation: var(--theme-code-punctuation, color-mix(...));
-  --tk-syntax-diff-add: var(--theme-code-line-number, color-mix(...));
+  --tk-syntax-diff-add: var(--theme-code-lineNumber, color-mix(...));
   --tk-syntax-diff-remove: var(--theme-code-selection, color-mix(...));
   --tk-syntax-danger: var(--theme-code-highlight, var(--theme-color-destructive));
 }`,
 };
 
-// Headings render via SectionHeading (invisible to the layout's RSC walk).
-const codeTokensHeadings = buildPageHeadings([
-  { text: "Define code tokens in your theme", level: 2 },
-  { text: "Code token reference", level: 2 },
-  { text: "Enable code tokens in your app", level: 2 },
-  { text: "Best practices", level: 2 },
-  { text: "Go deeper", level: 2 },
-]);
-
 export default function CodeTokensPage() {
   return (
-    <DocsLayout headings={codeTokensHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           icon={
@@ -132,7 +124,7 @@ export default function CodeTokensPage() {
         <section id="define" className="scroll-mt-24 mb-10">
           <SectionHeading
             num={1}
-            desc="All 22 code tokens live under tokens.code and resolve alongside colors, spacing, typography, etc."
+            desc="All 19 code tokens live under tokens.code and resolve alongside colors, spacing, typography, etc."
           >
             Define code tokens in your theme
           </SectionHeading>
@@ -319,7 +311,7 @@ export default function CodeTokensPage() {
                     <code className="mono">lineNumber</code>
                   </td>
                   <td className="px-4 py-2">
-                    <code className="mono">--theme-code-line-number</code>
+                    <code className="mono">--theme-code-lineNumber</code>
                   </td>
                   <td className="px-4 py-2">Line number gutter color</td>
                   <td className="px-4 py-2">muted-foreground</td>

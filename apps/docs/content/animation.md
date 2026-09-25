@@ -15,7 +15,6 @@ Theme Kit provides a first-class transition system that animates every CSS prope
 import { createThemeRuntime, createAnimationsPlugin } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   plugins: [
     createAnimationsPlugin({
       transition: { enabled: true, duration: 300, easing: "ease-in-out" },
@@ -74,7 +73,6 @@ animate:
 ```tsx
 // React / Next / Svelte / Solid / Remix / Astro
 <ThemeProvider
-  themes={themes}
   transition={{
     enabled: true,
     // Animate only text and background colors — radius/shadow/opacity snap.
@@ -95,7 +93,6 @@ animate:
 ```ts
 // Angular — provideThemeKit options
 provideThemeKit({
-  themes,
   transition: { enabled: true, properties: ["color", "background-color"] },
 });
 ```
@@ -103,7 +100,6 @@ provideThemeKit({
 ```ts
 // Vanilla runtime
 createThemeRuntime({
-  themes,
   transition: { enabled: true, properties: ["color", "background-color"] },
 });
 ```
@@ -173,7 +169,7 @@ const plugin = createAnimationsPlugin({
 Transitions are **on by default**. To disable them app-wide:
 
 ```tsx
-<ThemeProvider themes={themes} transition={{ enabled: false }}>
+<ThemeProvider transition={{ enabled: false }}>
   <App />
 </ThemeProvider>
 ```
@@ -196,7 +192,6 @@ To opt out (back to the CSS-property interpolation) or tune the crossfade:
 
 ```ts
 const runtime = createThemeRuntime({
-  themes,
   transition: {
     enabled: true,
     useViewTransition: false,
@@ -237,12 +232,17 @@ Every token becomes a CSS custom property with automatic transition support:
   --theme-color-background: #f8fafc;
   --theme-color-foreground: #0f172a;
   --theme-color-primary: #576A8F;
-  --theme-color-primary-foreground: #ffffff;
+  --theme-color-primaryForeground: #ffffff;
   --theme-radius-sm: 4px;
   --theme-radius-md: 8px;
   --theme-radius-lg: 12px;
   --theme-radius-xl: 16px;
 }
 ```
+
+> Token keys are emitted verbatim, so a camelCase token such as
+> `primaryForeground` produces `--theme-color-primaryForeground`. The Tailwind
+> preset additionally exposes the kebab-case alias `--color-primary-foreground`
+> for utility classes.
 
 When the animations plugin is active, transitions are applied automatically to all configured properties.

@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { DocsLayout } from "../../components/docs-layout";
 import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
-import { buildPageHeadings } from "../../lib/toc";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/devtools") },
   title: "DevTools",
   description:
     "The @theme-kit/devtools extension — inspect the active theme, trace token changes, and debug transitions and adapters.",
@@ -98,19 +102,9 @@ const entryTypes = [
   { type: "batch", meaning: "An atomic batched update ran" },
 ];
 
-// Headings render via SectionHeading (invisible to the layout's RSC walk).
-const devToolsHeadings = buildPageHeadings([
-  { text: "Quick start", level: 2 },
-  { text: "createDevToolsPlugin(options)", level: 2 },
-  { text: "createDevToolsInspector(options)", level: 2 },
-  { text: "createDevToolsPanel(inspector)", level: 2 },
-  { text: "Global hook", level: 2 },
-  { text: "Entry types", level: 2 },
-]);
-
 export default function DevToolsPage() {
   return (
-    <DocsLayout headings={devToolsHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           icon={
@@ -139,6 +133,26 @@ export default function DevToolsPage() {
               the active theme.
             </>
           }
+        />
+
+        <Prerequisites
+          items={[
+            {
+              label: "Package",
+              value: "@theme-kit/devtools",
+              href: "/packages/devtools",
+            },
+            {
+              label: "Runtime",
+              value: "Theme runtime with plugin support",
+              href: "/architecture",
+            },
+            {
+              label: "Environment",
+              value: "Development build (not production)",
+            },
+          ]}
+          className="mb-8"
         />
 
         <section id="quick-start" className="scroll-mt-24 mb-10">
@@ -302,6 +316,51 @@ export default function DevToolsPage() {
             </table>
           </div>
         </section>
+
+        <section id="api-reference" className="scroll-mt-24 mb-10">
+          <SectionHeading
+            num={7}
+            desc="Every export on this page is generated from source JSDoc — this guide does not duplicate it."
+          >
+            API reference
+          </SectionHeading>
+          <p className="text-sm leading-relaxed opacity-80">
+            The full surface — <code className="mono text-[0.9em]">createDevToolsPlugin</code>,{" "}
+            <code className="mono text-[0.9em]">createDevToolsInspector</code>,{" "}
+            <code className="mono text-[0.9em]">createDevToolsPanel</code> and their option
+            and state types — is documented in the generated reference:
+          </p>
+          <p className="mt-3 text-sm">
+            <Link href="/api-reference/devtools" className="underline">
+              @theme-kit/devtools API reference
+            </Link>
+          </p>
+        </section>
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Theme Inspector",
+              href: "/theme-inspector",
+              description: "Floating panel for live theme inspection",
+            },
+            {
+              title: "Plugins",
+              href: "/plugins",
+              description: "Lifecycle hooks and custom transformations",
+            },
+            {
+              title: "Architecture",
+              href: "/architecture",
+              description: "Runtime internals and data flow",
+            },
+            {
+              title: "API Reference",
+              href: "/api-reference/devtools",
+              description: "Complete devtools package API",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

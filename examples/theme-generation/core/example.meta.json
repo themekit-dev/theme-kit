@@ -1,0 +1,10 @@
+{
+  "feature": "theme-generation",
+  "framework": "core",
+  "packages": ["@theme-kit/core"],
+  "peerDependencies": [],
+  "files": ["src/example.ts"],
+  "entry": "src/example.ts",
+  "prerequisites": [],
+  "expectedExportsUsed": ["generateTheme"]
+}

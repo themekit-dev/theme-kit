@@ -9,6 +9,7 @@ import { SITE_URL, GITHUB_URL, CONTACT_URL, CONTACT_EMAIL } from "../../lib/site
 export const metadata = legalMetadata(
   "Terms of Use",
   "The terms that apply to using the Theme Kit documentation website.",
+  "/terms",
 );
 
 const updated = "August 24, 2026";

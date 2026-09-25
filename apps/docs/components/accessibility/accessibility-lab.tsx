@@ -45,6 +45,22 @@ const ACCESSIBILITY_PROFILES = [
   },
 ];
 
+type StatusLabel = "PASS" | "FAIL";
+
+function getContrastStatus(
+  passesAANormal: boolean,
+  passesAALarge: boolean,
+  passesAAANormal: boolean,
+  passesAAALarge: boolean,
+): { aa: StatusLabel; aaLarge: StatusLabel; aaa: StatusLabel; aaaLarge: StatusLabel } {
+  return {
+    aa: passesAANormal ? "PASS" : "FAIL",
+    aaLarge: passesAALarge ? "PASS" : "FAIL",
+    aaa: passesAAANormal ? "PASS" : "FAIL",
+    aaaLarge: passesAAALarge ? "PASS" : "FAIL",
+  };
+}
+
 function RatioBadge({ pass, label }: { pass: boolean; label: string }) {
   return (
     <span
@@ -56,6 +72,44 @@ function RatioBadge({ pass, label }: { pass: boolean; label: string }) {
     >
       {label}
     </span>
+  );
+}
+
+function ContrastStatusGrid({
+  passesAANormal,
+  passesAALarge,
+  passesAAANormal,
+  passesAAALarge,
+}: {
+  passesAANormal: boolean;
+  passesAALarge: boolean;
+  passesAAANormal: boolean;
+  passesAAALarge: boolean;
+}) {
+  const status = useMemo(
+    () => getContrastStatus(passesAANormal, passesAALarge, passesAAANormal, passesAAALarge),
+    [passesAANormal, passesAALarge, passesAAANormal, passesAAALarge],
+  );
+
+  return (
+    <div className="grid grid-cols-2 gap-2 mt-2">
+      <div className="flex items-center justify-between text-sm">
+        <span className="opacity-70">AA Normal</span>
+        <RatioBadge pass={status.aa === "PASS"} label={status.aa} />
+      </div>
+      <div className="flex items-center justify-between text-sm">
+        <span className="opacity-70">AA Large</span>
+        <RatioBadge pass={status.aaLarge === "PASS"} label={status.aaLarge} />
+      </div>
+      <div className="flex items-center justify-between text-sm">
+        <span className="opacity-70">AAA Normal</span>
+        <RatioBadge pass={status.aaa === "PASS"} label={status.aaa} />
+      </div>
+      <div className="flex items-center justify-between text-sm">
+        <span className="opacity-70">AAA Large</span>
+        <RatioBadge pass={status.aaaLarge === "PASS"} label={status.aaaLarge} />
+      </div>
+    </div>
   );
 }
 
@@ -183,12 +237,20 @@ export function AccessibilityLab({ compact = false }: { compact?: boolean }) {
         </header>
       )}
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-1 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <section className="rounded-xl border border-border bg-card p-5">
           <h2 className="text-base font-semibold mb-1">Contrast checker</h2>
-          <p className="m-0 mb-4 text-sm opacity-60">
+          <p className="m-0 mb-2 text-sm opacity-60">
             Pick any two colors and check WCAG AA/AAA compliance instantly.
           </p>
+          <p className="m-0 mb-4 text-xs opacity-50">
+            This tool evaluates color contrast against WCAG 2.1 standards. It
+            does not certify your entire application for WCAG conformance.
+          </p>
+          <div className="text-xs opacity-50 mb-4">
+            WCAG 2.1 AA/AAA thresholds: AA 4.5:1 (normal) / 3:1 (large); AAA
+            7:1 (normal) / 4.5:1 (large)
+          </div>
 
           <div className="flex flex-col gap-2 mb-4">
             <div className="flex items-center gap-2">
@@ -203,10 +265,27 @@ export function AccessibilityLab({ compact = false }: { compact?: boolean }) {
                 type="text"
                 value={fg}
                 onChange={(e) => setFg(e.target.value)}
+                aria-label="Foreground color hex value"
                 className="flex-1 min-w-0 px-3 py-2 border border-border rounded-lg bg-muted font-mono text-sm outline-none focus:border-ring"
                 spellCheck={false}
               />
               <span className="text-xs opacity-40 shrink-0">foreground</span>
+            </div>
+            <div className="flex items-center">
+              <div className="flex-1 border-t border-border/60" aria-hidden />
+              <button
+                type="button"
+                onClick={() => {
+                  setFg(bg);
+                  setBg(fg);
+                }}
+                className="mx-2 px-2.5 py-1 rounded-lg border border-border bg-card text-xs font-medium cursor-pointer hover:bg-muted transition-colors"
+                aria-label="Swap foreground and background colors"
+                title="Swap foreground and background"
+              >
+                ⇅ swap
+              </button>
+              <div className="flex-1 border-t border-border/60" aria-hidden />
             </div>
             <div className="flex items-center gap-2">
               <input
@@ -220,6 +299,7 @@ export function AccessibilityLab({ compact = false }: { compact?: boolean }) {
                 type="text"
                 value={bg}
                 onChange={(e) => setBg(e.target.value)}
+                aria-label="Background color hex value"
                 className="flex-1 min-w-0 px-3 py-2 border border-border rounded-lg bg-muted font-mono text-sm outline-none focus:border-ring"
                 spellCheck={false}
               />
@@ -227,7 +307,7 @@ export function AccessibilityLab({ compact = false }: { compact?: boolean }) {
             </div>
           </div>
 
-          {pair && (
+          {pair ? (
             <>
               <div
                 className="flex flex-col items-center gap-2 p-6 rounded-xl border border-border"
@@ -238,10 +318,12 @@ export function AccessibilityLab({ compact = false }: { compact?: boolean }) {
                   ratio {pair.ratio.toFixed(2)} : 1
                 </span>
                 <div className="flex gap-1.5 flex-wrap justify-center">
-                  <RatioBadge pass={pair.passesAANormal} label="AA" />
-                  <RatioBadge pass={pair.passesAALarge} label="AA large" />
-                  <RatioBadge pass={pair.passesAAANormal} label="AAA" />
-                  <RatioBadge pass={pair.passesAAALarge} label="AAA large" />
+                  <ContrastStatusGrid
+                    passesAANormal={pair.passesAANormal}
+                    passesAALarge={pair.passesAALarge}
+                    passesAAANormal={pair.passesAAANormal}
+                    passesAAALarge={pair.passesAAALarge}
+                  />
                 </div>
               </div>
               <p className="mt-3 m-0 text-xs opacity-50">
@@ -250,6 +332,10 @@ export function AccessibilityLab({ compact = false }: { compact?: boolean }) {
                   : "This pair fails AA for normal text — try darkening the foreground."}
               </p>
             </>
+          ) : (
+            <p className="m-0 text-sm opacity-50">
+              Enter valid hex colors to check contrast.
+            </p>
           )}
         </section>
 
@@ -258,42 +344,64 @@ export function AccessibilityLab({ compact = false }: { compact?: boolean }) {
             Live theme audit ·{" "}
             <span className="mono text-sm">{theme.name}</span>
           </h2>
-          <p className="m-0 mb-4 text-sm opacity-60">
+          <div className="flex items-center gap-2 mb-2">
+            <RatioBadge
+              pass={audit.valid}
+              label={audit.valid ? "PASS" : "FAIL"}
+            />
+            <span className="text-xs opacity-60">
+              {audit.checks.length} color pairs checked
+            </span>
+          </div>
+          <p className="m-0 mb-2 text-sm opacity-60">
             <code className="mono text-[0.9em]">validateThemeContrast()</code>{" "}
             run against the active theme&apos;s semantic pairs.
+          </p>
+          <p className="m-0 mb-4 text-xs opacity-50">
+            This tool checks all semantic color pairs in the theme. Passing AA for
+            normal text means the theme is generally accessible for standard
+            content.
           </p>
 
           <div className="flex flex-col gap-1.5">
             {audit.checks.map((check) => (
               <div
                 key={`${check.foregroundToken}-${check.backgroundToken}`}
-                className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg border border-border bg-muted/30"
+                className="flex flex-col gap-1.5 px-3 py-2 rounded-lg border border-border bg-muted/30"
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <span
-                    className="w-6 h-6 rounded-md border border-black/10 shrink-0"
-                    style={{ background: check.background }}
-                  />
-                  <span
-                    className="w-6 h-6 rounded-md border border-black/10 shrink-0"
-                    style={{ background: check.foreground }}
-                  />
-                  <code className="mono text-[11px] opacity-70 truncate">
-                    {check.foregroundToken} on {check.backgroundToken}
-                  </code>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className="w-6 h-6 rounded-md border border-black/10 shrink-0"
+                      style={{ background: check.background }}
+                    />
+                    <span
+                      className="w-6 h-6 rounded-md border border-black/10 shrink-0"
+                      style={{ background: check.foreground }}
+                    />
+                    <code className="mono text-[11px] opacity-70 truncate">
+                      {check.foregroundToken} on {check.backgroundToken}
+                    </code>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span
+                      className={`mono text-xs font-semibold ${
+                        check.passesAANormal
+                          ? "text-green-600 dark:text-green-400"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {check.ratio.toFixed(2)} : 1
+                    </span>
+                    <RatioBadge pass={check.passesAANormal} label="AA" />
+                  </div>
                 </div>
-                <span className="flex items-center gap-2 shrink-0">
-                  <span
-                    className={`mono text-xs font-semibold ${
-                      check.passesAANormal
-                        ? "text-green-600 dark:text-green-400"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {check.ratio.toFixed(2)}
-                  </span>
-                  <RatioBadge pass={check.passesAANormal} label="AA" />
-                </span>
+                <ContrastStatusGrid
+                  passesAANormal={check.passesAANormal}
+                  passesAALarge={check.passesAALarge}
+                  passesAAANormal={check.passesAAANormal}
+                  passesAAALarge={check.passesAAALarge}
+                />
               </div>
             ))}
           </div>
@@ -466,24 +574,32 @@ export function AccessibilityLab({ compact = false }: { compact?: boolean }) {
               {violation.checks.map((check) => (
                 <div
                   key={`${check.foregroundToken}-${check.backgroundToken}`}
-                  className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-card/60 text-sm"
+                  className="flex flex-col gap-1.5 px-3 py-2 rounded-lg bg-card/60 text-sm"
                 >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span
-                      className="w-5 h-5 rounded-md border border-black/10 shrink-0"
-                      style={{ background: check.background }}
-                    />
-                    <span
-                      className="w-5 h-5 rounded-md border border-black/10 shrink-0"
-                      style={{ background: check.foreground }}
-                    />
-                    <code className="mono text-[11px] opacity-70 truncate">
-                      {check.foregroundToken} on {check.backgroundToken}
-                    </code>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span
+                        className="w-5 h-5 rounded-md border border-black/10 shrink-0"
+                        style={{ background: check.background }}
+                      />
+                      <span
+                        className="w-5 h-5 rounded-md border border-black/10 shrink-0"
+                        style={{ background: check.foreground }}
+                      />
+                      <code className="mono text-[11px] opacity-70 truncate">
+                        {check.foregroundToken} on {check.backgroundToken}
+                      </code>
+                    </div>
+                    <span className="mono text-xs font-semibold text-red-500 shrink-0">
+                      {check.ratio.toFixed(2)} : 1
+                    </span>
                   </div>
-                  <span className="mono text-xs font-semibold text-red-500 shrink-0">
-                    {check.ratio.toFixed(2)} · fails AA
-                  </span>
+                  <ContrastStatusGrid
+                    passesAANormal={check.passesAANormal}
+                    passesAALarge={check.passesAALarge}
+                    passesAAANormal={check.passesAAANormal}
+                    passesAAALarge={check.passesAAALarge}
+                  />
                 </div>
               ))}
             </div>

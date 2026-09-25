@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 export function CopyButton({
   text,
   label = "Copy",
-  copiedLabel = "Copied",
+  copiedLabel = "Copied ✓",
   title,
   className,
 }: {
@@ -34,10 +34,7 @@ export function CopyButton({
       title={title ?? label}
       aria-label={title ?? label}
       aria-live="polite"
-      className={className}
-      // The "Copied" confirmation uses the theme's success token — a natural,
-      // semantic use of --theme-color-success that re-themes with every family
-      // and mode, and showcases the token in the docs site itself.
+      className={`chip shrink-0 ${className ?? ""}`.trim()}
       style={copied ? { color: "var(--theme-color-success)" } : undefined}
     >
       {copied ? copiedLabel : label}

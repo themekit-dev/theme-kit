@@ -15,7 +15,6 @@ The runtime persists the *selection* — `{ mode, family }` — not the theme de
 import { createThemeRuntime, createPersistencePlugin } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   plugins: [createPersistencePlugin()],
   // writes { mode, family } to localStorage under "theme-selection"
 });

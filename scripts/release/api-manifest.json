@@ -1,6 +1,6 @@
 {
   "@theme-kit/angular": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\angular\\dist\\types\\theme-kit-angular.d.ts",
     "exports": {
       "values": [
@@ -12,10 +12,6 @@
         "buildThemeCSSMap",
         "createAngularPersistence",
         "createBlockingScriptContent",
-        "injectBootstrapTheme",
-        "injectDaisyTheme",
-        "injectOpenPropsTheme",
-        "injectShadcnTheme",
         "injectTheme",
         "injectThemeBatch",
         "injectThemeHistory",
@@ -30,7 +26,7 @@
         "provideThemeKitRuntime"
       ],
       "types": [
-        "InjectAdapterOptions",
+        "BlockingScriptOptions",
         "ThemeCSSMap",
         "ThemeHistoryState",
         "ThemeInspectorComponent",
@@ -44,47 +40,39 @@
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/astro": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\astro\\dist\\index.d.ts",
     "exports": {
       "values": [
-        "ThemeInspector",
-        "ThemeProviderClient",
-        "ThemeScope",
-        "ThemeScrollbar",
+        "ThemeKitInspector",
+        "ThemeKitScrollbar",
         "buildThemeCssMap",
         "computeFingerprint",
         "createAstroThemePersistence",
         "createBlockingScript",
+        "createThemeController",
         "darkModeCSSTemplate",
         "getGlobalRuntime",
+        "getInitialThemeState",
+        "getThemeController",
+        "injectPrePaintScrollbarCSS",
+        "requireGlobalRuntime",
         "setGlobalRuntime",
-        "useSetThemeFamily",
-        "useSetThemeMode",
-        "useTheme",
-        "useThemeBatch",
-        "useThemeFamily",
-        "useThemeHistory",
-        "useThemeLifecycle",
-        "useThemeMode",
-        "useThemePacks",
-        "useThemeRestore",
-        "useThemeRuntime",
-        "useThemeSchedule",
-        "useThemeSnapshot",
-        "useThemeTokens",
-        "useThemeValue",
-        "useToggleTheme"
+        "systemModeCSSTemplate",
+        "themeKit"
       ],
       "types": [
-        "ThemeInspectorProps",
-        "ThemeProviderClientProps",
-        "ThemeScopeProps",
-        "ThemeScrollbarProps"
+        "ThemeController",
+        "ThemeControllerOptions",
+        "ThemeControllerState",
+        "ThemeKitInspector",
+        "ThemeKitIntegrationOptions",
+        "ThemeKitScrollbar"
       ],
       "internal": {
         "values": [],
@@ -92,14 +80,109 @@
       },
       "subpaths": [
         "./ThemeInspector.astro",
-        "./adapters",
+        "./ThemeScrollbar.astro",
+        "./ThemeToggle.astro",
         "./client",
-        "./provider.astro"
-      ]
+        "./provider.astro",
+        "./runtime"
+      ],
+      "entrypoints": {
+        "./runtime": {
+          "ts": true,
+          "values": [
+            "THEME_READOUT_ATTRIBUTE",
+            "THEME_TOGGLE_ATTRIBUTE",
+            "createThemeController",
+            "getGlobalRuntime",
+            "getThemeController",
+            "requireGlobalRuntime",
+            "setGlobalRuntime"
+          ],
+          "types": [
+            "ThemeController",
+            "ThemeControllerOptions",
+            "ThemeControllerState"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./provider.astro": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./ThemeToggle.astro": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./ThemeInspector.astro": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./ThemeScrollbar.astro": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./client": {
+          "ts": true,
+          "values": [
+            "ThemeProviderClient",
+            "ThemeReadout",
+            "ThemeScope",
+            "useSetThemeFamily",
+            "useSetThemeMode",
+            "useTheme",
+            "useThemeBatch",
+            "useThemeFamily",
+            "useThemeHistory",
+            "useThemeLifecycle",
+            "useThemeMode",
+            "useThemePacks",
+            "useThemeRestore",
+            "useThemeRuntime",
+            "useThemeSchedule",
+            "useThemeSnapshot",
+            "useThemeTokens",
+            "useThemeValue",
+            "useToggleTheme"
+          ],
+          "types": [
+            "ThemeProviderClientProps",
+            "ThemeReadoutKind",
+            "ThemeReadoutProps",
+            "ThemeScopeProps"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
     }
   },
   "@theme-kit/cli": {
-    "version": "1.2.0",
+    "version": "1.3.0",
     "dts": "packages\\cli\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -121,11 +204,12 @@
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/core": {
-    "version": "1.2.0",
+    "version": "1.4.0",
     "dts": "packages\\core\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -149,6 +233,7 @@
         "cancelThemeAnimation",
         "clearMigrations",
         "composeTheme",
+        "computeFingerprint",
         "contrast",
         "createAccessibilityPlugin",
         "createAdapterRegistry",
@@ -159,6 +244,7 @@
         "createDebuggerPlugin",
         "createDefaultPersistence",
         "createDevToolsPlugin",
+        "createDiagnostic",
         "createGenerationPlugin",
         "createHistoryPlugin",
         "createMultiWindowSync",
@@ -173,6 +259,7 @@
         "createScopedThemeBinding",
         "createSharedWorkerSync",
         "createStorageEventSync",
+        "createSyncFirstRoot",
         "createSystemThemeBinding",
         "createThemeBootstrapScript",
         "createThemeBroadcast",
@@ -182,6 +269,7 @@
         "createThemeLifecycle",
         "createThemeModeController",
         "createThemePersistence",
+        "createThemeReadoutScript",
         "createThemeRegistry",
         "createThemeRuntime",
         "createThemeSchedule",
@@ -191,10 +279,13 @@
         "createTransitionPlan",
         "darkModeCSSTemplate",
         "defineTheme",
+        "defineThemeKitConfig",
         "destroySharedWorkerUrl",
+        "emitDiagnostic",
         "evaluateExpression",
         "extendTheme",
         "flattenTokens",
+        "formatDiagnostic",
         "generateTheme",
         "getAccessibilityProfiles",
         "getBrandPresets",
@@ -212,14 +303,19 @@
         "getTimeZoneList",
         "isExpression",
         "isSettled",
+        "isThemeMode",
         "mergePresetTokens",
         "mergeThemeDefinitions",
         "mergeTokens",
         "migrateTheme",
         "migrations",
         "prefersReducedMotion",
+        "readBootstrapState",
+        "readTransportedConfig",
         "registerMigration",
+        "resetDiagnosticEmission",
         "resolveInitialTheme",
+        "resolveRuntimeOptions",
         "resolveScheduledThemePair",
         "resolveScopeTransition",
         "resolveScopedTheme",
@@ -237,7 +333,9 @@
         "scopeToCSSVariables",
         "simulateCVD",
         "simulateThemeForCVD",
+        "systemModeCSSTemplate",
         "themeToCSSVariables",
+        "toBootstrapConfig",
         "validateTheme",
         "validateThemeContrast"
       ],
@@ -259,9 +357,13 @@
         "CodeTokens",
         "ContrastCheck",
         "ContrastValidationResult",
+        "CreateDiagnosticInput",
+        "CreateRootLike",
         "DOMBindingOptions",
         "DebuggerPluginOptions",
         "DevToolsPluginOptions",
+        "DiagnosticSink",
+        "EmitDiagnosticOptions",
         "GenerateThemeOptions",
         "GeneratedThemePair",
         "GenerationPluginOptions",
@@ -295,25 +397,35 @@
         "ScopedThemeSelection",
         "ScrollbarArrowDir",
         "ScrollbarAxis",
-        "ScrollbarOptionsResolved",
         "SelectionThemeResolution",
         "SolarLocationInput",
         "StorageAdapter",
+        "SyncFirstRenderRoot",
+        "SyncFirstRootOptions",
         "SystemThemeBindingOptions",
         "ThemeAdapter",
         "ThemeAnimationInput",
+        "ThemeBootstrapConfig",
         "ThemeBootstrapScriptOptions",
+        "ThemeBootstrapState",
         "ThemeBroadcastAdapter",
         "ThemeBroadcastOptions",
         "ThemeChangeEvent",
         "ThemeChangeSource",
         "ThemeDebugger",
         "ThemeDefinition",
+        "ThemeDiagnostic",
+        "ThemeDiagnosticCode",
+        "ThemeDiagnosticContext",
+        "ThemeDiagnosticLevel",
         "ThemeDiff",
         "ThemeError",
+        "ThemeErrorOptions",
         "ThemeFamilies",
         "ThemeHistory",
         "ThemeHistoryOptions",
+        "ThemeKitConfig",
+        "ThemeKitThemeConfig",
         "ThemeLifecycle",
         "ThemeLifecycleEventMap",
         "ThemeLifecycleEventName",
@@ -330,6 +442,7 @@
         "ThemeRegistry",
         "ThemeRegistryOptions",
         "ThemeRuntime",
+        "ThemeRuntimeInitial",
         "ThemeRuntimeOptions",
         "ThemeRuntimeSnapshot",
         "ThemeSchedule",
@@ -358,6 +471,7 @@
       ],
       "internal": {
         "values": [
+          "buildBootstrapPlan",
           "checkContrastPair",
           "clamp",
           "computeMaxScroll",
@@ -365,33 +479,104 @@
           "computeTranslate",
           "easeAlpha",
           "getCVDLabel",
+          "getThemeFamilies",
           "hasTokenReferences",
           "isAutoCall",
           "isContrastCall",
           "lerp",
+          "normalizeThemeFamily",
           "observeScrollbarSizing",
           "overscrollFactor",
           "parseContrastCall",
           "resolveFlatTokens",
-          "resolveValueReferences"
+          "resolveValueReferences",
+          "serializeThemeBootstrapScript"
         ],
         "types": [
           "ArrowButton",
           "ArrowIcon",
           "AxisState",
           "Host",
-          "RenderState"
+          "RenderState",
+          "ScrollbarOptionsResolved",
+          "ThemeBootstrapCookieSource",
+          "ThemeBootstrapPlan",
+          "ThemeBootstrapSource",
+          "ThemeBootstrapStorageSource"
         ]
       },
       "subpaths": [
+        "./config",
         "./scrollbar.css",
         "./vanilla",
         "./vite"
-      ]
+      ],
+      "entrypoints": {
+        "./vanilla": {
+          "ts": true,
+          "values": [
+            "ThemeKit",
+            "ThemeRegistry",
+            "generateTheme"
+          ],
+          "types": [
+            "GenerateThemeOptions",
+            "GeneratedThemePair",
+            "ThemeDefinition",
+            "ThemeKit",
+            "ThemeKitOptions",
+            "ThemeMode",
+            "ThemePack",
+            "ThemeRegistry",
+            "ThemeTokens"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./vite": {
+          "ts": true,
+          "values": [
+            "themeKitVitePlugin"
+          ],
+          "types": [
+            "ThemeKitThemeConfig",
+            "ThemeKitViteInjectedTag",
+            "ThemeKitVitePlugin",
+            "ThemeKitVitePluginOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./scrollbar.css": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./config": {
+          "ts": true,
+          "values": [
+            "THEME_KIT_CONFIG_FILES",
+            "loadThemeKitConfig"
+          ],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
     }
   },
   "@theme-kit/devtools": {
-    "version": "1.2.0",
+    "version": "1.3.0",
     "dts": "packages\\devtools\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -410,30 +595,12 @@
         "values": [],
         "types": []
       },
-      "subpaths": []
-    }
-  },
-  "@theme-kit/mantine": {
-    "version": "1.2.0",
-    "dts": "packages\\mantine\\dist\\index.d.ts",
-    "exports": {
-      "values": [
-        "MantineThemeProvider",
-        "createMantineTheme",
-        "useMantineTheme"
-      ],
-      "types": [
-        "MantineThemeProviderProps"
-      ],
-      "internal": {
-        "values": [],
-        "types": []
-      },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/next": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\next\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -454,11 +621,51 @@
       },
       "subpaths": [
         "./client"
-      ]
+      ],
+      "entrypoints": {
+        "./client": {
+          "ts": true,
+          "values": [
+            "ClientThemeProvider",
+            "ThemeBootstrap",
+            "ThemeInspector",
+            "ThemeModeButton",
+            "ThemeScope",
+            "createNextThemePersistence",
+            "useScopedTheme",
+            "useSetThemeFamily",
+            "useSetThemeMode",
+            "useTheme",
+            "useThemeBatch",
+            "useThemeFamily",
+            "useThemeHistory",
+            "useThemeLifecycle",
+            "useThemeMode",
+            "useThemePacks",
+            "useThemeRestore",
+            "useThemeRuntime",
+            "useThemeSchedule",
+            "useThemeSnapshot",
+            "useThemeTimeTravel",
+            "useThemeTokens",
+            "useThemeValue",
+            "useToggleTheme"
+          ],
+          "types": [
+            "ClientThemeProviderProps",
+            "NextThemePersistenceOptions",
+            "ThemeBootstrapProps"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
     }
   },
   "@theme-kit/nuxt": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\nuxt\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -497,6 +704,7 @@
         "createDebuggerPlugin",
         "createDefaultPersistence",
         "createDevToolsPlugin",
+        "createDiagnostic",
         "createGenerationPlugin",
         "createHistoryPlugin",
         "createMultiWindowSync",
@@ -512,6 +720,7 @@
         "createScopedThemeBinding",
         "createSharedWorkerSync",
         "createStorageEventSync",
+        "createSyncFirstRoot",
         "createSystemThemeBinding",
         "createThemeBootstrapScript",
         "createThemeBroadcast",
@@ -521,6 +730,7 @@
         "createThemeLifecycle",
         "createThemeModeController",
         "createThemePersistence",
+        "createThemeReadoutScript",
         "createThemeRegistry",
         "createThemeRuntime",
         "createThemeSchedule",
@@ -530,10 +740,13 @@
         "createTransitionPlan",
         "darkModeCSSTemplate",
         "defineTheme",
+        "defineThemeKitConfig",
         "destroySharedWorkerUrl",
+        "emitDiagnostic",
         "evaluateExpression",
         "extendTheme",
         "flattenTokens",
+        "formatDiagnostic",
         "generateTheme",
         "getAccessibilityProfiles",
         "getBrandPresets",
@@ -551,6 +764,7 @@
         "getTimeZoneList",
         "isExpression",
         "isSettled",
+        "isThemeMode",
         "mergePresetTokens",
         "mergeThemeDefinitions",
         "mergeTokens",
@@ -558,8 +772,12 @@
         "migrations",
         "parseCookieHeader",
         "prefersReducedMotion",
+        "readBootstrapState",
+        "readTransportedConfig",
         "registerMigration",
+        "resetDiagnosticEmission",
         "resolveInitialTheme",
+        "resolveRuntimeOptions",
         "resolveScheduledThemePair",
         "resolveScopeTransition",
         "resolveScopedTheme",
@@ -578,21 +796,23 @@
         "scopeToCSSVariables",
         "simulateCVD",
         "simulateThemeForCVD",
+        "systemModeCSSTemplate",
         "themeKitCookieNames",
         "themeToCSSVariables",
-        "useBootstrapTheme",
-        "useDaisyTheme",
-        "useOpenPropsTheme",
-        "useShadcnTheme",
+        "toBootstrapConfig",
         "useTheme",
         "useThemeBatch",
+        "useThemeFamily",
         "useThemeHistory",
         "useThemeLifecycle",
+        "useThemeMode",
         "useThemePacks",
         "useThemeRestore",
         "useThemeRuntime",
         "useThemeSchedule",
         "useThemeSnapshot",
+        "useThemeTokens",
+        "useThemeValue",
         "validateTheme",
         "validateThemeContrast"
       ],
@@ -614,9 +834,13 @@
         "CodeTokens",
         "ContrastCheck",
         "ContrastValidationResult",
+        "CreateDiagnosticInput",
+        "CreateRootLike",
         "DOMBindingOptions",
         "DebuggerPluginOptions",
         "DevToolsPluginOptions",
+        "DiagnosticSink",
+        "EmitDiagnosticOptions",
         "GenerateThemeOptions",
         "GeneratedThemePair",
         "GenerationPluginOptions",
@@ -653,26 +877,36 @@
         "ScopedThemeSelection",
         "ScrollbarArrowDir",
         "ScrollbarAxis",
-        "ScrollbarOptionsResolved",
         "SelectionThemeResolution",
         "SolarLocationInput",
         "StorageAdapter",
+        "SyncFirstRenderRoot",
+        "SyncFirstRootOptions",
         "SystemThemeBindingOptions",
         "ThemeAdapter",
         "ThemeAnimationInput",
+        "ThemeBootstrapConfig",
         "ThemeBootstrapScriptOptions",
+        "ThemeBootstrapState",
         "ThemeBroadcastAdapter",
         "ThemeBroadcastOptions",
         "ThemeChangeEvent",
         "ThemeChangeSource",
         "ThemeDebugger",
         "ThemeDefinition",
+        "ThemeDiagnostic",
+        "ThemeDiagnosticCode",
+        "ThemeDiagnosticContext",
+        "ThemeDiagnosticLevel",
         "ThemeDiff",
         "ThemeError",
+        "ThemeErrorOptions",
         "ThemeFamilies",
         "ThemeHistory",
         "ThemeHistoryOptions",
         "ThemeInspectorProps",
+        "ThemeKitConfig",
+        "ThemeKitThemeConfig",
         "ThemeLifecycle",
         "ThemeLifecycleEventMap",
         "ThemeLifecycleEventName",
@@ -690,6 +924,7 @@
         "ThemeRegistry",
         "ThemeRegistryOptions",
         "ThemeRuntime",
+        "ThemeRuntimeInitial",
         "ThemeRuntimeOptions",
         "ThemeRuntimeSnapshot",
         "ThemeSchedule",
@@ -720,6 +955,7 @@
       ],
       "internal": {
         "values": [
+          "buildBootstrapPlan",
           "checkContrastPair",
           "clamp",
           "computeMaxScroll",
@@ -727,29 +963,38 @@
           "computeTranslate",
           "easeAlpha",
           "getCVDLabel",
+          "getThemeFamilies",
           "hasTokenReferences",
           "isAutoCall",
           "isContrastCall",
           "lerp",
+          "normalizeThemeFamily",
           "observeScrollbarSizing",
           "overscrollFactor",
           "parseContrastCall",
           "resolveFlatTokens",
-          "resolveValueReferences"
+          "resolveValueReferences",
+          "serializeThemeBootstrapScript"
         ],
         "types": [
           "ArrowButton",
           "ArrowIcon",
           "AxisState",
           "Host",
-          "RenderState"
+          "RenderState",
+          "ScrollbarOptionsResolved",
+          "ThemeBootstrapCookieSource",
+          "ThemeBootstrapPlan",
+          "ThemeBootstrapSource",
+          "ThemeBootstrapStorageSource"
         ]
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/react": {
-    "version": "1.2.0",
+    "version": "1.3.1",
     "dts": "packages\\react\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -758,6 +1003,7 @@
         "ThemeProvider",
         "ThemeScope",
         "ThemeScrollbar",
+        "createThemeRoot",
         "useScopedTheme",
         "useSetThemeFamily",
         "useSetThemeMode",
@@ -778,8 +1024,10 @@
         "useToggleTheme"
       ],
       "types": [
+        "CreateThemeRootOptions",
         "ThemeInspectorProps",
         "ThemeProviderProps",
+        "ThemeRootHandle",
         "ThemeScopeProps",
         "ThemeScrollbarAppearance",
         "ThemeScrollbarBehavior",
@@ -790,34 +1038,23 @@
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/remix": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\remix\\dist\\index.d.ts",
     "exports": {
       "values": [
-        "AntdThemeProvider",
-        "ChakraThemeProvider",
-        "MantineThemeProvider",
-        "MuiThemeProvider",
         "ThemeHead",
         "ThemeInspector",
         "ThemeProvider",
         "ThemeScope",
         "ThemeScrollbar",
         "createRemixThemePersistence",
-        "useAntdTheme",
-        "useBootstrapTheme",
-        "useChakraTheme",
-        "useDaisyTheme",
-        "useMantineTheme",
-        "useMuiTheme",
-        "useOpenPropsTheme",
         "useSetThemeFamily",
         "useSetThemeMode",
-        "useShadcnTheme",
         "useTheme",
         "useThemeBatch",
         "useThemeFamily",
@@ -835,10 +1072,6 @@
         "useToggleTheme"
       ],
       "types": [
-        "AntdThemeProviderProps",
-        "ChakraThemeProviderProps",
-        "MantineThemeProviderProps",
-        "MuiThemeProviderProps",
         "RemixThemePersistenceOptions",
         "ThemeHeadProps",
         "ThemeInspectorProps",
@@ -851,11 +1084,24 @@
       },
       "subpaths": [
         "./server"
-      ]
+      ],
+      "entrypoints": {
+        "./server": {
+          "ts": true,
+          "values": [
+            "getInitialThemeState"
+          ],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
     }
   },
   "@theme-kit/solid": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\solid\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -864,10 +1110,6 @@
         "ThemeScope",
         "ThemeScrollbar",
         "createSolidThemeBootstrapScript",
-        "useBootstrapTheme",
-        "useDaisyTheme",
-        "useOpenPropsTheme",
-        "useShadcnTheme",
         "useTheme",
         "useThemeBatch",
         "useThemeFamily",
@@ -886,33 +1128,31 @@
         "ThemeInspectorProps",
         "ThemeProviderProps",
         "ThemeScopeProps",
-        "ThemeScrollbarProps",
-        "UseAdapterOptions"
+        "ThemeScrollbarProps"
       ],
       "internal": {
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/svelte": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\svelte\\dist\\index.d.ts",
     "exports": {
       "values": [
+        "ThemeKitKey",
         "ThemeProvider",
         "ThemeScope",
         "ThemeScrollbar",
         "createSvelteThemeBootstrapScript",
         "getThemeRuntime",
         "getThemeSchedule",
+        "pickOptions",
         "setThemeRuntime",
         "themeInspector",
-        "useBootstrapTheme",
-        "useDaisyTheme",
-        "useOpenPropsTheme",
-        "useShadcnTheme",
         "useTheme",
         "useThemeBatch",
         "useThemeFamily",
@@ -931,18 +1171,18 @@
         "ThemeInspectorProps",
         "ThemeProviderProps",
         "ThemeScopeProps",
-        "ThemeScrollbarProps",
-        "UseAdapterOptions"
+        "ThemeScrollbarProps"
       ],
       "internal": {
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/tailwind": {
-    "version": "1.2.0",
+    "version": "1.3.0",
     "dts": "packages\\tailwind\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -961,11 +1201,40 @@
         "./dark.css",
         "./preflight.css",
         "./theme.css"
-      ]
+      ],
+      "entrypoints": {
+        "./theme.css": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./dark.css": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./preflight.css": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
     }
   },
   "@theme-kit/vue": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\vue\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -976,10 +1245,6 @@
         "ThemeScrollbar",
         "createVueThemeBootstrapScript",
         "provideThemeRuntime",
-        "useBootstrapTheme",
-        "useDaisyTheme",
-        "useOpenPropsTheme",
-        "useShadcnTheme",
         "useTheme",
         "useThemeBatch",
         "useThemeFamily",
@@ -999,21 +1264,22 @@
         "ThemeProviderProps",
         "ThemeScheduleController",
         "ThemeScopeProps",
-        "ThemeScrollbarProps",
-        "UseAdapterOptions"
+        "ThemeScrollbarProps"
       ],
       "internal": {
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/web": {
-    "version": "1.2.0",
+    "version": "1.4.0",
     "dts": "packages\\web\\dist\\index.d.ts",
     "exports": {
       "values": [
+        "PRE_PAINT_SCROLLBAR_CSS",
         "ThemeKitInspector",
         "ThemeKitProvider",
         "ThemeKitScope",
@@ -1023,6 +1289,7 @@
         "defineCustomElements",
         "getProviderRuntime",
         "getThemeSchedule",
+        "injectPrePaintScrollbarCSS",
         "useThemeFamily",
         "useThemeMode",
         "useThemeRuntime",
@@ -1042,11 +1309,12 @@
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/antd": {
-    "version": "1.2.0",
+    "version": "1.3.0",
     "dts": "packages\\adapters\\antd\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1068,18 +1336,18 @@
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/bootstrap": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\adapters\\bootstrap\\dist\\index.d.ts",
     "exports": {
       "values": [
         "createBootstrapAdapter",
         "createBootstrapVariables",
-        "injectBootstrapCSS",
-        "useBootstrapTheme"
+        "injectBootstrapCSS"
       ],
       "types": [
         "BootstrapAdapterOptions",
@@ -1090,13 +1358,106 @@
         "types": []
       },
       "subpaths": [
+        "./angular",
         "./bootstrap.css",
-        "./factory"
-      ]
+        "./factory",
+        "./react",
+        "./solid",
+        "./svelte",
+        "./vue"
+      ],
+      "entrypoints": {
+        "./factory": {
+          "ts": true,
+          "values": [
+            "createBootstrapAdapter"
+          ],
+          "types": [
+            "BootstrapAdapterOptions",
+            "CreateBootstrapAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./react": {
+          "ts": true,
+          "values": [
+            "useBootstrapTheme"
+          ],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./vue": {
+          "ts": true,
+          "values": [
+            "useBootstrapTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./svelte": {
+          "ts": true,
+          "values": [
+            "useBootstrapTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./solid": {
+          "ts": true,
+          "values": [
+            "useBootstrapTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./angular": {
+          "ts": true,
+          "values": [
+            "injectBootstrapTheme"
+          ],
+          "types": [
+            "InjectAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./bootstrap.css": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
     }
   },
   "@theme-kit/chakra": {
-    "version": "1.2.0",
+    "version": "1.3.0",
     "dts": "packages\\adapters\\chakra\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1118,18 +1479,18 @@
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/daisyui": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\adapters\\daisyui\\dist\\index.d.ts",
     "exports": {
       "values": [
         "createDaisyAdapter",
         "createDaisyVariables",
-        "injectDaisyCSS",
-        "useDaisyTheme"
+        "injectDaisyCSS"
       ],
       "types": [
         "CreateDaisyAdapterOptions",
@@ -1140,13 +1501,126 @@
         "types": []
       },
       "subpaths": [
+        "./angular",
         "./daisyui.css",
-        "./factory"
-      ]
+        "./factory",
+        "./react",
+        "./solid",
+        "./svelte",
+        "./vue"
+      ],
+      "entrypoints": {
+        "./factory": {
+          "ts": true,
+          "values": [
+            "createDaisyAdapter"
+          ],
+          "types": [
+            "CreateDaisyAdapterOptions",
+            "DaisyAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./react": {
+          "ts": true,
+          "values": [
+            "useDaisyTheme"
+          ],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./vue": {
+          "ts": true,
+          "values": [
+            "useDaisyTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./svelte": {
+          "ts": true,
+          "values": [
+            "useDaisyTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./solid": {
+          "ts": true,
+          "values": [
+            "useDaisyTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./angular": {
+          "ts": true,
+          "values": [
+            "injectDaisyTheme"
+          ],
+          "types": [
+            "InjectAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./daisyui.css": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
+    }
+  },
+  "@theme-kit/mantine": {
+    "version": "1.3.0",
+    "dts": "packages\\adapters\\mantine\\dist\\index.d.ts",
+    "exports": {
+      "values": [
+        "MantineThemeProvider",
+        "createMantineTheme",
+        "useMantineTheme"
+      ],
+      "types": [
+        "MantineThemeProviderProps"
+      ],
+      "internal": {
+        "values": [],
+        "types": []
+      },
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/mui": {
-    "version": "1.2.0",
+    "version": "1.3.0",
     "dts": "packages\\adapters\\mui\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1168,18 +1642,18 @@
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   },
   "@theme-kit/open-props": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\adapters\\open-props\\dist\\index.d.ts",
     "exports": {
       "values": [
         "createOpenPropsAdapter",
         "createOpenPropsVariables",
-        "injectOpenPropsCSS",
-        "useOpenPropsTheme"
+        "injectOpenPropsCSS"
       ],
       "types": [
         "CreateOpenPropsAdapterOptions",
@@ -1190,20 +1664,112 @@
         "types": []
       },
       "subpaths": [
+        "./angular",
         "./factory",
-        "./open-props.css"
-      ]
+        "./open-props.css",
+        "./react",
+        "./solid",
+        "./svelte",
+        "./vue"
+      ],
+      "entrypoints": {
+        "./factory": {
+          "ts": true,
+          "values": [
+            "createOpenPropsAdapter"
+          ],
+          "types": [
+            "CreateOpenPropsAdapterOptions",
+            "OpenPropsAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./react": {
+          "ts": true,
+          "values": [
+            "useOpenPropsTheme"
+          ],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./vue": {
+          "ts": true,
+          "values": [
+            "useOpenPropsTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./svelte": {
+          "ts": true,
+          "values": [
+            "useOpenPropsTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./solid": {
+          "ts": true,
+          "values": [
+            "useOpenPropsTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./angular": {
+          "ts": true,
+          "values": [
+            "injectOpenPropsTheme"
+          ],
+          "types": [
+            "InjectAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./open-props.css": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
     }
   },
   "@theme-kit/shadcn": {
-    "version": "1.2.0",
+    "version": "2.0.0",
     "dts": "packages\\adapters\\shadcn\\dist\\index.d.ts",
     "exports": {
       "values": [
         "createShadcnAdapter",
         "createShadcnVariables",
-        "injectShadcnCSS",
-        "useShadcnTheme"
+        "injectShadcnCSS"
       ],
       "types": [
         "CreateShadcnAdapterOptions",
@@ -1214,13 +1780,106 @@
         "types": []
       },
       "subpaths": [
+        "./angular",
         "./factory",
-        "./shadcn.css"
-      ]
+        "./react",
+        "./shadcn.css",
+        "./solid",
+        "./svelte",
+        "./vue"
+      ],
+      "entrypoints": {
+        "./factory": {
+          "ts": true,
+          "values": [
+            "createShadcnAdapter"
+          ],
+          "types": [
+            "CreateShadcnAdapterOptions",
+            "ShadcnAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./react": {
+          "ts": true,
+          "values": [
+            "useShadcnTheme"
+          ],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./vue": {
+          "ts": true,
+          "values": [
+            "useShadcnTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./svelte": {
+          "ts": true,
+          "values": [
+            "useShadcnTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./solid": {
+          "ts": true,
+          "values": [
+            "useShadcnTheme"
+          ],
+          "types": [
+            "UseAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./angular": {
+          "ts": true,
+          "values": [
+            "injectShadcnTheme"
+          ],
+          "types": [
+            "InjectAdapterOptions"
+          ],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        },
+        "./shadcn.css": {
+          "ts": false,
+          "values": [],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
     }
   },
   "@theme-kit/adapters": {
-    "version": "1.2.0",
+    "version": "1.3.0",
     "dts": "packages\\adapters\\shared\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1251,11 +1910,25 @@
       },
       "subpaths": [
         "./react"
-      ]
+      ],
+      "entrypoints": {
+        "./react": {
+          "ts": true,
+          "values": [
+            "useCSSVariables",
+            "useRuntimeThemeFactory"
+          ],
+          "types": [],
+          "internal": {
+            "values": [],
+            "types": []
+          }
+        }
+      }
     }
   },
   "@theme-kit/unocss": {
-    "version": "1.2.0",
+    "version": "1.3.0",
     "dts": "packages\\adapters\\unocss\\dist\\index.d.ts",
     "exports": {
       "values": [
@@ -1269,7 +1942,8 @@
         "values": [],
         "types": []
       },
-      "subpaths": []
+      "subpaths": [],
+      "entrypoints": {}
     }
   }
 }

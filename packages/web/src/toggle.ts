@@ -1,18 +1,51 @@
 import { findProviderRuntime } from "./utils";
+import { CustomElementBase } from "./custom-element-base";
 
-export class ThemeKitToggle extends HTMLElement {
+/**
+ * Custom element `<theme-kit-toggle>` that toggles the theme mode.
+ *
+ * Framework-free (vanilla JS). Renders as a button (role/tabindex set on
+ * connect) that toggles the provider's mode between `light` and `dark` on
+ * click or Enter/Space. Reflects the current mode in a `data-mode` attribute
+ * and updates its text when the mode changes.
+ *
+ * @remarks
+ * Requires an ancestor `<theme-kit-provider>`. If the provider is not yet
+ * initialized, it waits for the `theme-ready` event.
+ *
+ * @example
+ * ```html
+ * <theme-kit-toggle></theme-kit-toggle>
+ * ```
+ *
+ * @see {@link defineCustomElements}
+ * @see {@link ThemeKitProvider}
+ */
+export class ThemeKitToggle extends CustomElementBase {
   private unsubscribe: (() => void) | null = null;
 
+  /** Lifecycle hook: initializes the toggle when connected. */
   connectedCallback() {
     const runtime = findProviderRuntime(this);
     if (!runtime) {
-      this.addEventListener("theme-ready", () => this.init(), { once: true });
+      // Listen on the document, not on `this`: <theme-kit-provider> dispatches
+      // theme-ready on itself with bubbles:true, which travels *up* and can never
+      // reach a descendant. A self-listener therefore only fired when the
+      // provider happened to initialise first.
+      document.addEventListener(
+        "theme-ready",
+        () => {
+          if (this.isConnected) this.init();
+        },
+        { once: true },
+      );
       return;
     }
 
     this.init();
   }
 
+  /** Lifecycle hook: unsubscribes from the runtime. */
   disconnectedCallback() {
     this.unsubscribe?.();
     this.unsubscribe = null;
@@ -58,6 +91,10 @@ export class ThemeKitToggle extends HTMLElement {
   }
 
   static define(tag = "theme-kit-toggle") {
+    // SSR-safe: customElements only exists in the browser. Framework wrappers
+    // (Vue, Solid, Angular, Astro, …) call define() from both server and client
+    // environments, so this must be a no-op on the server.
+    if (typeof customElements === "undefined") return;
     if (!customElements.get(tag)) {
       customElements.define(tag, ThemeKitToggle);
     }

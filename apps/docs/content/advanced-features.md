@@ -124,12 +124,10 @@ tokens: {
 Resolution walks the token tree — references first, then expressions, then derived calls. Utilities:
 
 ```ts
-import { flattenTokens, resolveFlatTokens, resolveTokens, hasTokenReferences } from "@theme-kit/core";
+import { flattenTokens, resolveTokens } from "@theme-kit/core";
 
 const flat = flattenTokens(myTheme.tokens);       // { "colors.primary": "#6366f1", ... }
-const resolved = resolveFlatTokens(flat);          // resolves all refs in place
 const deep = resolveTokens(myTheme.tokens);        // returns a new ThemeTokens tree
-const hasRefs = hasTokenReferences("$colors.primary"); // true
 ```
 
 ## Plugin Authoring
@@ -260,7 +258,6 @@ import {
   getAccessibilityProfiles,
   simulateCVD,
   simulateThemeForCVD,
-  getCVDLabel,
   validateThemeContrast,
 } from "@theme-kit/core";
 
@@ -296,3 +293,9 @@ if (!result.valid) {
   process.exit(1);
 }
 ```
+
+## API reference
+
+Every export used above is generated from source JSDoc — this guide links it rather than duplicating it.
+
+- [@theme-kit/core API reference](/api-reference/core)

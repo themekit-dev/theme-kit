@@ -16,10 +16,43 @@ import {
 } from "./defaults";
 import daisyCss from "./daisyui.css";
 
+/**
+ * Options for {@link createDaisyAdapter}.
+ *
+ * @see {@link createDaisyAdapter}
+ */
 export interface CreateDaisyAdapterOptions extends DaisyAdapterOptions {
+  /**
+   * Adapter plugins that customize how the daisyUI CSS variables are
+   * generated. Defaults to no plugins.
+   */
   plugins?: AdapterPlugin[];
 }
 
+/**
+ * Creates a daisyUI adapter.
+ *
+ * The adapter is a DOM-only, framework-free adapter: it depends only on
+ * `@theme-kit/core` and the DOM. On install it injects the daisyUI
+ * compatibility stylesheet (when enabled) and a `<style>` element of CSS
+ * variables derived from the active theme, then subscribes to the runtime
+ * store and rewrites the variables whenever the theme selection changes. It
+ * does not render any component or require a React tree.
+ *
+ * On uninstall it removes the injected styles and unsubscribes from the store.
+ *
+ * @param options Adapter options. Defaults to `{}`.
+ * @returns A `ThemeAdapter` for daisyUI.
+ *
+ * @example
+ * ```ts
+ * import { createDaisyAdapter } from "@theme-kit/daisyui";
+ *
+ * runtime.installAdapter(createDaisyAdapter());
+ * ```
+ *
+ * @see {@link useDaisyTheme}
+ */
 export function createDaisyAdapter<T extends ThemeDefinition>(
   options: CreateDaisyAdapterOptions = {},
 ): ThemeAdapter<T> {

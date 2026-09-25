@@ -98,6 +98,25 @@ export function ThemeSwitcher() {
                       DaisyUI, Open Props, UnoCSS adapters
 ```
 
+## Independent packages
+
+Every Theme Kit package is independently installable:
+
+- **Framework integrations don't pull in each other.** Installing
+  `@theme-kit/next` brings Next + React support and nothing else — it does not
+  install `@theme-kit/vue`, `@theme-kit/svelte`, or any adapter.
+- **Adapters are opt-in.** The component-library adapters (`@theme-kit/mui`,
+  `@theme-kit/chakra`, `@theme-kit/antd`, `@theme-kit/mantine`,
+  `@theme-kit/shadcn`, `@theme-kit/bootstrap`, `@theme-kit/daisyui`,
+  `@theme-kit/open-props`, `@theme-kit/unocss`) are separate packages, installed
+  only when you explicitly want them. Their framework wrappers live behind
+  subpaths (`/react`, `/vue`, `/svelte`, `/solid`, `/angular`) with optional
+  peers, so `import { useShadcnTheme } from "@theme-kit/shadcn/react"` works
+  without installing Vue or Angular.
+- **Core has zero runtime dependencies.** `@theme-kit/core` ships no
+  `dependencies` and no `peerDependencies`; framework packages declare their
+  framework as a peer and are installed only when your app actually uses them.
+
 ## CLI
 
 ```bash
@@ -118,6 +137,35 @@ Full documentation: <https://theme-kit-dev.vercel.app>
 - [API Reference](https://theme-kit-dev.vercel.app/api-reference)
 - [Playground](https://theme-kit-dev.vercel.app/playground)
 - [Known Limitations](https://theme-kit-dev.vercel.app/known-limitations)
+
+## Contributing & Documentation Workflow
+
+All user-facing docs live in this repo and are generated/guarded by scripts —
+hand-editing generated output will be reverted by the release gate.
+
+- **API reference** (`apps/docs/content/api-reference/**.md`) is **generated**:
+  edit `docs/reference/capabilities.ts` (canonical capability registry +
+  descriptions) and run `npm run docs:generate-api`. Never edit the `.md`
+  output by hand.
+- **Capability/contract handbook**: `docs/reference/README.md` (manual
+  reference for maintainers) and `docs/reference/capabilities.ts` (the
+  machine-readable source of truth).
+- **Guides** (`apps/docs/content/*.md`, framework/adapter pages via
+  `apps/docs/lib/frameworks.tsx` / `libraries.tsx`) are hand-written; snippets
+  must import real shipped symbols (enforced by the snippet audit).
+- **Before pushing docs or API changes**, run the release gate:
+
+```bash
+npm run docs:release-gate
+```
+
+It chains the public-API classification check, export inventory, snippet
+baseline, audits B/C/E/F, and the §2/§3 page-contract audit. Audit C's dynamic
+half (`node scripts/docs/audits/audit-c-examples.mjs --dynamic`) compiles every
+canonical example against packed tarballs — run it when touching examples or
+package entrypoints (needs network for peer installs). The browser smoke audit
+(`scripts/docs/audits/audit-browser-smoke.mjs`) is a manual pre-release check
+requiring a production docs build.
 
 ## License
 

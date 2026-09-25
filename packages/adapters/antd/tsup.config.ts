@@ -12,7 +12,6 @@ export default defineConfig({
     "react-dom",
     "@theme-kit/core",
     "@theme-kit/adapters",
-    "@theme-kit/react",
     "antd",
   ],
 });

@@ -38,6 +38,19 @@ function printThemeSummary(theme: ThemeLike, index?: number) {
   }
 }
 
+/**
+ * Implements the `inspect` command: prints a human-readable summary of a
+ * theme file.
+ *
+ * Reads `--file`/`-f` (or the first positional), parses the theme JSON, and
+ * prints each theme's name, mode, theme family, token group counts, meta, and
+ * `extends` information to stdout.
+ *
+ * @param args The parsed command-line arguments.
+ * @throws {UsageError} When no file is provided.
+ *
+ * @see {@link parseArgs}
+ */
 export async function cmdInspect(args: ParsedArgs) {
   const file = getString(args, "file") || getString(args, "f") || args._[1];
 

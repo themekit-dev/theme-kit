@@ -1,5 +1,9 @@
 # Install the CLI
 
+## Prerequisites
+- Node.js 22+
+- npm, pnpm, yarn, or bun installed
+
 There are three practical ways to run `theme-kit`. Teams usually prefer the
 **project-local** approach so every human and pipeline runs the identical
 version; individuals often install globally.
@@ -90,5 +94,15 @@ npx --yes @theme-kit/cli --version
 
 That confirms the published package resolves your executable rather than a
 workspace shortcut.
+
+## Next Steps
+- [Run your first theme workflow](./quickstart)
+- [Generate a theme from a seed color](./generate)
+- [CLI reference](./reference)
+
+## Related
+- [Theme Kit Quick Start](../quickstart)
+- [Core Concepts](../../core-concepts)
+- [API Reference](../../api-reference)
 
 Next: [Quick Start](/cli/quickstart).

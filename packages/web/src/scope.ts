@@ -5,14 +5,37 @@ import {
   type ThemeTransitionOptions,
 } from "@theme-kit/core";
 import { findProviderRuntime } from "./utils";
+import { CustomElementBase } from "./custom-element-base";
 
-export class ThemeKitScope extends HTMLElement {
+/**
+ * Custom element `<theme-kit-scope>` that applies a scoped theme to its
+ * subtree.
+ *
+ * Framework-free (vanilla JS). Applies the theme named by the `theme`
+ * attribute as CSS variables on the element and creates a scoped theme
+ * binding, overriding the provider's selection for the subtree. Observes the
+ * `theme` and `theme-transition` attributes.
+ *
+ * @remarks
+ * Requires an ancestor `<theme-kit-provider>`. When the `theme` attribute
+ * changes, the previous binding is destroyed and recreated.
+ *
+ * @example
+ * ```html
+ * <theme-kit-scope theme="brand-dark">...</theme-kit-scope>
+ * ```
+ *
+ * @see {@link defineCustomElements}
+ * @see {@link ThemeKitProvider}
+ */
+export class ThemeKitScope extends CustomElementBase {
   static observedAttributes = ["theme", "theme-transition"];
 
   private binding: { destroy(): void } | null = null;
   private currentTheme: string | null = null;
   private currentTransition: ThemeTransitionOptions | undefined = undefined;
 
+  /** Lifecycle hook: applies the scoped theme when connected. */
   connectedCallback() {
     this.currentTheme = this.getAttribute("theme");
     this.currentTransition = this.parseTransition(
@@ -23,10 +46,12 @@ export class ThemeKitScope extends HTMLElement {
     }
   }
 
+  /** Lifecycle hook: destroys the scoped binding. */
   disconnectedCallback() {
     this.destroyBinding();
   }
 
+  /** Lifecycle hook: re-applies the scope when an observed attribute changes. */
   attributeChangedCallback(
     name: string,
     _oldValue: string | null,
@@ -91,6 +116,10 @@ export class ThemeKitScope extends HTMLElement {
   }
 
   static define(tag = "theme-kit-scope") {
+    // SSR-safe: customElements only exists in the browser. Framework wrappers
+    // (Vue, Solid, Angular, Astro, …) call define() from both server and client
+    // environments, so this must be a no-op on the server.
+    if (typeof customElements === "undefined") return;
     if (!customElements.get(tag)) {
       customElements.define(tag, ThemeKitScope);
     }

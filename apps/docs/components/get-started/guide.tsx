@@ -138,7 +138,7 @@ function Step({
           style={{
             background: "var(--theme-color-secondary)",
             color:
-              "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
+              "var(--theme-color-secondaryForeground)",
           }}
         >
           {step}
@@ -222,12 +222,18 @@ export function GetStartedGuide({
             <em>family × mode</em> combo.
           </p>
           <p className="text-xs opacity-70 mb-3">
-            The exported <span className="mono">themes</span> array is what you
-            import into your provider in the next step —{" "}
-            <span className="mono">
-              import &#123; themes &#125; from "./themes"
-            </span>
-            .
+            The exported <span className="mono">themes</span> array is your
+            registry. Every snippet below also runs on the built-in set —{" "}
+            <span className="mono">mint-light</span> ships with Theme Kit — so
+            you can copy them as-is. To use the themes you just defined, hand
+            the array to the provider:{" "}
+            <span className="mono">themes=&#123;themes&#125;</span> in
+            React/Solid/Svelte/Remix,{" "}
+            <span className="mono">:themes=&quot;themes&quot;</span> in Vue,{" "}
+            <span className="mono">provideThemeKit(&#123; themes &#125;)</span>{" "}
+            in Angular, and the <span className="mono">themes</span> option in{" "}
+            <span className="mono">nuxt.config</span> /{" "}
+            <span className="mono">astro.config</span>.
           </p>
           <CodeBlock
             html={defineThemeHtml}

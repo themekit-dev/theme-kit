@@ -13,6 +13,18 @@ export function setProviderRuntime(
   el[RUNTIME_SYMBOL] = runtime;
 }
 
+/**
+ * Returns the Theme Kit runtime attached to a provider element, if any.
+ *
+ * Framework-free (vanilla JS). Reads the runtime stored on the element by
+ * {@link setProviderRuntime}.
+ *
+ * @param el The provider element to read from.
+ * @returns The attached runtime, or `undefined` when none is present.
+ *
+ * @see {@link findProviderRuntime}
+ * @see {@link ThemeKitProvider}
+ */
 export function getProviderRuntime(
   el?: ThemeKitProviderElement,
 ): ThemeRuntime<ThemeDefinition> | undefined {

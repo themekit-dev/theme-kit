@@ -1,3 +1,12 @@
+/**
+ * Theme Kit CLI — programmatic entry points.
+ *
+ * Exposes the same commands as the `theme-kit` binary (`generate`,
+ * `validate`, `migrate`, `inspect`, `export`) plus `parseArgs`,
+ * `UsageError`, and `ExitCodes` for embedding or scripting.
+ *
+ * @packageDocumentation
+ */
 export { cmdGenerate } from "./commands/generate.js";
 export { cmdValidate } from "./commands/validate.js";
 export { cmdMigrate } from "./commands/migrate.js";

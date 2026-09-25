@@ -1,7 +1,7 @@
 {
   "name": "@theme-kit/core",
   "license": "MIT",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -22,7 +22,12 @@
       "import": "./dist/vite-plugin.js",
       "require": "./dist/vite-plugin.cjs"
     },
-    "./scrollbar.css": "./scrollbar.css"
+    "./scrollbar.css": "./scrollbar.css",
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js",
+      "require": "./dist/config.cjs"
+    }
   },
   "files": [
     "dist",

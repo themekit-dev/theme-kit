@@ -20,13 +20,30 @@
 
 :root {
   color-scheme: light dark;
+  /* Self-hosted webfonts (`app/fonts.css`). The fallback stacks matter: they are
+     what the page uses if a font file fails to load, so it degrades to the
+     system UI font rather than to an unrelated default. */
+  --font-geist-sans:
+    "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-geist-mono:
+    "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+  --font-outfit: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --site-header-height: 4rem;
 }
 
-* {
-  border-color: var(--theme-color-border);
+/* Tailwind v4 defaults `border-color` to `currentColor`, so this restores the
+   neutral default. It has to live in `@layer base`: an unlayered rule outranks
+   every layered one regardless of specificity, which meant this was beating
+   `@layer utilities` and every `border-<color>` utility in the docs rendered as
+   the neutral border — the coloured Callout variants included. */
+@layer base {
+  * {
+    border-color: var(--theme-color-border);
+  }
 }
 
 html {
@@ -89,10 +106,7 @@ body {
 
 .btn-primary {
   background: var(--theme-color-primary);
-  color: var(
-    --theme-color-primary-foreground,
-    var(--theme-color-primaryForeground)
-  );
+  color: var(--theme-color-primaryForeground);
   box-shadow: 0 8px 24px -8px
     color-mix(in srgb, var(--theme-color-primary) 55%, transparent);
 }
@@ -116,7 +130,7 @@ body {
 
 .btn-secondary {
   background: var(--theme-color-secondary);
-  color: var(--theme-color-secondary-foreground, var(--theme-color-foreground));
+  color: var(--theme-color-secondaryForeground);
   border-color: var(--theme-color-border);
 }
 
@@ -170,10 +184,7 @@ body {
 
 .chip-active {
   background: var(--theme-color-primary);
-  color: var(
-    --theme-color-primary-foreground,
-    var(--theme-color-primaryForeground)
-  );
+  color: var(--theme-color-primaryForeground);
   border-color: var(--theme-color-primary);
   box-shadow: 0 6px 20px -6px
     color-mix(in srgb, var(--theme-color-primary) 60%, transparent);
@@ -452,10 +463,7 @@ body {
 
 .site-nav-link-active {
   background: var(--theme-color-primary);
-  color: var(
-    --theme-color-primary-foreground,
-    var(--theme-color-primaryForeground)
-  );
+  color: var(--theme-color-primaryForeground);
   box-shadow: 0 6px 18px -6px
     color-mix(in srgb, var(--theme-color-primary) 55%, transparent);
 }
@@ -861,10 +869,7 @@ html.dark {
   font-size: 0.85em;
   line-height: inherit;
   font-variant-numeric: tabular-nums;
-  color: var(
-    --theme-color-muted-foreground,
-    var(--theme-color-mutedForeground)
-  );
+  color: var(--theme-color-mutedForeground);
   background: transparent;
   border-right: 1px solid
     color-mix(in srgb, var(--theme-color-border) 35%, transparent);
@@ -970,7 +975,7 @@ html.dark {
   border-left: 3px solid var(--theme-color-primary);
   padding-left: 1rem;
   margin: 1.1rem 0;
-  color: var(--theme-color-muted-foreground);
+  color: var(--theme-color-mutedForeground);
 }
 
 .prose-doc a {

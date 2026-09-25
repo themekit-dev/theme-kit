@@ -37,7 +37,7 @@
     "tailwindcss": "^4.0.0"
   },
   "dependencies": {
-    "@theme-kit/core": "workspace:*"
+    "@theme-kit/core": "workspace:^"
   },
   "description": "Tailwind CSS v4 plugin that maps Theme Kit tokens to Tailwind theme variables.",
   "repository": {

@@ -1,5 +1,15 @@
 const EXPRESSION_PATTERN = /[+\-*/]/;
 
+/**
+ * Determine whether a string is a numeric arithmetic expression.
+ *
+ * An expression is a string containing `+`, `-`, `*`, or `/` over numbers and
+ * parentheses, optionally ending in a CSS unit (e.g. `"1.5 * 2rem"`). Function
+ * calls such as `contrast(...)` and `auto()` are not treated as expressions.
+ *
+ * @param value The string to test.
+ * @returns `true` when `value` is a numeric arithmetic expression.
+ */
 export function isExpression(value: string): boolean {
   if (!EXPRESSION_PATTERN.test(value)) return false;
   if (/^(contrast|auto)\s*\(/.test(value)) return false;
@@ -94,6 +104,20 @@ function extractUnit(expr: string): { numericPart: string; unit: string } {
   return { numericPart: expr, unit: "" };
 }
 
+/**
+ * Evaluate a numeric arithmetic expression and return the result as a string.
+ *
+ * Supports `+`, `-`, `*`, `/`, parentheses, and an optional trailing CSS unit
+ * (e.g. `"1.5 * 2rem"` → `"3rem"`). Integer results are returned without a
+ * decimal point; non-integer results are rounded to two decimals. When the
+ * input is not a valid expression, or evaluation fails, the original string is
+ * returned unchanged.
+ *
+ * @param expr The expression string to evaluate.
+ * @returns The evaluated result string, or `expr` unchanged when it cannot be
+ *   evaluated.
+ * @see {@link isExpression}
+ */
 export function evaluateExpression(expr: string): string {
   try {
     const trimmed = expr.trim();

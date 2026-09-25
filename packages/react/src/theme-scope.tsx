@@ -21,6 +21,12 @@ import {
 } from "@theme-kit/core";
 import { useThemeRuntime } from "./provider";
 
+/**
+ * Props for the {@link ThemeScope} component.
+ *
+ * Accepts `theme` (exact selection), `family`/`mode` (family-based
+ * selection), `themes` (scope-local definitions), and `transition`.
+ */
 export interface ThemeScopeProps {
   /** Exact theme name, family name, or a `{ family, mode }`-style object.
    *  When `family`/`mode` are also passed, `theme` wins (it's the explicit
@@ -40,8 +46,12 @@ export interface ThemeScopeProps {
    *  `<ThemeProvider/>` transition, `false` disables it, `true` inherits, and
    *  an object is merged over the provider's config (local keys win). */
   transition?: boolean | ThemeTransitionOptions;
+  /** Additional class applied to the scope wrapper element. */
   className?: string;
+  /** Inline styles applied to the scope wrapper element. Merged over the
+   *  resolved theme variables, so user styles win on conflicts. */
   style?: CSSProperties;
+  /** The scoped subtree. */
   children: ReactNode;
   /** Any additional attributes (e.g. `data-testid`) forwarded to the wrapper. */
   [key: string]: unknown;
@@ -56,6 +66,31 @@ function withGlobalMode(
   return { ...selection, mode: selection.mode ?? mode };
 }
 
+/**
+ * Applies a theme to a subtree without replacing the global runtime.
+ *
+ * The scope resolves local themes (`themes` prop) before falling back to the
+ * parent runtime's theme registry. Nested scopes override their parent within
+ * their own boundary. Theme changes are reactive: `theme`/`family`/`mode`
+ * props and global mode changes re-resolve and animate in place without
+ * remounting.
+ *
+ * @example
+ * ```tsx
+ * <ThemeScope family="plum" mode="dark">
+ *   <Editor />
+ * </ThemeScope>
+ * ```
+ *
+ * @remarks
+ * Scope-local transitions inherit the parent transition configuration unless
+ * explicitly overridden or disabled. First paint is server-safe: explicit
+ * selections ship resolved variables inline, while OS-dependent selections
+ * (system mode / family-following scopes) ship no inline variables plus a
+ * `@media (prefers-color-scheme: dark)` override, so no flash occurs.
+ *
+ * @see {@link useScopedTheme}
+ */
 export function ThemeScope({
   theme,
   family,
@@ -242,6 +277,30 @@ export function ThemeScope({
   );
 }
 
+/**
+ * Headless scoped-theming hook: applies a scoped theme selection to an
+ * arbitrary element (by ref) without rendering a wrapper component.
+ *
+ * Useful when the scoped element is not a plain `div` — e.g. a custom
+ * component that forwards a ref — or when `ThemeScope`'s wrapper would break
+ * layout.
+ *
+ * Must be called inside `ThemeProvider`.
+ *
+ * @param ref Ref to the element that receives the scoped theme variables.
+ * @param selection Scoped selection to apply. Pass `null` to remove the
+ *   scope (destroys any active binding).
+ * @param transition Transition override for this scope's changes. Inherits
+ *   the provider transition when omitted.
+ * @returns A ref holding the active scoped binding (for advanced access).
+ *
+ * @example
+ * ```tsx
+ * const elRef = useRef<HTMLDivElement>(null);
+ * useScopedTheme(elRef, { family: "plum", mode: "dark" });
+ * return <div ref={elRef} />;
+ * ```
+ */
 export function useScopedTheme(
   ref: RefObject<HTMLElement | null>,
   selection: ScopedThemeSelection | null,

@@ -2,13 +2,43 @@
 
 ## Release strategy
 
-All `@theme-kit/*` packages release together at a **coherent version**. The public API contract between
-`core`, the framework wrappers, and the adapters is aligned, so a mixed-version install is not a
-supported configuration.
+Packages are organised into **release groups** (`.changeset/config.json` → `fixed`). Only packages
+that genuinely share a compatibility contract are versioned together; everything else versions
+**independently**, so a break scoped to one integration does not force a major on unrelated packages.
 
-- Every package ships `1.0.0` at the initial release.
-- A single version bump releases the whole set via changesets.
-- Framework wrappers never bump alone for a breaking `core` change: `core` major forces the whole set.
+Current groups:
+
+| Group | Members | Why they move together |
+|---|---|---|
+| foundation | `@theme-kit/core`, `@theme-kit/web` | Shared primitives every other package builds on. |
+
+Framework integrations, adapters and tooling are **not** grouped: `@theme-kit/astro` can ship a major
+without dragging `@theme-kit/core`, `@theme-kit/react` or `@theme-kit/vue` into one.
+
+### Internal dependency ranges
+
+Internal workspace dependencies use **caret** ranges (`workspace:^`, published as `^x.y.z`), never
+exact pins (`workspace:*`, published as `x.y.z`). An exact pin forces every dependent to republish on
+every upstream release, which re-couples exactly the versions the release groups exist to decouple.
+`audit-packages` fails on `workspace:*`.
+
+### `core` is still the contract
+
+`core` remains the shared contract: framework wrappers and adapters re-export its types. A breaking
+`core` change is therefore breaking for every package that re-exports it, and **the changeset must say
+so explicitly** — list each affected package with a `major` bump in the same changeset. Changesets
+cannot infer this; `updateInternalDependencies` only rewrites the range and applies a patch bump.
+
+Independent versioning makes mixed-version installs *possible*. The caret ranges plus this rule are
+what keep them *compatible*.
+
+### Peer dependencies
+
+A declared peer is a compatibility claim, so it must be earned: every `peerDependencies` entry must be
+either imported by `src/**` or referenced by the public `.d.ts`. Peers a consumer's app supplies at
+runtime without the package importing them (`react-dom`, `tailwindcss`, `nuxt`, …) are listed with a
+justification in `dependency-policy.json` → `companionPeers`. Anything else is an `unused-peer`
+failure in `audit-dependencies`.
 
 ## Semver rules
 

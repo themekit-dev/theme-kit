@@ -3,6 +3,20 @@ import { getString } from "../utils.js";
 import type { ParsedArgs } from "../utils.js";
 import { UsageError } from "../exit-codes.js";
 
+/**
+ * Implements the `generate` command: generates a theme (or light/dark pair)
+ * from a seed color and prints it as JSON or writes it to a file.
+ *
+ * Reads `--seed`/`-s` (or the first positional), `--family`/`-f`,
+ * `--mode`/`-m` (`light`, `dark`, or `both`), `--with-code`, and
+ * `--output`/`-o`. Prints the resulting JSON to stdout, or writes it to the
+ * output file when provided.
+ *
+ * @param args The parsed command-line arguments.
+ * @throws {UsageError} When the seed is not a hex color or the mode is invalid.
+ *
+ * @see {@link parseArgs}
+ */
 export async function cmdGenerate(args: ParsedArgs) {
   const seed = getString(args, "seed") || getString(args, "s") || args._[1] || "#6366f1";
   const family = getString(args, "family") || getString(args, "f") || "default";

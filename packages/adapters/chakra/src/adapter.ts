@@ -6,6 +6,11 @@ import type {
 import { createChakraTheme } from "./theme";
 import type { ChakraAdapterOptions } from "./defaults";
 
+/**
+ * Options for {@link createChakraAdapter}.
+ *
+ * @see {@link createChakraAdapter}
+ */
 export interface CreateChakraAdapterOptions extends ChakraAdapterOptions {}
 
 /**
@@ -15,7 +20,17 @@ export interface CreateChakraAdapterOptions extends ChakraAdapterOptions {}
  */
 export interface ChakraThemeAdapter<T extends ThemeDefinition>
   extends ThemeAdapter<T> {
+  /**
+   * Returns the latest generated Chakra system, or `null` before the first
+   * install or after uninstall.
+   */
   getSnapshot(): ReturnType<typeof createChakraTheme> | null;
+  /**
+   * Registers a listener invoked whenever the generated system changes.
+   *
+   * @param listener The callback to invoke on change.
+   * @returns A function that unregisters the listener.
+   */
   subscribe(listener: () => void): () => void;
 }
 
@@ -23,6 +38,8 @@ export interface ChakraThemeAdapter<T extends ThemeDefinition>
  * Runtime-owned Chakra UI adapter. On install it subscribes to the Theme Kit
  * store and rebuilds the Chakra system whenever the active theme changes. The
  * generated system is available through `getSnapshot` for React consumption.
+ *
+ * @see {@link createChakraAdapter}
  */
 export function createChakraAdapter<T extends ThemeDefinition>(
   _options: CreateChakraAdapterOptions = {},

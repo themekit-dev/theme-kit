@@ -6,9 +6,10 @@ import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { highlightCode } from "../../lib/highlight";
-import { buildPageHeadings } from "../../lib/toc";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/choose-package") },
   title: "Which package should I install?",
   description:
     "A decision guide for the Theme Kit packages: the core runtime, framework integrations, and library adapters — plus the combinations that work together.",
@@ -124,16 +125,9 @@ const combos: { name: string; packages: string[]; href: string }[] = [
 
 const installCode = `npm install @theme-kit/core @theme-kit/next @theme-kit/mui`;
 
-// Headings render via SectionHeading (invisible to the layout's RSC walk).
-const choosePackageHeadings = buildPageHeadings([
-  { text: "Pick your entry point", level: 2 },
-  { text: "Common combinations", level: 2 },
-  { text: "Still unsure?", level: 2 },
-]);
-
 export default function ChoosePackagePage() {
   return (
-    <DocsLayout headings={choosePackageHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           eyebrow="Package decision guide"

@@ -5,10 +5,14 @@ import { DocsLayout } from "../../components/docs-layout";
 import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
+import { InlineCode } from "../../components/ui/inline-code";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
-import { collectPageHeadings } from "../../lib/toc-tree";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/architecture") },
   title: "Architecture",
   description:
     "Inside Theme Kit: the runtime, store, transition pipeline, persistence, adapters, and how the pieces stay framework-agnostic.",
@@ -230,6 +234,75 @@ const runtimeSections = [
   },
 ];
 
+const configFileCode = `// theme.config.ts — at the project root
+import { defineThemeKitConfig } from "@theme-kit/core";
+import { themes } from "./src/themes";
+
+export default defineThemeKitConfig({
+  themes,
+  defaultTheme: "mint-light",
+  initialMode: "system",
+  initialFamily: "mint",
+});`;
+
+const configProviderCode = `// main.tsx — the runtime, through your framework provider
+import { ThemeProvider } from "@theme-kit/react";
+
+<ThemeProvider>
+  <App />
+</ThemeProvider>`;
+
+const configPluginCode = `// vite.config.ts — the pre-paint bootstrap, through a build integration
+import { themeKitVitePlugin } from "@theme-kit/core/vite";
+
+export default defineConfig({
+  plugins: [react(), themeKitVitePlugin()],
+});`;
+
+const configAntiPatternCode = `// Declared twice — the plugin's copy and the provider's copy drift apart
+themeKitVitePlugin({
+  themes,
+  defaultTheme: "mint-light",
+  initialMode: "system",
+});
+
+<ThemeProvider
+  themes={themes}
+  defaultTheme="mint-light"
+  initialMode="system"
+/>`;
+
+const configDeclaredOnceCode = `// Declared once — both consumers read it
+themeKitVitePlugin();
+
+<ThemeProvider>
+  <App />
+</ThemeProvider>`;
+
+/**
+ * Which configuration keys each consumer reads.
+ *
+ * Derived from the shipped type rather than invented: `ThemeBootstrapConfig` is
+ * `Pick<ThemeKitConfig, "themes" | "defaultTheme" | "initialMode" |
+ * "initialFamily" | "storageKey" | "prefix">`, and both integrations transport
+ * exactly that projection (`toBootstrapConfig`) to the runtime. Everything
+ * outside the pick is runtime-only, and `plugins` / `adapters` additionally
+ * cannot be serialized at all.
+ */
+const configSplit = [
+  { key: "themes", runtime: true, bootstrap: true, note: "The registry both sides resolve from." },
+  { key: "defaultTheme", runtime: true, bootstrap: true, note: "Fallback when nothing is persisted." },
+  { key: "initialMode", runtime: true, bootstrap: true, note: "`system` → `prefers-color-scheme`." },
+  { key: "initialFamily", runtime: true, bootstrap: true, note: "Family resolved before first paint." },
+  { key: "storageKey", runtime: true, bootstrap: true, note: "The key both sides read." },
+  { key: "prefix", runtime: true, bootstrap: true, note: "CSS variable prefix." },
+  { key: "persistence", runtime: true, bootstrap: false, note: "A runtime decision made after the fact." },
+  { key: "transition", runtime: true, bootstrap: false, note: "Nothing to animate before paint." },
+  { key: "scrollbar", runtime: true, bootstrap: false, note: "Runtime overlay options." },
+  { key: "plugins", runtime: true, bootstrap: false, note: "Not serializable — pass to the provider." },
+  { key: "adapters", runtime: true, bootstrap: false, note: "Not serializable — pass to the provider." },
+];
+
 const layers = [
   { name: "Store", desc: "Minimal reactive state holding the active theme. `get`, `set`, `subscribe`, `batch`." },
   { name: "Registry", desc: "Every registered theme, powering dynamic theming, theme packs, and family lookups." },
@@ -237,7 +310,7 @@ const layers = [
   { name: "Adapters", desc: "CSS variables, DOM attributes, system theme, scoped themes, scheduled themes, transitions." },
   { name: "Resolvers", desc: "Token references, expressions, and derived colors resolved lazily at runtime." },
   { name: "Plugins", desc: "Hook into the lifecycle and transform tokens; official plugins ship for persistence, history, animations, accessibility, scheduling, debugging, and devtools." },
-  { name: "Bootstrap", desc: "Blocking inline script for zero flash of incorrect theme, plus a `@media (prefers-color-scheme: dark)` fallback." },
+  { name: "Bootstrap", desc: "Blocking inline script for zero-flash, plus a `@media (prefers-color-scheme: dark)` fallback." },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -275,6 +348,26 @@ export default function ArchitecturePage() {
               system.
             </>
           }
+        />
+
+        <Prerequisites
+          items={[
+            {
+              label: "Understanding",
+              value: "Core concepts and theme model",
+              href: "/core-concepts",
+            },
+            {
+              label: "Package",
+              value: "@theme-kit/core or framework package",
+              href: "/packages/core",
+            },
+            {
+              label: "Knowledge",
+              value: "JavaScript runtime patterns and reactive stores",
+            },
+          ]}
+          className="mb-8"
         />
 
         {/* ---- One Runtime ---- */}
@@ -316,7 +409,7 @@ export default function ArchitecturePage() {
               <div key={section.id} id={section.id} className="scroll-mt-24">
                 <h3 className="text-lg font-semibold mb-2">{section.title}</h3>
                 <p className="text-sm opacity-70 leading-relaxed mb-3">
-                  {section.desc}
+                  <InlineCode>{section.desc}</InlineCode>
                 </p>
                 {snippet(section.code)}
               </div>
@@ -324,10 +417,117 @@ export default function ArchitecturePage() {
           </div>
         </section>
 
+        {/* ---- Configuration: one declaration, two consumers ---- */}
+        <section id="configuration" className="scroll-mt-24 mb-10">
+          <SectionHeading
+            num={3}
+            desc="One declaration. Two consumers. No duplicated theme configuration."
+          >
+            Configuration
+          </SectionHeading>
+          <p className="text-sm opacity-70 leading-relaxed mb-4">
+            The application&apos;s Theme Kit configuration is a single object at
+            the project root, <code className="mono text-[0.9em]">theme.config.ts</code>,
+            declared through{" "}
+            <code className="mono text-[0.9em]">defineThemeKitConfig</code>. It is
+            consumed by two things, and neither of them is a second declaration:
+            the <strong>runtime</strong> (through your framework provider) and the{" "}
+            <strong>pre-paint bootstrap</strong> (through a build integration such
+            as the Vite plugin or the Astro integration).
+          </p>
+          {snippet(configFileCode)}
+          <p className="text-sm opacity-70 leading-relaxed mt-4 mb-3">
+            Both consumers read that file. The provider takes no theme props,
+            because the build integration has already put the configuration in
+            the page for it:
+          </p>
+          {snippet(configProviderCode, "tsx")}
+          <p className="text-sm opacity-70 leading-relaxed mt-4 mb-3">
+            And the build integration derives the blocking script from the same
+            file, so the two cannot disagree:
+          </p>
+          {snippet(configPluginCode)}
+          <p className="text-sm opacity-70 leading-relaxed mt-4">
+            This exists to remove a class of bug rather than to add a feature.
+            When the registry, the fallback theme and the initial mode are
+            declared twice — once for the provider and once for whatever emits the
+            pre-paint script — the two drift. A drift is visible: the script paints
+            one theme, the runtime corrects it a frame later, and any theme-name
+            readout contradicts the control that set it. This is the shape that
+            drifts:
+          </p>
+          {snippet(configAntiPatternCode, "tsx")}
+          <p className="text-sm opacity-70 leading-relaxed mt-4 mb-3">
+            And this is the shape that cannot:
+          </p>
+          {snippet(configDeclaredOnceCode, "tsx")}
+          <p className="text-sm opacity-70 leading-relaxed mt-4 mb-3">
+            The split is not arbitrary — it follows the shipped type.{" "}
+            <code className="mono text-[0.9em]">ThemeBootstrapConfig</code> is a{" "}
+            <code className="mono text-[0.9em]">Pick</code> of{" "}
+            <code className="mono text-[0.9em]">ThemeKitConfig</code>, and both
+            integrations transport exactly that projection to the runtime:
+          </p>
+          <div className="rounded-xl border border-border overflow-hidden mb-4">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider whitespace-nowrap">
+                      Key
+                    </th>
+                    <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider whitespace-nowrap">
+                      Runtime
+                    </th>
+                    <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider whitespace-nowrap">
+                      Bootstrap
+                    </th>
+                    <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider">
+                      Notes
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {configSplit.map((row) => (
+                    <tr
+                      key={row.key}
+                      className="border-b border-border last:border-0 align-top"
+                    >
+                      <td className="px-4 py-2.5 mono text-[0.85em] whitespace-nowrap">
+                        {row.key}
+                      </td>
+                      <td className="px-4 py-2.5 text-center">
+                        <span aria-label={row.runtime ? "used" : "not used"}>
+                          {row.runtime ? "✓" : "—"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2.5 text-center">
+                        <span aria-label={row.bootstrap ? "used" : "not used"}>
+                          {row.bootstrap ? "✓" : "—"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2.5 opacity-70">{row.note}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p className="text-sm opacity-70 leading-relaxed">
+            Because the transported configuration is the bootstrap projection, the
+            runtime-only keys never reach the provider through it — pass those to
+            the provider directly. A build integration is an{" "}
+            <strong>optimization</strong>, not a requirement: with no integration
+            at all, a provider alone still themes the app, using the built-in
+            neutral themes when no registry is supplied. What it gives up is the
+            pre-paint guarantee.
+          </p>
+        </section>
+
         {/* ---- Layers ---- */}
         <section id="layers" className="scroll-mt-24 mb-10">
           <SectionHeading
-            num={3}
+            num={4}
             desc="Each layer builds on the one below it."
           >
             Layers
@@ -354,7 +554,7 @@ export default function ArchitecturePage() {
                 <div className="flex-1 rounded-lg border border-border bg-muted/20 px-3 py-2">
                   <div className="text-sm font-semibold">{layer.name}</div>
                   <div className="text-xs opacity-60 leading-relaxed mt-0.5">
-                    {layer.desc}
+                    <InlineCode>{layer.desc}</InlineCode>
                   </div>
                 </div>
               </div>
@@ -365,7 +565,7 @@ export default function ArchitecturePage() {
         {/* ---- How a Theme Change Flows ---- */}
         <section id="flow" className="scroll-mt-24 mb-10">
           <SectionHeading
-            num={4}
+            num={5}
             desc={`What happens when you call a method like \`setFamily("plum")\`.`}
           >
             How a Theme Change Flows
@@ -376,7 +576,7 @@ export default function ArchitecturePage() {
         {/* ---- Bootstrap: Zero Flash ---- */}
         <section id="bootstrap" className="scroll-mt-24">
           <SectionHeading
-            num={5}
+            num={6}
             desc="A blocking inline script ensures the first paint is never the wrong theme."
           >
             Bootstrap: Zero Flash
@@ -409,10 +609,32 @@ export default function ArchitecturePage() {
             </Link>
           </div>
         </section>
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Zero Flash",
+              href: "/zero-flash",
+              description: "Bootstrap pipeline and flash-free hydration",
+            },
+            {
+              title: "Core Concepts",
+              href: "/core-concepts",
+              description: "Theme model, tokens, and design primitives",
+            },
+            {
+              title: "Plugins",
+              href: "/plugins",
+              description: "Lifecycle hooks and token transformations",
+            },
+            {
+              title: "API Reference",
+              href: "/api-reference",
+              description: "Complete runtime API documentation",
+            },
+          ]}
+        />
       </div>
   );
-  // Collect headings from the page's own tree (before RSC serialization hides
-  // subtrees that share a parent with client components from the layout walk).
-  const architectureHeadings = collectPageHeadings(content);
-  return <DocsLayout headings={architectureHeadings}>{content}</DocsLayout>;
+  return <DocsLayout>{content}</DocsLayout>;
 }

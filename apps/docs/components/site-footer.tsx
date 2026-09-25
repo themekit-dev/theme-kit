@@ -18,6 +18,7 @@ const columns: {
       { href: "/packages", label: "Packages" },
       { href: "/framework-guides", label: "Framework Guides" },
       { href: "/api-reference", label: "API Reference" },
+      { href: "/changelog", label: "Changelog" },
     ],
   },
   {

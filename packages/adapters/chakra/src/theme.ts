@@ -71,6 +71,8 @@ function paletteSemantics(
 
 /**
  * Builds the Chakra UI (v3) theme config from Theme Kit semantic tokens.
+ *
+ * @see {@link ChakraThemeProvider}
  */
 export function buildChakraConfig(theme: AdapterResolvedTheme) {
   const c = (key: string, fallback?: string) => readColor(theme, key, fallback);

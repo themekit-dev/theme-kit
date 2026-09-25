@@ -30,7 +30,7 @@ const ThemeScope = () => {
             <div className="p-4 border border-border rounded-(--theme-radius-lg) bg-card text-card-foreground">
               <strong>Slack Dark (scoped)</strong>
               <p className="mt-2 text-xs">
-                This card always uses the forest color palette regardless of the
+                This card always uses the Slack Dark color palette regardless of the
                 global theme.
               </p>
             </div>

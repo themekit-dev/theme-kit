@@ -293,8 +293,17 @@ export function createOverlayScrollbar(
     return [115, 115, 115];
   }
   const rgba = (a: number) => `rgba(${base[0]}, ${base[1]}, ${base[2]}, ${a})`;
-  const thumbColor = (a: number) => `var(--tk-scrollbar-thumb, ${rgba(a)})`;
   const trackColor = () => `var(--tk-scrollbar-track, ${rgba(0.22)})`;
+
+  // Resting / hover / active thumb colour. Every step ends at the engine's own
+  // `rgba()` rather than `currentColor`: the hover and drag handlers used to
+  // fall back to `currentColor`, which was only invisible while the stylesheet
+  // defined `--tk-scrollbar-thumb`. It no longer does (deliberately — see
+  // scrollbar.css), so a hover that ended left the thumb on the inherited text
+  // colour and it never returned to the theme's primary.
+  const thumbRest = () => `var(--tk-scrollbar-thumb, ${rgba(0.9)})`;
+  const thumbHover = () => `var(--tk-scrollbar-thumb-hover, ${thumbRest()})`;
+  const thumbActive = () => `var(--tk-scrollbar-thumb-active, ${thumbHover()})`;
 
   const storeUnsubscribe = store.subscribe(() => {
     base = resolveBaseColor(store);
@@ -306,13 +315,13 @@ export function createOverlayScrollbar(
   });
 
   function paintAxis(state: AxisState) {
-    state.thumb.style.background = thumbColor(0.9);
+    state.thumb.style.background = thumbRest();
     state.track.style.background = trackColor();
     // Arrows carry no background — just a themed glyph, sized to the strip.
     state.btnTop.style.background = "transparent";
     state.btnBottom.style.background = "transparent";
-    state.btnTop.style.color = thumbColor(0.9);
-    state.btnBottom.style.color = thumbColor(0.9);
+    state.btnTop.style.color = thumbRest();
+    state.btnBottom.style.color = thumbRest();
   }
 
   // ---- geometry helpers -------------------------------------------------
@@ -660,14 +669,14 @@ export function createOverlayScrollbar(
       state.hovered = true;
       applyGrow(state);
       showAxis(state);
-      thumb.style.background = "var(--tk-scrollbar-thumb-hover, var(--tk-scrollbar-thumb, currentColor))";
+      thumb.style.background = thumbHover();
     };
     const onLeave = () => {
       state.hovered = false;
       applyGrow(state);
       scheduleAutoHide(host);
       if (!state.dragging) {
-        thumb.style.background = "var(--tk-scrollbar-thumb, currentColor)";
+        thumb.style.background = thumbRest();
       }
     };
     root.addEventListener("mouseenter", onEnter);
@@ -681,7 +690,7 @@ export function createOverlayScrollbar(
       state.dragStartClient = vertical ? e.clientY : e.clientX;
       state.dragStartScroll = scrollOf(host, vertical);
       thumb.setPointerCapture(e.pointerId);
-      thumb.style.background = "var(--tk-scrollbar-thumb-active, var(--tk-scrollbar-thumb-hover, var(--tk-scrollbar-thumb, currentColor)))";
+      thumb.style.background = thumbActive();
       showAxis(state);
       e.preventDefault();
     };
@@ -705,9 +714,7 @@ export function createOverlayScrollbar(
       if (e.pointerId !== state.pointerId) return;
       state.dragging = false;
       state.pointerId = -1;
-      thumb.style.background = state.hovered
-        ? "var(--tk-scrollbar-thumb-hover, var(--tk-scrollbar-thumb, currentColor))"
-        : "var(--tk-scrollbar-thumb, currentColor)";
+      thumb.style.background = state.hovered ? thumbHover() : thumbRest();
       try { thumb.releasePointerCapture(e.pointerId); } catch { /* noop */ }
       scheduleAutoHide(host);
     };

@@ -1,5 +1,10 @@
 # CI & Automation
 
+## Prerequisites
+- Node.js 22+
+- Project-local `@theme-kit/cli` install (or `npx @theme-kit/cli`)
+- CI runner with access to git and node
+
 The CLI is file-oriented and deterministic: it reads a theme, prints, exits,
 and never prompts. That makes it a natural build step.
 
@@ -67,6 +72,17 @@ jobs:
 - **Deterministic per project.** A script in `package.json` fixes the version,
   so machines agree.
 - **Pre-build step.** Run `theme:generate` before `next build`, `vite build`,
-  or a Tailwind pass so `theme.json` / `theme.css` exist first.
+or a Tailwind pass so `theme.json` / `theme.css` exist first.
+
+## Next Steps
+- [Validate your themes](./validate)
+- [Export to JSON or CSS](./export)
+- [Debug with inspect](./inspect)
+- [View CLI reference](./reference)
+
+## Related
+- [Theme Kit Quick Start](../quickstart)
+- [Framework Guides](../../framework-guides)
+- [API Reference](../../api-reference)
 
 Next: [Reference](/cli/reference).

@@ -1,7 +1,7 @@
 {
   "name": "@theme-kit/web",
   "license": "MIT",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -20,7 +20,7 @@
     "build": "tsup && tsc -p tsconfig.build.json"
   },
   "dependencies": {
-    "@theme-kit/core": "workspace:*"
+    "@theme-kit/core": "workspace:^"
   },
   "description": "Vanilla JS theme runtime and DOM bindings for Theme Kit.",
   "repository": {

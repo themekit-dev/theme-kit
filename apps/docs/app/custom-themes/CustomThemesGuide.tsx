@@ -7,6 +7,9 @@ import { CodeBlock } from "../../components/code-block";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
 import { FrameworkPicker, getExample } from "../../components/framework-picker";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { NextSteps } from "../../components/ui/next-step-card";
+import { RelatedLinks } from "../../components/ui/related-links";
 
 const defineSnippet = {
   lang: "ts",
@@ -122,10 +125,9 @@ export const acmeDark = extendTheme("acme-dark", base, {
 };
 
 const runtimeSnippet = {
-  lang: "tsx",
-  title: "App.tsx",
+  lang: "ts",
+  title: "tsx",
   code: `import { createThemeRuntime } from "@theme-kit/core";
-import { ThemeProvider } from "@theme-kit/react";
 import { oceanLight, oceanDark } from "./themes";
 
 const themes = [oceanLight, oceanDark];
@@ -134,15 +136,7 @@ createThemeRuntime({
   themes,
   defaultTheme: "ocean-light",
   initialMode: "system",
-});
-
-export function App() {
-  return (
-    <ThemeProvider themes={themes} defaultTheme="ocean-light">
-      <YourApp />
-    </ThemeProvider>
-  );
-}`,
+});`,
 };
 
 const vanillaSnippet = {
@@ -177,7 +171,13 @@ const result = validateTheme(dark, { themes: [light, dark] });
 // `./themes`, defined in section 1) into each supported framework.
 const customThemeSnippets: Record<
   string,
-  { title: string; lang: string; code: string }
+  {
+    title: string;
+    lang: string;
+    code: string;
+    /** A second file the wiring needs, shown as its own block. */
+    extra?: { title: string; lang: string; code: string };
+  }
 > = {
   react: {
     title: "App.tsx",
@@ -269,21 +269,20 @@ render(() => (
 ), document.getElementById("root")!);`,
   },
   angular: {
-    title: "main.ts",
+    title: "app.config.ts",
     lang: "ts",
-    code: `import { bootstrapApplication } from "@angular/platform-browser";
+    code: `import { ApplicationConfig } from "@angular/core";
 import { provideThemeKit } from "@theme-kit/angular";
-import { AppComponent } from "./app/app.component";
 import { oceanLight, oceanDark } from "./themes";
 
-bootstrapApplication(AppComponent, {
+export const appConfig: ApplicationConfig = {
   providers: [
     provideThemeKit({
       themes: [oceanLight, oceanDark],
       defaultTheme: "ocean-light",
     }),
   ],
-});`,
+};`,
   },
   web: {
     title: "index.html",
@@ -313,28 +312,31 @@ bootstrapApplication(AppComponent, {
 </theme-kit-provider>`,
   },
   tailwind: {
-    title: "main.ts + globals.css",
+    title: "main.ts",
     lang: "ts",
-    code: `// main.ts — register the ocean themes with the runtime
-import { createThemeRuntime } from "@theme-kit/core";
+    code: `import { createThemeRuntime } from "@theme-kit/core";
 import { oceanLight, oceanDark } from "./themes";
 
 createThemeRuntime({
   themes: [oceanLight, oceanDark],
   defaultTheme: "ocean-light",
-});
+});`,
+    extra: {
+      title: "globals.css",
+      lang: "css",
+      code: `@import "tailwindcss";
+@import "@theme-kit/tailwind";
 
-// globals.css — tokens map to utilities automatically
-// @import "tailwindcss";
-// @import "@theme-kit/tailwind";
-//
-// body { @apply bg-background text-foreground; }`,
+body {
+  @apply bg-background text-foreground;
+}`,
+    },
   },
   astro: {
     title: "src/pages/index.astro",
     lang: "astro",
     code: `---
-import { ThemeProviderClient } from "@theme-kit/astro";
+import { ThemeProviderClient } from "@theme-kit/astro/client";
 import { oceanLight, oceanDark } from "../themes";
 ---
 
@@ -390,7 +392,26 @@ export function CustomThemesGuide() {
 
   return (
     <>
-      <section id="define" className="scroll-mt-24 mb-10">
+      <Prerequisites
+        items={[
+          {
+            label: "Core package installed",
+            value: "@theme-kit/core for theme definitions",
+          },
+          {
+            label: "Token structure understanding",
+            value: "Familiarity with semantic token patterns",
+            href: "/tokens",
+          },
+          {
+            label: "Framework runtime",
+            value: "A Theme Kit provider mounted in your app",
+            href: "/quick-start",
+          },
+        ]}
+      />
+
+      <section id="define" className="scroll-mt-24 my-10">
         <SectionHeading
           num={1}
           desc="The smallest building block. A name, an optional family + mode, and nested tokens that become CSS variables."
@@ -471,9 +492,11 @@ export function CustomThemesGuide() {
             html={highlightCode(
               `import { getPresetThemes } from "@theme-kit/core";
 
+// All nine families, light + dark.
 const themes = getPresetThemes();
 
-const themes = getPresetThemes({
+// Or restyle a family as you take it.
+const restyled = getPresetThemes({
   plum: {
     light: { tokens: { colors: { primary: "#6d28d9" } } },
   },
@@ -482,9 +505,11 @@ const themes = getPresetThemes({
             )}
             code={`import { getPresetThemes } from "@theme-kit/core";
 
+// All nine families, light + dark.
 const themes = getPresetThemes();
 
-const themes = getPresetThemes({
+// Or restyle a family as you take it.
+const restyled = getPresetThemes({
   plum: {
     light: { tokens: { colors: { primary: "#6d28d9" } } },
   },
@@ -557,6 +582,15 @@ createThemeRuntime({ themes: brand, defaultTheme: "github-light" });`}
           filename={customSnippet.title}
           className="rounded-lg m-0"
         />
+        {customSnippet.extra ? (
+          <CodeBlock
+            html={highlightCode(customSnippet.extra.code, customSnippet.extra.lang)}
+            code={customSnippet.extra.code}
+            language={customSnippet.extra.lang}
+            filename={customSnippet.extra.title}
+            className="rounded-lg m-0 mt-3"
+          />
+        ) : null}
         <Callout className="mt-3">
           The <code className="mono text-[0.9em]">oceanLight</code> and{" "}
           <code className="mono text-[0.9em]">oceanDark</code> themes come from
@@ -570,52 +604,49 @@ createThemeRuntime({ themes: brand, defaultTheme: "github-light" });`}
         </Callout>
       </section>
 
-      <section id="next" className="scroll-mt-24">
-        <SectionHeading
-          num={7}
-          desc="Now that you have a custom theme, make it a first-class part of your product."
-        >
-          What&apos;s next
-        </SectionHeading>
-        <div className="flex flex-col gap-2">
-          <Link
-            href="/theme-studio"
-            className="glass-card card-lift p-4 no-underline flex items-center justify-between gap-3"
-          >
-            <div>
-              <div className="font-semibold">Theme Studio</div>
-              <div className="text-xs opacity-60">
-                Preview a generated light/dark pair live and apply it.
-              </div>
-            </div>
-            <span style={{ color: "var(--theme-color-primary)" }}>→</span>
-          </Link>
-          <Link
-            href="/playground"
-            className="glass-card card-lift p-4 no-underline flex items-center justify-between gap-3"
-          >
-            <div>
-              <div className="font-semibold">Playground</div>
-              <div className="text-xs opacity-60">
-                Explore families, history, multi-window sync and scheduling.
-              </div>
-            </div>
-            <span style={{ color: "var(--theme-color-primary)" }}>→</span>
-          </Link>
-          <Link
-            href="/packages/core"
-            className="glass-card card-lift p-4 no-underline flex items-center justify-between gap-3"
-          >
-            <div>
-              <div className="font-semibold">@theme-kit/core</div>
-              <div className="text-xs opacity-60">
-                Full reference for every model, registry and runtime API.
-              </div>
-            </div>
-            <span style={{ color: "var(--theme-color-primary)" }}>→</span>
-          </Link>
-        </div>
-      </section>
+      <NextSteps
+        steps={[
+          {
+            title: "Generate from a seed color",
+            description:
+              "Use Theme Studio to create a complete light/dark pair",
+            href: "/theme-studio",
+          },
+          {
+            title: "Apply scoped themes",
+            description: "Override tokens in specific app sections",
+            href: "/scoped-theme",
+          },
+          {
+            title: "Test with accessibility profiles",
+            description:
+              "Validate your custom theme with WCAG-compliant presets",
+            href: "/accessibility",
+          },
+        ]}
+      />
+
+      <RelatedLinks
+        links={[
+          {
+            title: "Playground",
+            description: "Explore families, history, and multi-window sync",
+            href: "/playground",
+          },
+          {
+            title: "@theme-kit/core",
+            description:
+              "Full reference for models, registry, and runtime APIs",
+            href: "/packages/core",
+          },
+          {
+            title: "Token resolution",
+            description:
+              "Understand how semantic tokens resolve to concrete values",
+            href: "/token-resolution",
+          },
+        ]}
+      />
     </>
   );
 }

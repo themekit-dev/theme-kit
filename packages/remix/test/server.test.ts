@@ -11,6 +11,15 @@ const themes = [
     name: "dark",
     meta: { family: "default", mode: "dark" },
   }),
+  // `getInitialThemeState` normalizes the requested family against the registered
+  // themes: a family that is not registered is replaced by the fallback theme's
+  // family, so the invariant "the resolved family always exists in `themes`"
+  // holds. The cookie family in "reads family from cookie" therefore only
+  // survives if it is registered here.
+  defineTheme({
+    name: "forest-light",
+    meta: { family: "forest", mode: "light" },
+  }),
 ];
 
 describe("getInitialThemeState", () => {

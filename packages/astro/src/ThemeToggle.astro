@@ -1,0 +1,124 @@
+---
+import { THEME_READOUT_ATTRIBUTE, THEME_TOGGLE_ATTRIBUTE } from "./attributes";
+
+/**
+ * Theme toggle, as an Astro component — no client framework, no island.
+ *
+ * The simplest native way to toggle the theme in an Astro project:
+ *
+ * ```astro
+ * ---
+ * import ThemeToggle from "@theme-kit/astro/ThemeToggle.astro";
+ * ---
+ * <ThemeToggle />
+ * ```
+ *
+ * It renders a real `<button>`, so keyboard activation, focus handling and
+ * `aria-*` come from the platform rather than from a keydown listener, and it
+ * needs no per-page `initialMode` / `initialFamily`: it drives the
+ * application-wide runtime the provider's configuration created, shared with
+ * every other consumer on the page.
+ *
+ * For custom UI, drop to the controller — the same runtime, still no React:
+ *
+ * ```astro
+ * <button id="theme-toggle">Toggle theme</button>
+ * <script>
+ *   import { getThemeController } from "@theme-kit/astro/runtime";
+ *   const theme = getThemeController();
+ *   document
+ *     .querySelector("#theme-toggle")
+ *     ?.addEventListener("click", () => theme.toggleTheme());
+ * </script>
+ * ```
+ */
+interface Props {
+  /**
+   * Static visible label. Defaults to `"Toggle theme"`.
+   *
+   * @remarks
+   * Ignored when {@link Props.showMode} is set — the live mode replaces it.
+   */
+  label?: string;
+  /**
+   * Show the visitor's current mode (`light` / `dark` / `system`) as the
+   * button's text instead of a static label. Defaults to `false`.
+   *
+   * @remarks
+   * The text is a **bootstrap readout**: the server renders {@link Props.label}
+   * as a fallback, and the pre-paint script patches in the real selection from
+   * `<head>`, before the body is parsed. That ordering is the whole point — a
+   * label resolved only on the client is painted with the server's guess first
+   * and corrects itself afterwards, which is the "label fluctuates on reload"
+   * symptom. `getThemeController()` keeps it in sync from then on, so a click
+   * updates the text without a framework.
+   */
+  showMode?: boolean;
+  /**
+   * Accessible name. Defaults to `"Toggle theme"`.
+   *
+   * @remarks
+   * Always set, even when {@link Props.label} is visible: with
+   * {@link Props.showMode} the visible text is a state (`"dark"`), not an
+   * action, and a screen reader announcing "dark, button" does not say what the
+   * button does.
+   */
+  ariaLabel?: string;
+  /** Class applied to the `<button>`. */
+  class?: string;
+}
+
+const {
+  label,
+  showMode = false,
+  ariaLabel = "Toggle theme",
+  class: className,
+} = Astro.props as Props;
+
+// The text the button shows before the pre-paint readout patch runs, and the
+// text it keeps if scripts are blocked. `showMode` has no static label of its
+// own, so it falls back to a short neutral word.
+const fallback = label ?? (showMode ? "theme" : "Toggle theme");
+
+// Built from the shared constants rather than typed out as literals: the
+// component, the bundled script and the bootstrap all have to agree on these
+// strings, and a typo in one of them fails silently — the element simply keeps
+// the value the server rendered.
+const attrs: Record<string, string> = {
+  type: "button",
+  "aria-label": ariaLabel,
+  [THEME_TOGGLE_ATTRIBUTE]: "",
+};
+---
+
+<button {...attrs} class={className}>
+  {
+    showMode ? (
+      // The element's text is owned by the readout contract — see
+      // `attributes.ts`. Keep it to its own element.
+      <span {...{ [THEME_READOUT_ATTRIBUTE]: "mode" }}>{fallback}</span>
+    ) : (
+      fallback
+    )
+  }
+</button>
+
+<script>
+  // `@theme-kit/astro/runtime`, not `@theme-kit/astro`: this is a *browser*
+  // bundle, and the root entry also exports the build integration, which reads
+  // `theme.config.ts` from disk and would drag `node:url` into the bundle.
+  import {
+    getThemeController,
+    THEME_TOGGLE_ATTRIBUTE,
+  } from "@theme-kit/astro/runtime";
+
+  // Delegated, not per-element: Astro bundles and de-duplicates a component's
+  // `<script>` once per page, so this module cannot know how many toggles the
+  // page rendered — and a per-element listener would miss any added later by a
+  // client-side navigation.
+  document.addEventListener("click", (event) => {
+    const target = event.target as Element | null;
+    if (!target?.closest?.(`[${THEME_TOGGLE_ATTRIBUTE}]`)) return;
+    getThemeController().toggleTheme();
+  });
+</script>

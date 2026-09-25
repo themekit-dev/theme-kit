@@ -19,6 +19,8 @@ export const ExitCodes = Object.freeze({
 /**
  * Thrown by commands when the user passes invalid arguments. Reported by the
  * CLI runtime with exit code `Usage` (2) and a usage hint.
+ *
+ * @see {@link parseArgs}
  */
 export class UsageError extends Error {
   constructor(message: string) {

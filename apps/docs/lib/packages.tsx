@@ -161,7 +161,7 @@ const result = validateTheme(dark, { themes: [light, dark] });
 
 export function App() {
   return (
-    <ThemeProvider themes={themes} transition={{ enabled: true }}>
+    <ThemeProvider transition={{ enabled: true }}>
       <ThemeSwitcher />
     </ThemeProvider>
   );
@@ -179,12 +179,13 @@ function ThemeSwitcher() {
     snippet2: {
       title: "Scoped.tsx",
       lang: "tsx",
-      code: `import { ThemeScope, type ThemeTransitionOptions } from "@theme-kit/react";
+      code: `import { ThemeScope } from "@theme-kit/react";
+import type { ThemeTransitionOptions } from "@theme-kit/core";
 
 const scopeTransition: ThemeTransitionOptions = { duration: 300, easing: "ease" };
 
 // Apply a specific theme to just this subtree
-<ThemeScope theme="forest" transition={scopeTransition}>
+<ThemeScope theme="plum-dark" transition={scopeTransition}>
   <Card />
 </ThemeScope>`,
     },
@@ -195,7 +196,7 @@ const scopeTransition: ThemeTransitionOptions = { duration: 300, easing: "ease" 
     icon: icons.next,
     pkg: "@theme-kit/next",
     tagline:
-      "App Router integration: SSR-safe hydration, cookie persistence and zero flash of incorrect theme.",
+      "App Router integration: SSR-safe hydration, cookie persistence and zero-flash.",
     tags: ["App Router", "RSC", "Zero-flash"],
     groups: [
       {
@@ -224,7 +225,6 @@ import { ThemeProvider } from "@theme-kit/next";
 export default function RootLayout({ children }) {
   return (
     <ThemeProvider
-      themes={themes}
       defaultTheme="light"
       className="antialiased"
       body={{ className: "font-sans" }}
@@ -292,7 +292,6 @@ import { ThemeProvider } from "@theme-kit/vue";
 
 const app = createApp(App);
 app.use(ThemeProvider, {
-  themes,
   defaultTheme: "light",
   transition: { enabled: true },
 });
@@ -350,7 +349,7 @@ const { theme, mode, setMode, toggleTheme } = useTheme();
   import { ThemeProvider } from "@theme-kit/svelte";
 </script>
 
-<ThemeProvider {themes} defaultTheme="light">
+<ThemeProvider defaultTheme="light">
   <App />
 </ThemeProvider>`,
     },
@@ -390,7 +389,7 @@ const { theme, mode, setMode, toggleTheme } = useTheme();
 
 function App() {
   return (
-    <ThemeProvider themes={themes}>
+    <ThemeProvider>
       <Switcher />
     </ThemeProvider>
   );
@@ -443,7 +442,6 @@ function Switcher() {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideThemeKit({
-      themes,
       defaultTheme: "light",
     }),
   ],
@@ -528,35 +526,41 @@ defineCustomElements();
     name: "Astro",
     icon: icons.astro,
     pkg: "@theme-kit/astro",
-    tagline: "Astro islands integration with a zero-flash blocking script.",
-    tags: ["Islands", "Zero-flash"],
+    tagline: "Astro-native theming: integration bootstrap, a React-free <html> layout, and opt-in client islands.",
+    tags: ["Integration", "Islands", "Zero-flash"],
     groups: [
       {
-        label: "Components",
+        label: "Integration",
         features: [
-          { name: "ThemeProviderClient", desc: "Client island provider." },
-          { name: "ThemeScope", desc: "Scoped theming." },
+          { name: "themeKit() in astro.config.ts", desc: "Injects the pre-paint bootstrap into every page's <head>." },
+          { name: "No React required", desc: "The root entry and every server helper are framework-neutral." },
         ],
       },
       {
         label: "Server helpers",
         features: [
-          { name: "createBlockingScript / buildThemeCssMap / darkModeCSSTemplate", desc: "Zero-flash bootstrap." },
-          { name: "computeFingerprint", desc: "Cookie / config fingerprinting." },
+          { name: "provider.astro", desc: "SSR-resolves the selection and paints the themed <html data-theme>." },
+          { name: "getInitialThemeState()", desc: "Resolve the initial state from `Astro.request` for island hydration." },
+          { name: "computeFingerprint", desc: "Cookie / config fingerprinting. Shared from `@theme-kit/core` so every integration writes a byte-identical value." },
+        ],
+      },
+      {
+        label: "Client islands (opt-in)",
+        features: [
+          { name: "@theme-kit/astro/client", desc: "ThemeProviderClient, hooks and ThemeScope — the only React entry." },
           { name: "getGlobalRuntime / setGlobalRuntime", desc: "Shared runtime across islands." },
         ],
       },
     ],
     snippet: {
-      title: "index.astro",
-      lang: "astro",
-      code: `---
-import { ThemeProviderClient } from "@theme-kit/astro";
----
+      title: "astro.config.ts",
+      lang: "ts",
+      code: `import { defineConfig } from "astro/config";
+import themeKit from "@theme-kit/astro";
 
-<ThemeProviderClient themes={themes} defaultTheme="light">
-  <Switcher client:load />
-</ThemeProviderClient>`,
+export default defineConfig({
+  integrations: [themeKit()],
+});`,
     },
   },
   {
@@ -572,7 +576,7 @@ import { ThemeProviderClient } from "@theme-kit/astro";
         label: "Server",
         features: [
           { name: "SSR-first resolution", desc: "Reads `theme-name`, `theme-mode`, `theme-family`, `theme-fingerprint` cookies, validates the fingerprint and resolves the initial theme before hydration." },
-          { name: "Themed <html> + bootstrap", desc: "Renders `<html data-theme>` with inline CSS variables and a blocking bootstrap script in `<head>` for zero flash." },
+          { name: "Themed <html> + bootstrap", desc: "Renders `<html data-theme>` with inline CSS variables and a blocking bootstrap script in `<head>` for zero-flash." },
           { name: "Dark-mode CSS fallback", desc: "Emits `@media (prefers-color-scheme: dark)` styles when the persisted mode is `system`." },
         ],
       },
@@ -592,7 +596,6 @@ import { ThemeProviderClient } from "@theme-kit/astro";
 export default defineNuxtConfig({
   modules: ["@theme-kit/nuxt"],
   themeKit: {
-    themes,
     defaultTheme: "mint-light",
     initialMode: "system",
     transition: { duration: 360, easing: "cubic-bezier(0.4, 0, 0.2, 1)" },
@@ -624,21 +627,22 @@ const { theme, mode, setMode, toggleTheme } = useTheme();
     name: "Remix",
     icon: icons.remix,
     pkg: "@theme-kit/remix",
-    tagline: "Remix loader-based SSR theming with a blocking head script.",
-    tags: ["Remix", "SSR"],
+    tagline: "Remix owns the server/client boundary: loader SSR resolution, a blocking head script, and React hydration.",
+    tags: ["Remix", "SSR", "Hydration"],
     groups: [
       {
         label: "Server",
         features: [
-          { name: "Loader theming", desc: "getInitialThemeState from the request." },
-          { name: "Blocking script", desc: "blocking-script.tsx applies the theme before paint." },
-          { name: "createRemixThemePersistence / computeFingerprint", desc: "Persistence and fingerprinting." },
+          { name: "Loader theming", desc: "getInitialThemeState from `@theme-kit/remix/server` reads the theme cookies off the request." },
+          { name: "Blocking script", desc: "ThemeHead emits the pre-paint bootstrap in the document <head>." },
+          { name: "createRemixThemePersistence / computeFingerprint", desc: "Persistence, plus the fingerprint shared from `@theme-kit/core`." },
         ],
       },
       {
         label: "Client",
         features: [
-          { name: "ThemeProvider", desc: "Full hook set + ThemeScope." },
+          { name: "ThemeProvider", desc: "Hydrates against the loader-resolved initial state; full hook set + ThemeScope." },
+          { name: "Intentional React dependency", desc: "Depends on @theme-kit/core + @theme-kit/react directly." },
         ],
       },
     ],
@@ -649,6 +653,11 @@ const { theme, mode, setMode, toggleTheme } = useTheme();
 import { useLoaderData } from "@remix-run/react";
 import { ThemeProvider } from "@theme-kit/remix";
 import { getInitialThemeState } from "@theme-kit/remix/server";
+import { getBuiltInThemes } from "@theme-kit/core";
+
+// getInitialThemeState takes the registry as a required option; the built-in
+// set is a valid registry, so no theme file is needed.
+const themes = getBuiltInThemes();
 
 export async function loader({ request }) {
   return { initial: await getInitialThemeState(request, { themes }) };
@@ -716,7 +725,6 @@ theme-kit export theme.json --format css`,
 import { createDevToolsPlugin } from "@theme-kit/devtools";
 
 const runtime = createThemeRuntime({
-  themes,
   plugins: [createDevToolsPlugin()],
 });`,
     },

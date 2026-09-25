@@ -2,10 +2,41 @@
 
 React 18/19 integration for Theme Kit. Provider + hooks over the framework-agnostic `@theme-kit/core` runtime.
 
+## Define themes
+
+A theme family is **one definition per mode**, grouped by `meta.family` — the
+runtime resolves a `family` + `mode` selection to one of these names.
+
+```ts
+// theme/themes.ts
+import { defineTheme } from "@theme-kit/core";
+
+export const themes = [
+  defineTheme({
+    name: "mint-light",
+    meta: { family: "mint", mode: "light" },
+    tokens: {
+      colors: { background: "#ffffff", foreground: "#0f172a", primary: "#0d9488" },
+    },
+  }),
+  defineTheme({
+    name: "mint-dark",
+    meta: { family: "mint", mode: "dark" },
+    tokens: {
+      colors: { background: "#042f2e", foreground: "#ccfbf1", primary: "#5eead4" },
+    },
+  }),
+] as const;
+```
+
+The `themes` prop is optional — omit it and the built-in neutral `light`/`dark`
+pair is used, which is the quickest way to see it working.
+
 ## Reference snippet
 
 ```tsx
 import { ThemeProvider, useTheme } from "@theme-kit/react";
+import { themes } from "./theme/themes";
 
 export function App() {
   return (
@@ -32,6 +63,7 @@ For a client-rendered Vite/SPA app, mount the provider at the app root:
 ```tsx
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@theme-kit/react";
+import { themes } from "./theme/themes";
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider themes={themes} defaultTheme="mint-light" initialMode="system">
@@ -50,6 +82,7 @@ synchronously, so the very first frame is already the themed UI:
 
 ```tsx
 import { createThemeRoot } from "@theme-kit/react";
+import { themes } from "./theme/themes";
 
 const handle = createThemeRoot({
   container: document.getElementById("root")!,

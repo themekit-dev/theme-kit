@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { DocsLayout } from "../../components/docs-layout";
 import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { NextSteps } from "../../components/ui/next-step-card";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
-import { buildPageHeadings } from "../../lib/toc";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/persistence") },
   title: "Persistence",
   description:
     "How Theme Kit persists theme selection across visits: localStorage, custom adapters, cookie-based server-side persistence, and disabling persistence entirely.",
@@ -24,7 +29,6 @@ const howItWorksSnippet = {
 const persistence = createPersistencePlugin();
 
 const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
   plugins: [persistence],
 });
@@ -40,7 +44,6 @@ const storageKeySnippet = {
   code: `// Pass a custom key to avoid collisions with other
 // apps on the same origin.
 const runtime = createThemeRuntime({
-  themes,
   plugins: [createPersistencePlugin({ key: "my-app-theme" })],
 });`,
 };
@@ -227,7 +230,6 @@ const disableSnippet = {
   lang: "ts",
   title: "core — disabling persistence",
   code: `const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
   // Pass null explicitly to disable persistence.
   persistence: null,
@@ -251,7 +253,6 @@ const vsSyncSnippet = {
 } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
 
   // Persistence: survives page reloads, writes to storage,
@@ -270,19 +271,9 @@ const runtime = createThemeRuntime({
 // Tab C opens → reads localStorage → lands on "dark" + "ocean".`,
 };
 
-// Headings render via SectionHeading (invisible to the layout's RSC walk).
-const persistenceHeadings = buildPageHeadings([
-  { text: "How persistence works", level: 2 },
-  { text: "Storage keys", level: 2 },
-  { text: "Custom adapters", level: 2 },
-  { text: "Server-side persistence", level: 2 },
-  { text: "Disabling persistence", level: 2 },
-  { text: "Persistence vs. sync", level: 2 },
-]);
-
 export default function PersistencePage() {
   return (
-    <DocsLayout headings={persistenceHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           eyebrow="Persistence"
@@ -294,6 +285,25 @@ export default function PersistencePage() {
               designed to work alongside — not replace — cross-tab sync.
             </>
           }
+        />
+
+        <Prerequisites
+          items={[
+            {
+              label: "Core Package",
+              value: "@theme-kit/core",
+              href: "/packages/core",
+            },
+            {
+              label: "Runtime",
+              value: "Theme runtime initialized with createThemeRuntime",
+            },
+            {
+              label: "Knowledge",
+              value: "Basic understanding of theme selection (mode + family)",
+            },
+          ]}
+          className="mb-8"
         />
 
         <section id="how-it-works" className="scroll-mt-24 mb-10">
@@ -497,6 +507,71 @@ export default function PersistencePage() {
             stick when a tab closes and reopens. They don't conflict.
           </Callout>
         </section>
+        <section id="api-reference" className="scroll-mt-24 mb-10">
+          <SectionHeading
+            num={7}
+            desc="Every export used on this page is documented in the generated reference — this guide links it rather than duplicating it."
+          >
+            API reference
+          </SectionHeading>
+          <p className="text-sm leading-relaxed opacity-80">
+            The full surface, generated from source JSDoc:
+          </p>
+          <p className="mt-3 text-sm">
+            <Link href="/api-reference/core" className="underline">
+              @theme-kit/core API reference
+            </Link>
+          </p>
+        </section>
+
+        <NextSteps
+          steps={[
+            {
+              title: "Enable cross-tab sync",
+              description:
+                "Sync theme changes across browser tabs in real-time with BroadcastChannel",
+              href: "/multi-window-sync",
+            },
+            {
+              title: "Build custom adapters",
+              description:
+                "Create custom persistence adapters for databases, IndexedDB, or server state",
+              href: "/api-reference/core",
+            },
+            {
+              title: "Zero-flash SSR setup",
+              description:
+                "Combine persistence with SSR for instant correct-theme rendering",
+              href: "/zero-flash",
+            },
+          ]}
+          className="mt-12 mb-12"
+        />
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Multi-window Sync",
+              href: "/multi-window-sync",
+              description: "Synchronize themes across browser tabs",
+            },
+            {
+              title: "Zero Flash SSR",
+              href: "/zero-flash",
+              description: "Server-side theme resolution",
+            },
+            {
+              title: "Core API Reference",
+              href: "/api-reference/core",
+              description: "Full persistence adapter interface",
+            },
+            {
+              title: "Architecture",
+              href: "/architecture",
+              description: "How Theme Kit manages state",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

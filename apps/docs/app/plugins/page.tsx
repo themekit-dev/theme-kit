@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { DocsLayout } from "../../components/docs-layout";
 import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { NextSteps } from "../../components/ui/next-step-card";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
-import { buildPageHeadings } from "../../lib/toc";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/plugins") },
   title: "Plugins",
   description:
     "Extend Theme Kit with lifecycle hooks, token transforms, and runtime integrations using the plugin system.",
@@ -221,19 +226,9 @@ const runtime = createThemeRuntime({
 });`,
 };
 
-// Headings render via SectionHeading (invisible to the layout's RSC walk).
-const pluginsHeadings = buildPageHeadings([
-  { text: "What is a Plugin?", level: 2 },
-  { text: "Plugin Hooks", level: 2 },
-  { text: "Token Transforms", level: 2 },
-  { text: "Priority & Ordering", level: 2 },
-  { text: "Runtime Integration", level: 2 },
-  { text: "Full Example", level: 2 },
-]);
-
 export default function PluginsPage() {
   return (
-    <DocsLayout headings={pluginsHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           eyebrow="Plugins"
@@ -247,6 +242,20 @@ export default function PluginsPage() {
               <code className="mono text-[0.9em]">ThemePlugin</code> interface.
             </>
           }
+        />
+
+        <Prerequisites
+          items={[
+            {
+              label: "Runtime concepts",
+              value: "Understand how the theme runtime works",
+              href: "/architecture",
+            },
+            {
+              label: "TypeScript basics",
+              value: "Plugins use the ThemePlugin interface",
+            },
+          ]}
         />
 
         <section id="what-is-a-plugin" className="scroll-mt-24 mb-10">
@@ -442,6 +451,57 @@ export default function PluginsPage() {
             className="m-0"
           />
         </section>
+        <section id="api-reference" className="scroll-mt-24 mb-10">
+          <SectionHeading
+            num={7}
+            desc="Every export used on this page is documented in the generated reference — this guide links it rather than duplicating it."
+          >
+            API reference
+          </SectionHeading>
+          <p className="text-sm leading-relaxed opacity-80">
+            The full surface, generated from source JSDoc:
+          </p>
+          <p className="mt-3 text-sm">
+            <Link href="/api-reference/core" className="underline">
+              @theme-kit/core API reference
+            </Link>
+          </p>
+        </section>
+
+        <NextSteps
+          steps={[
+            {
+              title: "Explore DOM adapters",
+              description: "Customize how themes are applied to the DOM",
+              href: "/dom-adapters",
+            },
+            {
+              title: "Understand token resolution",
+              description: "Hook into the resolution pipeline with transformTokens",
+              href: "/token-resolution",
+            },
+          ]}
+        />
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Architecture",
+              description: "How the runtime and plugin system fit together",
+              href: "/architecture",
+            },
+            {
+              title: "DOM Adapters",
+              description: "Control DOM application behavior",
+              href: "/dom-adapters",
+            },
+            {
+              title: "DevTools",
+              description: "Debug plugin behavior at runtime",
+              href: "/devtools",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

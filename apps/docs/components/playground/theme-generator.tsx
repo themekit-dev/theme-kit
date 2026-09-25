@@ -25,7 +25,6 @@ function JsonPreview({ data }: { data: string }) {
           <CopyButton
             text={data}
             label="Copy"
-            copiedLabel="Copied"
             className="code-block-copy"
           />
         </div>
@@ -109,6 +108,45 @@ export function ThemeGenerator() {
 
   const copyText = activeTab === "json" ? jsonOutput : cssOutput;
 
+  const downloadFile = useCallback(
+    (content: string, filename: string, type: string) => {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+    [],
+  );
+
+  const tsOutput = useMemo(() => {
+    if (!result) return "";
+    const sanitized = (family.trim() || "custom").replace(/[^a-zA-Z0-9_]/g, "_");
+    return `import { defineTheme } from "@theme-kit/core";
+
+export const ${sanitized}Light = defineTheme(${JSON.stringify(result.light, null, 2)});
+
+export const ${sanitized}Dark = defineTheme(${JSON.stringify(result.dark, null, 2)});
+
+export const themes = [${sanitized}Light, ${sanitized}Dark];
+`;
+  }, [result, family]);
+
+  const jsOutput = useMemo(() => {
+    if (!result) return "";
+    const sanitized = (family.trim() || "custom").replace(/[^a-zA-Z0-9_]/g, "_");
+    return `import { defineTheme } from "@theme-kit/core";
+
+export const ${sanitized}Light = defineTheme(${JSON.stringify(result.light, null, 2)});
+
+export const ${sanitized}Dark = defineTheme(${JSON.stringify(result.dark, null, 2)});
+
+export const themes = [${sanitized}Light, ${sanitized}Dark];
+`;
+  }, [result, family]);
+
   return (
     <section className="rounded-xl border border-border bg-card p-5 sm:p-6" aria-label="Theme generator">
       <h2 className="text-lg font-semibold tracking-tight mb-1">
@@ -140,6 +178,7 @@ export function ThemeGenerator() {
               value={seed}
               onChange={(e) => setSeed(e.target.value)}
               placeholder="#3b82f6"
+              aria-label="Seed color hex value"
               className="w-32 px-2 py-1.5 rounded-md border border-border bg-card text-sm font-mono outline-none focus:border-ring transition-colors"
             />
           </div>
@@ -224,10 +263,55 @@ export function ThemeGenerator() {
               CSS Variables
             </button>
             <div className="flex-1" />
-            <CopyButton
-              text={copyText}
+            <span className="flex items-center gap-1.5">
+              <CopyButton
+                text={copyText}
+                className="px-2.5 py-1 rounded-md border border-border bg-card text-xs font-medium cursor-pointer transition-colors hover:bg-muted"
+              />
+            </span>
+          </div>
+
+          {/* Download actions */}
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <span className="text-[11px] font-semibold uppercase tracking-widest opacity-40">
+              Download
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                downloadFile(jsonOutput, `${family.trim() || "custom"}.json`, "application/json")
+              }
               className="px-2.5 py-1 rounded-md border border-border bg-card text-xs font-medium cursor-pointer transition-colors hover:bg-muted"
-            />
+            >
+              .json
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                downloadFile(tsOutput, `${family.trim() || "custom"}.ts`, "text/typescript")
+              }
+              className="px-2.5 py-1 rounded-md border border-border bg-card text-xs font-medium cursor-pointer transition-colors hover:bg-muted"
+            >
+              .ts
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                downloadFile(cssOutput, `${family.trim() || "custom"}.css`, "text/css")
+              }
+              className="px-2.5 py-1 rounded-md border border-border bg-card text-xs font-medium cursor-pointer transition-colors hover:bg-muted"
+            >
+              .css
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                downloadFile(jsOutput, `${family.trim() || "custom"}.js`, "text/javascript")
+              }
+              className="px-2.5 py-1 rounded-md border border-border bg-card text-xs font-medium cursor-pointer transition-colors hover:bg-muted"
+            >
+              .js
+            </button>
           </div>
 
            {activeTab === "json" ? (

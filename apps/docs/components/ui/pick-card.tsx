@@ -45,7 +45,7 @@ export function PickCard({
           style={{
             background: "var(--theme-color-primary)",
             color:
-              "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+              "var(--theme-color-primaryForeground)",
           }}
           aria-hidden
         >
@@ -58,7 +58,7 @@ export function PickCard({
           style={{
             background: "var(--theme-color-primary)",
             color:
-              "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+              "var(--theme-color-primaryForeground)",
           }}
         >
           {badge}

@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { DocsLayout } from "../../../components/docs-layout";
 import { MarkdownDoc } from "../../../components/markdown-doc";
 import { apiPackages } from "../../../lib/api-reference";
+import { docsUrl } from "../../../lib/site";
 
 const contentDir = join(process.cwd(), "content", "api-reference");
 
@@ -18,7 +19,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const [pkgSlug, pageSlug] = slug ?? [];
-  if (!pkgSlug) return { title: "API Reference" };
+  if (!pkgSlug) {
+    return {
+      title: "API Reference",
+      alternates: { canonical: docsUrl("/api-reference") },
+    };
+  }
 
   const pkg = apiPackages.find((p) => p.slug === pkgSlug);
   if (!pkg) notFound();
@@ -30,6 +36,7 @@ export async function generateMetadata({
   return {
     title: `${name} — API Reference`,
     description: pkg.tagline,
+    alternates: { canonical: docsUrl(`/api-reference/${slug.join("/")}`) },
     openGraph: {
       title: `${name} — API Reference`,
       description: pkg.tagline,

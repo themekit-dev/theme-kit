@@ -1,10 +1,10 @@
 {
-  "capturedAt": "2026-09-22T16:48:01.077Z",
+  "capturedAt": "2026-09-24T06:44:23.600Z",
   "tool": "scripts/release/snippet-audit.mjs",
   "contract": "Audit A — docs → package (zero drift is the floor)",
-  "pages": 200,
-  "snippets": 816,
-  "references": 562,
+  "pages": 296,
+  "snippets": 908,
+  "references": 607,
   "failures": 0,
   "failing": [],
   "entries": [
@@ -999,6 +999,234 @@
       "ok": true
     },
     {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeScrollbar from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeScrollbar",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeScrollbar from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeScrollbar",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeScrollbar from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeScrollbar",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeScrollbar from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeScrollbar",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeScrollbar from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeScrollbar",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeScrollbarDirective from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports ThemeScrollbarDirective",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeScrollbar from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeScrollbar",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "createThemeRuntime from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "createThemeScrollbar from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createThemeScrollbar",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "ThemeHead from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeHead",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\custom-scrollbar\\scrollbar-framework.tsx",
+      "import": "createPrePaintScrollbarCSS from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports createPrePaintScrollbarCSS",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\framework-guides\\react-bootstrap.tsx",
+      "import": "createThemeRoot from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports createThemeRoot",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\framework-guides\\react-bootstrap.tsx",
+      "import": "MuiThemeProvider from \"@theme-kit/mui\"",
+      "detail": "@theme-kit/mui exports MuiThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\preset-preview.tsx",
+      "import": "defineTheme from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "ThemeProvider from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "useTheme from \"@theme-kit/react\"",
+      "detail": "@theme-kit/react exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "ThemeProvider from \"@theme-kit/next\"",
+      "detail": "@theme-kit/next exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "ThemeProvider from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "useTheme from \"@theme-kit/vue\"",
+      "detail": "@theme-kit/vue exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "ThemeProvider from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "useTheme from \"@theme-kit/svelte\"",
+      "detail": "@theme-kit/svelte exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "ThemeProvider from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "useTheme from \"@theme-kit/solid\"",
+      "detail": "@theme-kit/solid exports useTheme",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "provideThemeKit from \"@theme-kit/angular\"",
+      "detail": "@theme-kit/angular exports provideThemeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "defineCustomElements from \"@theme-kit/web\"",
+      "detail": "@theme-kit/web exports defineCustomElements",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "defineThemeKitConfig from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports defineThemeKitConfig",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "themeKit from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports themeKit",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "ThemeHead from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeHead",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "ThemeProvider from \"@theme-kit/remix\"",
+      "detail": "@theme-kit/remix exports ThemeProvider",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\components\\presets.tsx",
+      "import": "getInitialThemeState from \"@theme-kit/remix/server\"",
+      "detail": "@theme-kit/remix./server exports getInitialThemeState",
+      "ok": true
+    },
+    {
       "page": "apps\\docs\\content\\adapters.md",
       "import": "ThemeProvider from \"@theme-kit/react\"",
       "detail": "@theme-kit/react exports ThemeProvider",
@@ -1386,6 +1614,18 @@
       "page": "apps\\docs\\content\\api-reference\\astro\\client.md",
       "import": "directive client:load",
       "detail": "valid Astro client directive",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro\\runtime.md",
+      "import": "createThemeController from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports createThemeController",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\content\\api-reference\\astro\\runtime.md",
+      "import": "getThemeController from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports getThemeController",
       "ok": true
     },
     {
@@ -2632,6 +2872,12 @@
     },
     {
       "page": "apps\\docs\\lib\\frameworks.tsx",
+      "import": "ThemeReadout from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeReadout",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\frameworks.tsx",
       "import": "ThemeHead from \"@theme-kit/remix\"",
       "detail": "@theme-kit/remix exports ThemeHead",
       "ok": true
@@ -3094,6 +3340,12 @@
     },
     {
       "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "getAccessibilityProfiles from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getAccessibilityProfiles",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
       "import": "ThemeProvider from \"@theme-kit/react\"",
       "detail": "@theme-kit/react exports ThemeProvider",
       "ok": true
@@ -3250,6 +3502,12 @@
     },
     {
       "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "ThemeLifecycleEventMap from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports ThemeLifecycleEventMap",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
       "import": "ThemeProvider from \"@theme-kit/solid\"",
       "detail": "@theme-kit/solid exports ThemeProvider",
       "ok": true
@@ -3304,8 +3562,14 @@
     },
     {
       "page": "apps\\docs\\lib\\use-cases.ts",
-      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
-      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
+      "import": "getInitialThemeState from \"@theme-kit/astro\"",
+      "detail": "@theme-kit/astro exports getInitialThemeState",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "getBuiltInThemes from \"@theme-kit/core\"",
+      "detail": "@theme-kit/core exports getBuiltInThemes",
       "ok": true
     },
     {
@@ -3328,8 +3592,8 @@
     },
     {
       "page": "apps\\docs\\lib\\use-cases.ts",
-      "import": "getBuiltInThemes from \"@theme-kit/core\"",
-      "detail": "@theme-kit/core exports getBuiltInThemes",
+      "import": "ThemeProviderClient from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports ThemeProviderClient",
       "ok": true
     },
     {
@@ -3340,8 +3604,14 @@
     },
     {
       "page": "apps\\docs\\lib\\use-cases.ts",
-      "import": "getGlobalRuntime from \"@theme-kit/astro\"",
-      "detail": "@theme-kit/astro exports getGlobalRuntime",
+      "import": "getGlobalRuntime from \"@theme-kit/astro/runtime\"",
+      "detail": "@theme-kit/astro./runtime exports getGlobalRuntime",
+      "ok": true
+    },
+    {
+      "page": "apps\\docs\\lib\\use-cases.ts",
+      "import": "useTheme from \"@theme-kit/astro/client\"",
+      "detail": "@theme-kit/astro./client exports useTheme",
       "ok": true
     },
     {

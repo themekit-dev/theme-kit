@@ -3,6 +3,9 @@ import type { ThemeDefinition, ThemeName } from "./theme";
 /**
  * Define a theme. Currently returns the definition unchanged; it exists
  *    to give themes a consistent shape and future validation.
+ *
+ * @see {@link extendTheme}
+ * @see {@link composeTheme}
  */
 export function defineTheme<
   Name extends ThemeName,

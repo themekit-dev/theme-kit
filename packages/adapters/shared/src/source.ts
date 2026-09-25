@@ -19,9 +19,21 @@ export type AdapterSource<T extends ThemeDefinition = ThemeDefinition> =
   | T
   | ThemeTokens;
 
+/**
+ * The normalized, resolved theme an adapter consumes.
+ *
+ * Produced by {@link resolveAdapterSource} from any accepted {@link AdapterSource}.
+ * The `tokens` are already resolved by the core (token references, `auto()` /
+ * `contrast()` and expressions evaluated), so adapters can read them directly.
+ *
+ * @see {@link AdapterSource}
+ */
 export interface AdapterResolvedTheme {
+  /** The name of the active theme family. */
   name: string;
+  /** The resolved color mode, or `undefined` when the source carries no mode. */
   mode: "light" | "dark" | "system" | undefined;
+  /** The fully-resolved token groups for the active theme. */
   tokens: ThemeTokens;
 }
 

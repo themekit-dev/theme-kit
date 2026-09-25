@@ -176,6 +176,7 @@ export function SiteHeader() {
                   <Link
                     key={link.href}
                     href={link.href}
+                    aria-current={active ? "page" : undefined}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors no-underline ${
                       active
                         ? "text-primary"
@@ -306,6 +307,7 @@ export function SiteHeader() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setOpen(false)}
+                    aria-current={active ? "page" : undefined}
                     style={{
                       transitionDelay: open ? `${i * 40 + 60}ms` : "0ms",
                     }}
@@ -379,6 +381,7 @@ export function SiteHeader() {
                           key={link.href}
                           href={link.href}
                           onClick={() => setOpen(false)}
+                          aria-current={active ? "page" : undefined}
                           className={`px-3 py-2 rounded-md text-sm no-underline ${
                             active
                               ? "bg-primary text-primary-foreground"
@@ -429,6 +432,7 @@ export function SiteHeader() {
                           key={link.href}
                           href={link.href}
                           onClick={() => setOpen(false)}
+                          aria-current={active ? "page" : undefined}
                           className={`px-3 py-2 rounded-md text-sm no-underline ${
                             active
                               ? "bg-primary text-primary-foreground"

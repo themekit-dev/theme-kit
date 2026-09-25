@@ -7,17 +7,19 @@
 > your component library.
 
 Adapters are **framework-agnostic**: the `createXxxAdapter` factories run in
-plain TypeScript with zero framework imports. Each framework package wraps the
-same factories with its own composable / hook / injectable, so the exact same
-adapter works in React, Vue, Svelte, Solid, Angular, Next, Nuxt, Remix and
-Astro.
+plain TypeScript with zero framework imports. Each adapter package ships its
+own framework wrappers on subpaths (`/react`, `/vue`, `/svelte`, `/solid`,
+`/angular`) with optional peers, so the exact same adapter works in React, Vue,
+Svelte, Solid, Angular, Next, Nuxt, Remix and Astro — without installing any
+framework you don't use.
 
 ```tsx
-import { ThemeProvider, useTheme } from "@theme-kit/react";
-import { useShadcnTheme } from "@theme-kit/shadcn";
+import { ThemeProvider, useTheme, useThemeRuntime } from "@theme-kit/react";
+import { useShadcnTheme } from "@theme-kit/shadcn/react";
 
 function App() {
-  useShadcnTheme();                 // one line — the adapter runs itself
+  const runtime = useThemeRuntime();
+  useShadcnTheme(runtime);          // one line — the adapter runs itself
   const { mode, toggleTheme } = useTheme();
   return (
     <button onClick={toggleTheme}>{mode}</button>
@@ -177,7 +179,7 @@ type AdapterStrategy = "exact" | "native" | "aggressive";
 
 ```ts
 createBootstrapAdapter({ strategy: "aggressive" });
-useShadcnTheme({ strategy: "exact" }); // options flow through to the adapter
+useShadcnTheme(runtime, { strategy: "exact" }); // options flow through to the adapter
 ```
 
 ---
@@ -226,12 +228,12 @@ runtime.adapters.use(
 Available for **Bootstrap**, **daisyUI**, **Open Props** and **shadcn/ui**.
 Each package exposes the same shape:
 
-| Package | Factory (framework-neutral) | Generator | React hook | CSS injector |
+| Package | Factory (framework-neutral) | Generator | Framework wrappers (subpaths) | CSS injector |
 | --- | --- | --- | --- | --- |
-| `@theme-kit/bootstrap` | `createBootstrapAdapter` | `createBootstrapVariables` / `generateBootstrapVariables` | `useBootstrapTheme` | `injectBootstrapCSS` |
-| `@theme-kit/shadcn` | `createShadcnAdapter` | `createShadcnVariables` / `generateShadcnVariables` | `useShadcnTheme` | `injectShadcnCSS` |
-| `@theme-kit/daisyui` | `createDaisyAdapter` | `createDaisyVariables` / `generateDaisyVariables` | `useDaisyTheme` | `injectDaisyCSS` |
-| `@theme-kit/open-props` | `createOpenPropsAdapter` | `createOpenPropsVariables` / `generateOpenPropsVariables` | `useOpenPropsTheme` | `injectOpenPropsCSS` |
+| `@theme-kit/bootstrap` | `createBootstrapAdapter` | `createBootstrapVariables` / `generateBootstrapVariables` | `useBootstrapTheme` (`/react`, `/vue`, `/svelte`, `/solid`) · `injectBootstrapTheme` (`/angular`) | `injectBootstrapCSS` |
+| `@theme-kit/shadcn` | `createShadcnAdapter` | `createShadcnVariables` / `generateShadcnVariables` | `useShadcnTheme` (`/react`, `/vue`, `/svelte`, `/solid`) · `injectShadcnTheme` (`/angular`) | `injectShadcnCSS` |
+| `@theme-kit/daisyui` | `createDaisyAdapter` | `createDaisyVariables` / `generateDaisyVariables` | `useDaisyTheme` (`/react`, `/vue`, `/svelte`, `/solid`) · `injectDaisyTheme` (`/angular`) | `injectDaisyCSS` |
+| `@theme-kit/open-props` | `createOpenPropsAdapter` | `createOpenPropsVariables` / `generateOpenPropsVariables` | `useOpenPropsTheme` (`/react`, `/vue`, `/svelte`, `/solid`) · `injectOpenPropsTheme` (`/angular`) | `injectOpenPropsCSS` |
 
 ### Options
 
@@ -254,9 +256,10 @@ interface XxxAdapterOptions {
 
 ### The `factory` subpath (framework-neutral)
 
-Import the factories **without React** by deep-importing the `factory` entry.
-This is exactly how the Vue / Svelte / Solid / Angular composables consume the
-adapters — no React dependency leaks into those packages:
+Import the factories **without any framework** by deep-importing the `factory`
+entry. This is exactly how the Vue / Svelte / Solid / Angular wrappers on each
+adapter's subpath consume the adapters — no React dependency leaks into those
+packages:
 
 ```ts
 import { createShadcnAdapter } from "@theme-kit/shadcn/factory";
@@ -322,11 +325,11 @@ tokens as utilities — `bg-primary`, `text-foreground`, `border-border`,
 
 ```ts
 // uno.config.ts
+import { defineConfig, presetWind3 } from "unocss";
 import { presetThemeKit } from "@theme-kit/unocss";
-import { defineConfig } from "unocss";
 
 export default defineConfig({
-  presets: [presetUno(), presetThemeKit()],
+  presets: [presetWind3(), presetThemeKit()],
 });
 ```
 
@@ -342,7 +345,11 @@ runtime. For **build-time static output** instead of runtime variables, use
 
 ```ts
 import { createUnoTheme } from "@theme-kit/unocss";
-import { resolveInitialTheme } from "@theme-kit/core";
+import { getBuiltInThemes, resolveInitialTheme } from "@theme-kit/core";
+
+// resolveInitialTheme takes the registry explicitly; the built-in set is a
+// valid registry, so no theme file is needed.
+const themes = getBuiltInThemes();
 
 const { theme } = resolveInitialTheme({
   themes,
@@ -359,34 +366,37 @@ Both helpers accept an `AdapterSource` (runtime, store, theme, or raw tokens).
 
 ## Framework coverage
 
-Every adapter is framework-neutral at the core. Each framework package wraps it
-with its native API, so the same adapter registers and disposes correctly in
-any lifecycle.
+Every adapter is framework-neutral at the core. Each adapter package ships its
+own framework wrappers on subpaths, so the same adapter registers and disposes
+correctly in any lifecycle — and installing a framework integration never pulls
+in unrelated framework packages or component-library adapters.
 
 | Framework | Package | CSS-variable adapters | Generated-theme adapters |
 | --- | --- | --- | --- |
-| React | `@theme-kit/react` (hooks from each adapter pkg) | `useShadcnTheme` / `useBootstrapTheme` / `useDaisyTheme` / `useOpenPropsTheme` | `useMuiTheme` / `useChakraTheme` / `useAntdTheme` / `useMantineTheme` + providers |
-| Vue 3 | `@theme-kit/vue` | `useShadcnTheme` / `useBootstrapTheme` / `useDaisyTheme` / `useOpenPropsTheme` composables | — (React-only libs) |
-| Svelte | `@theme-kit/svelte` | same composables | — |
-| Solid | `@theme-kit/solid` | same hooks | — |
-| Angular | `@theme-kit/angular` | `injectShadcnTheme` / `injectBootstrapTheme` / `injectDaisyTheme` / `injectOpenPropsTheme` | — |
-| Next.js | `@theme-kit/next` (`./client`) | hooks | providers + hooks |
-| Nuxt | `@theme-kit/nuxt` | composables (from Vue, auto-imported) | — |
-| Remix | `@theme-kit/remix` | hooks | providers + hooks |
-| Astro | `@theme-kit/astro` (`./client`, `./adapters`) | hooks (client islands) | providers + hooks |
+| React | `@theme-kit/react` | `useShadcnTheme(runtime)` / `useBootstrapTheme(runtime)` / `useDaisyTheme(runtime)` / `useOpenPropsTheme(runtime)` from each adapter's `/react` | `useMuiTheme(runtime)` / `useChakraTheme(runtime)` / `useAntdTheme(runtime)` / `useMantineTheme(runtime)` + providers from each adapter pkg |
+| Vue 3 | `@theme-kit/vue` | same composables from each adapter's `/vue` | — (React-only libs) |
+| Svelte | `@theme-kit/svelte` | same composables from each adapter's `/svelte` | — |
+| Solid | `@theme-kit/solid` | same hooks from each adapter's `/solid` | — |
+| Angular | `@theme-kit/angular` | `injectShadcnTheme(runtime)` / `injectBootstrapTheme(runtime)` / `injectDaisyTheme(runtime)` / `injectOpenPropsTheme(runtime)` from each adapter's `/angular` | — |
+| Next.js | `@theme-kit/next` (`./client`) | hooks from each adapter's `/react` | providers from each adapter pkg + `useThemeRuntime` from `@theme-kit/next/client` |
+| Nuxt | `@theme-kit/nuxt` | composables from each adapter's `/vue` | — |
+| Remix | `@theme-kit/remix` | hooks from each adapter's `/react` | providers from each adapter pkg + `useThemeRuntime` from `@theme-kit/remix` |
+| Astro | `@theme-kit/astro` (`./client`) | hooks from each adapter's `/react` (client islands) | providers from each adapter pkg + `useThemeRuntime` from `@theme-kit/astro/client` |
 
 > The generated-theme adapters (MUI, Chakra, AntD, Mantine) are React component
-> libraries, so they are available only in React-based packages and
-> meta-frameworks: React, Next, Remix, and Astro (client islands).
+> libraries, so their providers/hooks are used in React-based apps and
+> meta-frameworks — React, Next, Remix, and Astro (client islands). Import them
+> from the adapter package directly (e.g. `@theme-kit/mui`).
 
 ### React
 
 ```tsx
-import { ThemeProvider } from "@theme-kit/react";
-import { useDaisyTheme } from "@theme-kit/daisyui";
+import { ThemeProvider, useThemeRuntime } from "@theme-kit/react";
+import { useDaisyTheme } from "@theme-kit/daisyui/react";
 
 function Inside() {
-  useDaisyTheme();
+  const runtime = useThemeRuntime();
+  useDaisyTheme(runtime);
   return null;
 }
 
@@ -405,10 +415,11 @@ export function App() {
 ```vue
 <script setup>
 import { createThemeRuntime } from "@theme-kit/core";
-import { provideThemeRuntime, useShadcnTheme } from "@theme-kit/vue";
+import { provideThemeRuntime, useThemeRuntime } from "@theme-kit/vue";
+import { useShadcnTheme } from "@theme-kit/shadcn/vue";
 
-provideThemeRuntime(createThemeRuntime({ initial: "light" }));
-useShadcnTheme();
+provideThemeRuntime(createThemeRuntime({ defaultTheme: "light" }));
+useShadcnTheme(useThemeRuntime());
 </script>
 
 <template>
@@ -421,10 +432,11 @@ useShadcnTheme();
 ```svelte
 <script>
   import { createThemeRuntime } from "@theme-kit/core";
-  import { setThemeRuntime, useBootstrapTheme } from "@theme-kit/svelte";
+  import { setThemeRuntime, getThemeRuntime } from "@theme-kit/svelte";
+  import { useBootstrapTheme } from "@theme-kit/bootstrap/svelte";
 
-  setThemeRuntime(createThemeRuntime({ initial: "light" }));
-  useBootstrapTheme();
+  setThemeRuntime(createThemeRuntime({ defaultTheme: "light" }));
+  useBootstrapTheme(getThemeRuntime());
 </script>
 
 <YourApp />
@@ -433,10 +445,12 @@ useShadcnTheme();
 ### Solid
 
 ```tsx
-import { ThemeProvider, useOpenPropsTheme } from "@theme-kit/solid";
+import { ThemeProvider, useThemeRuntime } from "@theme-kit/solid";
+import { useOpenPropsTheme } from "@theme-kit/open-props/solid";
 
 export function App() {
-  useOpenPropsTheme();
+  const runtime = useThemeRuntime();
+  useOpenPropsTheme(runtime);
   return <YourApp />;
 }
 ```
@@ -444,7 +458,8 @@ export function App() {
 ### Angular
 
 ```ts
-import { provideThemeKit, injectShadcnTheme } from "@theme-kit/angular";
+import { provideThemeKit, injectThemeRuntime } from "@theme-kit/angular";
+import { injectShadcnTheme } from "@theme-kit/shadcn/angular";
 
 // app.config.ts
 export const appConfig: ApplicationConfig = {
@@ -455,7 +470,7 @@ export const appConfig: ApplicationConfig = {
 @Component({})
 export class AppComponent {
   constructor() {
-    injectShadcnTheme();
+    injectShadcnTheme(injectThemeRuntime());
   }
 }
 ```
@@ -464,29 +479,36 @@ export class AppComponent {
 
 ```tsx
 "use client";
-import { useShadcnTheme } from "@theme-kit/next/client";
+import { useThemeRuntime } from "@theme-kit/next/client";
+import { useShadcnTheme } from "@theme-kit/shadcn/react";
 
 export function RootClient() {
-  useShadcnTheme();
+  const runtime = useThemeRuntime();
+  useShadcnTheme(runtime);
   return null;
 }
 ```
 
-### Nuxt (auto-import)
+### Nuxt
 
 ```vue
 <script setup>
-useDaisyTheme();
+import { useThemeRuntime } from "@theme-kit/nuxt";
+import { useDaisyTheme } from "@theme-kit/daisyui/vue";
+
+useDaisyTheme(useThemeRuntime());
 </script>
 ```
 
 ### Remix
 
 ```tsx
-import { useOpenPropsTheme } from "@theme-kit/remix";
+import { useThemeRuntime } from "@theme-kit/remix";
+import { useOpenPropsTheme } from "@theme-kit/open-props/react";
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  useOpenPropsTheme();
+  const runtime = useThemeRuntime();
+  useOpenPropsTheme(runtime);
   return <>{children}</>;
 }
 ```
@@ -495,10 +517,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 ```tsx
 // src/components/theme-adapter.tsx
-import { useShadcnTheme } from "@theme-kit/astro/client";
+import { useThemeRuntime } from "@theme-kit/astro/client";
+import { useShadcnTheme } from "@theme-kit/shadcn/react";
 
 export default function ThemeAdapter() {
-  useShadcnTheme();
+  const runtime = useThemeRuntime();
+  useShadcnTheme(runtime);
   return null;
 }
 ```
@@ -539,10 +563,11 @@ Then disable auto-injection so the stylesheet isn't injected twice:
 createBootstrapAdapter({ injectCSS: false });
 ```
 
-> Note: `injectCSS` is a **factory option**. The React hooks
+> Note: `injectCSS` is a **factory option**. The framework wrappers
 > (`useBootstrapTheme`, `useShadcnTheme`, …) always inject the compatibility
-> stylesheet and accept only `{ strategy }`; to control `injectCSS` you must use
-> the factory and register the adapter manually via `runtime.adapters.use(...)`.
+> stylesheet and accept `(runtime, { strategy })`; to control `injectCSS` you
+> must use the factory and register the adapter manually via
+> `runtime.adapters.use(...)`.
 
 Notes:
 
@@ -564,7 +589,7 @@ Notes:
 import { createThemeRuntime } from "@theme-kit/core";
 import { createShadcnAdapter } from "@theme-kit/shadcn/factory";
 
-const runtime = createThemeRuntime({ initial: "light" });
+const runtime = createThemeRuntime({ defaultTheme: "light" });
 const handle = runtime.adapters.use(createShadcnAdapter());
 
 // switch themes at runtime — variables update automatically

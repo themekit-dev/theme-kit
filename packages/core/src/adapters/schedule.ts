@@ -15,6 +15,9 @@ import {
  *  `"disabled"` means it has been turned off (e.g. via `schedule.disable()`). */
 export type ThemeScheduleStatus = "active" | "disabled";
 
+/**
+ * Describes the next automatic light/dark switch of a {@link ThemeSchedule}.
+ */
 export interface ThemeScheduleTransition {
   /** When the next automatic change happens. */
   at: Date;
@@ -64,6 +67,10 @@ export interface ThemeScheduleState {
   autoDetected: boolean;
 }
 
+/**
+ * The default, disabled {@link ThemeScheduleState} snapshot. Used as the
+ * initial state before a schedule resolves its location and themes.
+ */
 export const EMPTY_THEME_SCHEDULE_STATE: ThemeScheduleState = {
   enabled: false,
   active: false,
@@ -81,6 +88,15 @@ export const EMPTY_THEME_SCHEDULE_STATE: ThemeScheduleState = {
   autoDetected: false,
 };
 
+/**
+ * Options for {@link createThemeSchedule}.
+ *
+ * The schedule applies a light theme during daytime and a dark theme at
+ * night, based on sunrise/sunset at a resolved location. `lightTheme` and
+ * `darkTheme` are optional: when omitted they are derived from the currently
+ * selected theme's family (falling back to the built-in neutral `light`/`dark`
+ * themes) and re-resolved whenever the user switches theme family.
+ */
 export interface ThemeScheduleOptions<T extends ThemeDefinition> {
   /** Theme applied between sunrise and sunset. Optional — when omitted the
    *  schedule derives it from the currently selected theme's family (or falls
@@ -100,14 +116,18 @@ export interface ThemeScheduleOptions<T extends ThemeDefinition> {
    *  auto-detection. */
   timeZone?: string;
   /** Auto-detect the visitor's location from their browser timezone when no
-   *  explicit coordinates/timezone are given. Default `true`. */
+   *  explicit coordinates/timezone are given. Default `true`.
+   *  @defaultValue `true` */
   autoDetectLocation?: boolean;
-  /** How often (ms) the schedule re-checks solar time. Default `60000`. */
+  /** How often (ms) the schedule re-checks solar time. Default `60000`.
+   *  @defaultValue `60000` */
   checkInterval?: number;
   /** Ignore schedule-driven applies within this many ms after a manual
-   *  selection (e.g. a cross-tab sync). Default `0`. */
+   *  selection (e.g. a cross-tab sync). Default `0`.
+   *  @defaultValue `0` */
   skipApplyMs?: number;
-  /** Start enabled. Default `true`. */
+  /** Start enabled. Default `true`.
+   *  @defaultValue `true` */
   enabled?: boolean;
   /** Override the NOAA solar math. Defaults to `calculateSunTimes`. */
   getTimes?: (date: Date, latitude: number, longitude: number) => { sunrise: Date; sunset: Date };
@@ -116,9 +136,20 @@ export interface ThemeScheduleOptions<T extends ThemeDefinition> {
   onBeforeApply?: (theme: T) => boolean;
 }
 
+/**
+ * Options for {@link ThemeSchedule.set}.
+ *
+ * Repositions the schedule (explicit coordinates take precedence over an
+ * explicit `timeZone`, which takes precedence over auto-detection),
+ * reconfigures its interval/skip window, and/or toggles its enabled state.
+ */
 export interface ThemeScheduleSetOptions extends SolarLocationInput {
+  /** How often (ms) the schedule re-checks solar time. */
   checkInterval?: number;
+  /** Ignore schedule-driven applies within this many ms after a manual
+   *  selection. */
   skipApplyMs?: number;
+  /** Whether the schedule should be enabled after the update. */
   enabled?: boolean;
 }
 
@@ -131,10 +162,21 @@ function addDays(date: Date, days: number): Date {
 /** The default neutral theme names used when `lightTheme`/`darkTheme` are
  *  omitted and no family counterpart can be derived. */
 export const DEFAULT_SCHEDULED_LIGHT_THEME = "light";
+/** The default neutral dark theme name used when `darkTheme` is omitted and
+ *  no family counterpart can be derived. */
 export const DEFAULT_SCHEDULED_DARK_THEME = "dark";
 
+/**
+ * Input for resolving the scheduled light/dark theme pair.
+ *
+ * Both fields are optional; when omitted the pair is derived from the
+ * currently selected theme's family, falling back to the neutral `light`/`dark`
+ * themes.
+ */
 export interface ScheduledThemePairInput<T extends ThemeDefinition> {
+  /** The theme applied during daytime. */
   lightTheme?: T["name"];
+  /** The theme applied at night. */
   darkTheme?: T["name"];
 }
 
@@ -491,6 +533,14 @@ export function createThemeSchedule<T extends ThemeDefinition>(
   return schedule;
 }
 
+/**
+ * A framework-neutral sunrise/sunset scheduling controller.
+ *
+ * Exposes an explicit on/off switch and a reactive state snapshot
+ * (`sunrise`, `sunset`, `nextTransition`, ...) so frameworks can surface it
+ * through their native accessors. `destroy` is idempotent and releases the
+ * underlying binding and store subscription.
+ */
 export interface ThemeSchedule {
   /** Turn the schedule on. Applies the correct light/dark theme immediately. */
   enable(): void;
@@ -501,18 +551,56 @@ export interface ThemeSchedule {
   /** Internal: push the last cross-tab sync timestamp into the engine so the
    *  `skipApplyMs` window applies to remote changes. */
   setLastSyncTime(time: number): void;
-  /** Subscribe to state changes. Returns an unsubscribe function. */
+
+  /**
+   * Subscribes to schedule state changes.
+   *
+   * @param listener Receives the latest state snapshot.
+   * @returns An unsubscribe function. Idempotent: calling it more than once
+   *   has no effect.
+   */
   subscribe(listener: (state: ThemeScheduleState) => void): () => void;
+
+  /**
+   * Whether the schedule is currently enabled.
+   */
   readonly enabled: boolean;
+
+  /**
+   * Whether the schedule is enabled AND the currently applied theme is one
+   * of the scheduled light/dark themes.
+   */
   readonly active: boolean;
+
+  /**
+   * `"active"` when enabled, `"disabled"` otherwise.
+   */
   readonly status: ThemeScheduleStatus;
+
+  /** Today's sunrise time, or `null` when unresolvable. */
   readonly sunrise: Date | null;
+
+  /** Today's sunset time, or `null` when unresolvable. */
   readonly sunset: Date | null;
+
+  /** The light→dark or dark→light transition time and target, or `null`
+   *  while the schedule is disabled. */
   readonly nextTransition: ThemeScheduleTransition | null;
+
+  /** The next time the scheduled theme becomes active, or `null`. */
   readonly nextActivation: Date | null;
+
+  /** The next time the scheduled theme stops being active, or `null`. */
   readonly nextDeactivation: Date | null;
+
+  /** The theme applied between sunrise and sunset, or `null` when not
+   *  derived yet. */
   readonly lightTheme: string | null;
+
+  /** The theme applied between sunset and sunrise, or `null` when not
+   *  derived yet. */
   readonly darkTheme: string | null;
+
   /** The resolved latitude used for solar calculations. */
   readonly latitude: number | null;
   /** The resolved longitude used for solar calculations. */
@@ -525,5 +613,12 @@ export interface ThemeSchedule {
   readonly autoDetected: boolean;
   /** The current reactive state snapshot (stable reference between changes). */
   readonly state: ThemeScheduleState;
+
+  /**
+   * Destroys the schedule, releasing the underlying binding and store
+   * subscription.
+   *
+   * Idempotent.
+   */
   destroy(): void;
 }

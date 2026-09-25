@@ -7,20 +7,14 @@ import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
 import { FrameworkTabs, type FrameworkExample } from "../../components/framework-tabs";
 import { highlightCode } from "../../lib/highlight";
-import { buildPageHeadings } from "../../lib/toc";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/no-flash-ssr") },
   title: "No Flash SSR",
   description:
     "Zero-flash theming for every framework. Next, Nuxt, Remix, Astro and Angular resolve the theme on the server; React, Vue, Svelte and Solid providers are flash-proof out of the box.",
 };
-
-const pageHeadings = buildPageHeadings([
-  { text: "Flash-proof out of the box", level: 2 },
-  { text: "The mechanism", level: 2 },
-  { text: "Framework snippets", level: 2 },
-  { text: "When you still need the bootstrap script", level: 2 },
-]);
 
 const reactSnippet = {
   label: "React (SPA)",
@@ -36,7 +30,7 @@ import { ThemeProvider } from "@theme-kit/react";
 // script required.
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider themes={themes} defaultTheme="light" initialMode="system">
+    <ThemeProvider defaultTheme="light" initialMode="system">
       <App />
     </ThemeProvider>
   </StrictMode>,
@@ -54,7 +48,7 @@ import { ThemeProvider } from "@theme-kit/vue";
 // Flash-proof out of the box — the provider injects the blocking bootstrap
 // and applies the persisted theme before first paint. No extra setup.
 createApp({
-  render: () => h(ThemeProvider, { themes, defaultTheme: "light", initialMode: "system" },
+  render: () => h(ThemeProvider, { defaultTheme: "light", initialMode: "system" },
     () => h(App)),
 }).mount("#app");
 `,
@@ -66,12 +60,11 @@ const svelteSnippet = {
   filename: "+layout.svelte",
   code: `<script>
   import { ThemeProvider } from "@theme-kit/svelte";
-  import { themes } from "$lib/themes";
 </script>
 
 <!-- Flash-proof out of the box — the provider injects the blocking
      bootstrap and applies the persisted theme before first paint. -->
-<ThemeProvider themes={themes} defaultTheme="light">
+<ThemeProvider defaultTheme="light">
   {@render children()}
 </ThemeProvider>
 `,
@@ -88,7 +81,7 @@ import { ThemeProvider } from "@theme-kit/solid";
 // and applies the persisted theme before first paint.
 render(
   () => (
-    <ThemeProvider themes={themes} defaultTheme="light" initialMode="system">
+    <ThemeProvider defaultTheme="light" initialMode="system">
       <App />
     </ThemeProvider>
   ),
@@ -106,7 +99,7 @@ const examples: FrameworkExample[] = [reactSnippet, vueSnippet, svelteSnippet, s
 
 export default function NoFlashSSRPage() {
   return (
-    <DocsLayout headings={pageHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           eyebrow="Zero Flash"

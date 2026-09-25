@@ -1,8 +1,27 @@
+/**
+ * The result of parsing command-line arguments.
+ *
+ * Positional arguments are collected in `_`; flags and their values are stored
+ * under their key (with or without leading dashes).
+ */
 export interface ParsedArgs {
+  /** Positional (non-flag) arguments in order. */
   _: string[];
   [key: string]: any;
 }
 
+/**
+ * Parses an array of command-line arguments into a {@link ParsedArgs} object.
+ *
+ * Supports `--flag value`, `--flag` (boolean), `-f value`, and `-f` (boolean)
+ * forms. Repeated flags accumulate into an array. Positional arguments are
+ * collected under `_`.
+ *
+ * @param argv The raw argument array (for example `process.argv.slice(2)`).
+ * @returns The parsed arguments.
+ *
+ * @see {@link UsageError}
+ */
 export function parseArgs(argv: string[]): ParsedArgs {
   const result: ParsedArgs = { _: [] };
 

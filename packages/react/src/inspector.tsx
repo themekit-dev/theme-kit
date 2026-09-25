@@ -239,6 +239,9 @@ function XIcon({ size }: { size: number }) {
   );
 }
 
+/**
+ * Position and sizing options for the {@link ThemeInspector} floating UI.
+ */
 export interface ThemeInspectorProps {
   /** Vertical distance from the bottom of the viewport, in px. Default 104. */
   bottom?: number;
@@ -250,6 +253,25 @@ export interface ThemeInspectorProps {
   zIndex?: number;
 }
 
+/**
+ * A floating developer tool that inspects the active theme.
+ *
+ * Renders a fixed toggle button and an expandable panel showing the current
+ * theme name, family, mode, selection state, token values, and emitted CSS
+ * variables — useful while building themeable UI.
+ *
+ * @example
+ * ```tsx
+ * <ThemeInspector />
+ * ```
+ *
+ * @remarks
+ * The panel opens above the toggle with a gap, stays dismissible via the
+ * toggle, `Escape`, or clicking outside, and matches the provider's transition
+ * duration for its own fade.
+ *
+ * @see {@link useTheme}
+ */
 export function ThemeInspector({
   bottom = DEFAULT_BOTTOM_OFFSET,
   right = DEFAULT_RIGHT_OFFSET,

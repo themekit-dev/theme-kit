@@ -1,8 +1,14 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import type { AdapterStrategy, ThemeDefinition } from "@theme-kit/core";
-import { useThemeRuntime } from "@theme-kit/react";
+/**
+ * Theme Kit DaisyUI adapter — framework-neutral entry.
+ *
+ * Exports the React-free `createDaisyAdapter` factory (also available from
+ * `@theme-kit/daisyui/factory`), the `createDaisyVariables` generator, and the
+ * `injectDaisyCSS` helper. Framework wrappers live on their own subpaths:
+ * `useDaisyTheme(runtime)` on `@theme-kit/daisyui/react`, and equivalent
+ * composables/injectables on `/vue`, `/svelte`, `/solid`, and `/angular`.
+ *
+ * @packageDocumentation
+ */
 import daisyCss from "./daisyui.css";
 
 import { createDaisyAdapter } from "./adapter";
@@ -26,40 +32,4 @@ export function injectDaisyCSS(): void {
   style.setAttribute("data-css", "");
   style.textContent = daisyCss;
   document.head.appendChild(style);
-}
-
-/**
- * React hook that installs the daisyUI adapter onto the active Theme Kit
- * runtime. The adapter maintains a tagged `:root` style element containing
- * concrete `--color-*` variables in sync as the theme changes.
- *
- * Call once in your app root:
- *
- * ```tsx
- * import { useDaisyTheme } from "@theme-kit/daisyui";
- *
- * function App() {
- *   useDaisyTheme();
- *   return <YourApp />;
- * }
- * ```
- */
-export function useDaisyTheme(options?: { strategy?: AdapterStrategy }): void {
-  const runtime = useThemeRuntime<ThemeDefinition>();
-
-  const adapterRef = useRef<ReturnType<typeof createDaisyAdapter> | null>(null);
-  if (!adapterRef.current) {
-    adapterRef.current = createDaisyAdapter(
-      options?.strategy ? { strategy: options.strategy } : {},
-    );
-  }
-
-  useEffect(() => {
-    const adapter = adapterRef.current!;
-    injectDaisyCSS();
-    const handle = runtime.adapters.use(adapter);
-    return () => {
-      handle.dispose();
-    };
-  }, [runtime, adapterRef.current, options?.strategy]);
 }

@@ -82,7 +82,7 @@ export function LearningPath() {
                   style={{
                     background: "var(--theme-color-secondary)",
                     color:
-                      "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
+                      "var(--theme-color-secondaryForeground)",
                   }}
                 >
                   {step.icon}

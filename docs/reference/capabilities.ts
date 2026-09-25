@@ -698,6 +698,33 @@ export const capabilities: Record<string, Capability> = {
     apiReference: "/api-reference/core",
     guide: "/plugins",
   },
+  diagnostics: {
+    slug: "diagnostics",
+    title: "Diagnostics",
+    category: "core-feature",
+    summary:
+      "Recoverable problems are reported as structured diagnostics: a stable code, a severity, structured context and a concrete correction. Creation, formatting and emission are separate steps, so the same diagnostic can be logged, collected or escalated without duplicating the logic that produced it.",
+    packages: {
+      "@theme-kit/core": [
+        "createDiagnostic",
+        "emitDiagnostic",
+        "formatDiagnostic",
+        "resetDiagnosticEmission",
+        "isThemeMode",
+        "ThemeDiagnostic",
+        "ThemeDiagnosticCode",
+        "ThemeDiagnosticContext",
+        "ThemeDiagnosticLevel",
+        "CreateDiagnosticInput",
+        "EmitDiagnosticOptions",
+        "DiagnosticSink",
+        "ThemeErrorOptions",
+      ],
+    },
+    frameworks: ["react", "next", "vue", "nuxt", "svelte", "solid", "angular", "astro", "remix", "web"],
+    apiReference: "/api-reference/core",
+    guide: "/reference/diagnostics",
+  },
   zeroFlash: {
     slug: "zero-flash",
     title: "Zero-flash bootstrap",

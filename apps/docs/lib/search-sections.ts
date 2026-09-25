@@ -31,7 +31,7 @@ export const PAGE_SECTIONS: PageSectionEntry[] = [
   {
     route: "/tokens/code",
     sections: [
-      { title: "Define code tokens in your theme", desc: "All 22 code tokens live under tokens.code and resolve alongside colors, spacing, typography, etc." },
+      { title: "Define code tokens in your theme", desc: "All 19 code tokens live under tokens.code and resolve alongside colors, spacing, typography, etc." },
       { title: "Code token reference", desc: "Complete reference of every code token, its purpose, and the CSS variable it produces." },
       { title: "Enable code tokens in your app", desc: "Map theme code tokens to your syntax highlighter's CSS variables." },
       { title: "Best practices", desc: "Practical tips for working with code tokens." },
@@ -58,6 +58,18 @@ export const PAGE_SECTIONS: PageSectionEntry[] = [
       { title: "Multi-step migration", desc: "When a theme is several versions behind, the engine walks every intermediate step automatically." },
       { title: "remapColors vs migrate", desc: "Use remapColors for simple renames. Use migrate when the transformation requires logic or structural changes." },
       { title: "CI integration", desc: "Catch outdated themes in CI before they ship. Run migrateTheme against every theme and fail the build if any are behind." },
+    ],
+  },
+  {
+    route: "/migrating-to-2",
+    sections: [
+      { title: "Which packages changed", desc: "2.0.0 is not a whole-ecosystem major: twelve packages broke their public API, while core and web ship 1.4.0 and react ships 1.3.1." },
+      { title: "Adapter bindings moved to per-framework subpaths", desc: "Adapter hooks left the framework packages and the adapter roots. Import useShadcnTheme from @theme-kit/shadcn/react instead of from @theme-kit/shadcn or @theme-kit/vue." },
+      { title: "The runtime is now the first argument", desc: "useShadcnTheme() and friends take the runtime as a required first argument, with the options object second. This fails at compile time rather than silently." },
+      { title: "Astro: root is framework-neutral", desc: "The React surface moved to @theme-kit/astro/client and the ./adapters subpath was removed. Without React, use ThemeToggle.astro or getThemeController()." },
+      { title: "Behaviour changes to be aware of", desc: "setFamily() now ignores an unregistered family, and a system selection needs systemModeCSSTemplate rather than inlined variables plus a dark media block." },
+      { title: "What did not break", desc: "Persisted selections, the cookie contract, the CLI exit codes, the plugin lifecycle and React lifecycle typing are all unchanged." },
+      { title: "Upgrade checklist", desc: "A mechanical pass over your adapter imports and Astro React imports finds almost all of the migration." },
     ],
   },
   {

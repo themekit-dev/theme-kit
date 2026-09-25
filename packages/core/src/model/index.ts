@@ -2,7 +2,7 @@ export type { ThemeDefinition, ThemeFamilies, ThemeModes, ThemeMode, ThemeName }
 export type { ThemeMeta } from "./meta";
 export type { CodeTokens, ThemeTokens } from "./tokens";
 export type { ThemeSelectionState } from "./selection";
-export { getThemeFamily, getThemeMode, resolveThemeName } from "./selection";
+export { getThemeFamilies, getThemeFamily, getThemeMode, normalizeThemeFamily, resolveThemeName } from "./selection";
 export { resolveSelectedTheme } from "./resolve-selected-theme";
 export { composeTheme } from "./compose-theme";
 export { defineTheme } from "./define-theme";

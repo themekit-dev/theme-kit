@@ -61,7 +61,7 @@ runtime.adapters.use(createDaisyAdapter());`,
     },
     {
       title: "Switch Theme Kit theme + daisyUI stays in sync",
-      desc: "Changing the active theme immediately repaints `--dbg-*` variables.",
+      desc: "Changing the active theme immediately repaints daisyUI variables like `--color-primary` and `--color-base-100`.",
       lang: "ts",
       code: `// The adapter is already registered — switch the family
 // and every daisyUI variable updates to match:

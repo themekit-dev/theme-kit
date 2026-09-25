@@ -480,6 +480,38 @@ export default defineNuxtConfig({
   },
 });`,
   },
+  remix: {
+    lang: "tsx",
+    code: `// Server-rendered: render \`tk-scrollbar\` on <html> and pass
+// \`scrollbar\` to <ThemeHead>. It inlines createPrePaintScrollbarCSS()
+// into the SSR <head> — no blocking script, no hydration mismatch.
+import { ThemeHead, ThemeProvider } from "@theme-kit/remix";
+
+export function Layout({ children }) {
+  const { initial } = useLoaderData<typeof loader>();
+  const family = initial.theme.meta?.family ?? initial.selection.family;
+
+  return (
+    // The <ThemeHead> script writes these onto <html> before React hydrates, so
+    // the server renders them too — that is what keeps the two in agreement.
+    <html
+      lang="en"
+      className="tk-scrollbar"
+      data-theme={initial.theme.name}
+      data-theme-mode={initial.selection.mode === "dark" ? "dark" : "light"}
+      {...(family ? { "data-theme-family": family } : {})}
+      data-theme-selection-mode={initial.selection.mode}
+      {...(family ? { "data-theme-selection-family": family } : {})}
+      data-theme-ready="true"
+    >
+      <head>
+        <ThemeHead themes={themes} defaultTheme="light" scrollbar />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}`,
+  },
   vanilla: {
     lang: "ts",
     code: `// Server rendered: inline createPrePaintScrollbarCSS() + the

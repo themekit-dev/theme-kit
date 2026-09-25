@@ -32,6 +32,18 @@ export function createAntdTheme(source: AdapterSource): ThemeConfig {
   return buildAntdConfig(theme);
 }
 
+/**
+ * Builds an Ant Design `ThemeConfig` from a resolved Theme Kit theme.
+ *
+ * Maps Theme Kit semantic tokens (colors, radius, typography) onto Ant Design's
+ * design tokens and component overrides. The algorithm is Ant's default
+ * algorithm; the palette follows the resolved theme mode.
+ *
+ * @param theme The resolved theme to map from.
+ * @returns An Ant Design `ThemeConfig` object.
+ *
+ * @see {@link AntdThemeProvider}
+ */
 export function buildAntdConfig(theme: AdapterResolvedTheme): ThemeConfig {
   const c = (key: string, fallback?: string) => readColor(theme, key, fallback);
   const isDark = theme.mode === "dark";

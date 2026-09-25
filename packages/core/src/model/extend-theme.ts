@@ -39,6 +39,9 @@ function toTokens(overrides: TokenOverrides): ThemeTokens | undefined {
 /**
  * Create a new theme by extending a base theme with overrides, merging
  *    token groups recursively.
+ *
+ * @see {@link defineTheme}
+ * @see {@link mergeTokens}
  */
 export function extendTheme<TName extends string, TBase extends ThemeDefinition>(
   name: TName,

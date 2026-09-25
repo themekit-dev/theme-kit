@@ -5,10 +5,11 @@ import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
-import { buildPageHeadings } from "../../lib/toc";
 import { SunriseSunsetGuide } from "./SunriseSunsetGuide";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/sunrise-sunset") },
   title: "Sunrise & Sunset",
   description:
     "Switch your app between light and dark automatically at sunrise and sunset — in any framework, with one scheduling engine.",
@@ -57,20 +58,9 @@ const optionRows: { name: string; type: string; desc: string }[] = [
   },
 ];
 
-// Headings live inside the client SunriseSunsetGuide (invisible to the
-// layout's RSC walk), so provide them here for the TOC rail.
-const sunriseSunsetHeadings = buildPageHeadings([
-  { text: "How it works", level: 2 },
-  { text: "Setup", level: 2 },
-  { text: "Read & control the schedule", level: 2 },
-  { text: "Options", level: 2 },
-  { text: "Schedule vs. manual override", level: 2 },
-  { text: "What's next", level: 2 },
-]);
-
 export default function SunriseSunsetPage() {
   return (
-    <DocsLayout headings={sunriseSunsetHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           icon={

@@ -49,9 +49,13 @@ Or you can pin `family` and `mode` together. The scoped selection is resolved ag
 When you don't control JSX — a video player, legacy DOM, or an element from another library — scope the element directly:
 
 ```ts
-import { createScopedThemeBinding } from "@theme-kit/core";
+import { createScopedThemeBinding, getBuiltInThemes } from "@theme-kit/core";
 
 const player = document.getElementById("player")!;
+
+// createScopedThemeBinding takes the registry positionally; the built-in set
+// is a valid registry, so no theme file is needed.
+const themes = getBuiltInThemes();
 
 const binding = createScopedThemeBinding(themes, player, "plum-dark");
 
@@ -73,6 +77,8 @@ Web Components get a declarative element instead:
 Sometimes a region needs themes that don't exist in the global registry — a component that ships its own palette. The `themes` prop layers local definitions on top:
 
 ```tsx
+import { defineTheme } from "@theme-kit/core";
+
 const compactTheme = defineTheme({
   name: "compact-light",
   meta: { family: "compact", mode: "light" },

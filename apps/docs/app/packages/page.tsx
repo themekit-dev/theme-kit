@@ -4,9 +4,10 @@ import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
 import { getContent } from "../../lib/content";
 import { packages } from "../../lib/packages";
-import { NPM_ORG_URL } from "../../lib/site";
+import { docsUrl, NPM_ORG_URL } from "../../lib/site";
 
 export const metadata = {
+  alternates: { canonical: docsUrl("/packages") },
   title: "Packages",
   description:
     "Explore every package in the Theme Kit monorepo — core, framework integrations, CLI and devtools.",
@@ -48,7 +49,7 @@ export default function PackagesPage() {
                   background:
                     "linear-gradient(135deg, var(--theme-color-primary), color-mix(in srgb, var(--theme-color-primary) 40%, var(--theme-color-accent)))",
                   color:
-                    "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                    "var(--theme-color-primaryForeground)",
                 }}
               >
                 <div className="scale-110">{pkg.icon}</div>

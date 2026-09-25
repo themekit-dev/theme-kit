@@ -104,6 +104,47 @@ function exportPathsOf(pkg) {
     .sort();
 }
 
+/**
+ * The per-subpath TypeScript surface (`./vanilla` -> its own symbols).
+ *
+ * Root exports are not repeated here. A subpath with no TypeScript surface
+ * (CSS file, `.astro` component) is recorded with `ts: false`, so consumers can
+ * tell "this entrypoint exports no symbols" from "not analysed" — the
+ * distinction the snippet audit needs to stop treating a subpath import as
+ * valid merely because the subpath exists.
+ */
+function entrypointSurfaces(pkg) {
+  const out = {};
+  const exportsMap = pkg.json.exports ?? {};
+  for (const [key, target] of Object.entries(exportsMap)) {
+    if (key === ".") continue;
+    const t = typeof target === "string" ? target : (target.types ?? target.import ?? target.default);
+    if (typeof t !== "string" || !t.endsWith(".d.ts")) {
+      out[key] = { ts: false, values: [], types: [], internal: { values: [], types: [] } };
+      continue;
+    }
+    const abs = join(pkg.dir, t);
+    if (!existsSync(abs)) {
+      out[key] = {
+        ts: false,
+        reason: "missing d.ts — build the package",
+        values: [],
+        types: [],
+        internal: { values: [], types: [] },
+      };
+      continue;
+    }
+    const surface = collectExports(abs);
+    out[key] = {
+      ts: true,
+      values: surface.values ?? [],
+      types: surface.types ?? [],
+      internal: surface.internal ?? { values: [], types: [] },
+    };
+  }
+  return out;
+}
+
 function textParseExports(dtsContent) {
   const values = new Set();
   const types = new Set();
@@ -223,8 +264,15 @@ function collectExports(entryFile) {
       // the docs-comparison (the API reference generator drops them). Checked
       // on the aliased symbol's own declarations (barrel re-export statements
       // don't carry the JSDoc).
-      const isInternal = (resolved.declarations ?? []).some(
-        (d) => d.getFullText().includes("@internal"),
+      //
+      // Scope this to the declaration's OWN JSDoc tags. Scanning the whole
+      // declaration text (`getFullText()`) also matches `@internal` on nested
+      // members, which misclassifies a public interface whose members are
+      // internal — e.g. `DevToolsInspector`, public while `_bindRuntime` and
+      // friends are internal. That false positive then hides a real public
+      // symbol from the manifest and reports bogus docs drift.
+      const isInternal = (resolved.declarations ?? []).some((d) =>
+        ts.getJSDocTags(d).some((tag) => tag.tagName.text === "internal"),
       );
 
       if (isInternal) {
@@ -338,6 +386,9 @@ for (const pkg of PACKAGES) {
       types: dist.types,
       internal: dist.internal ?? { values: [], types: [] },
       subpaths: exportPathsOf(pkg),
+      // Per-subpath symbol surface, so consumers can verify subpath imports at
+      // symbol level instead of only checking that the subpath exists.
+      entrypoints: entrypointSurfaces(pkg),
     },
     dist: { values: dist.values.length, types: dist.types.length },
     srcDrift,
@@ -386,3 +437,46 @@ for (const r of results) {
 writeFileSync(join(here, "api-manifest.json"), JSON.stringify(manifest, null, 2), "utf8");
 console.log(`\nFrozen API manifest: scripts/release/api-manifest.json (${Object.keys(manifest).length} packages)`);
 console.log(`Full report: scripts/release/reports/exports.json`);
+
+// --- gate ---------------------------------------------------------------
+// Drift is a hard failure, not a report. The public documentation is generated
+// from and constrained by the shipped API: it must never invent a public symbol
+// or omit one. Likewise source and dist must agree, since the frozen manifest
+// (used by both the docs check and the snippet audit) is derived from dist.
+const errored = results.filter((r) => r.error);
+const docsDrifted = results.filter(
+  (r) =>
+    !r.error &&
+    r.docsDrift &&
+    (r.docsDrift.notDocumented.length || r.docsDrift.documentedNotExported.length),
+);
+const srcDrifted = results.filter(
+  (r) =>
+    !r.error &&
+    r.srcDrift &&
+    (r.srcDrift.inDistNotSrc.length || r.srcDrift.inSrcNotDist.length),
+);
+
+console.log("");
+if (errored.length) {
+  console.log(`FAIL: ${errored.length} package(s) could not be analysed`);
+  for (const r of errored) console.log(`  - ${r.name}: ${r.error}`);
+}
+if (srcDrifted.length) {
+  console.log(`FAIL: ${srcDrifted.length} package(s) have source/dist drift`);
+  for (const r of srcDrifted) console.log(`  - ${r.name}`);
+  console.log(`  Rebuild the package (tsup + tsc) and re-run.`);
+}
+if (docsDrifted.length) {
+  console.log(`FAIL: ${docsDrifted.length} package(s) have docs drift (docs must match the shipped API)`);
+  for (const r of docsDrifted) console.log(`  - ${r.name} (${r.docsPage})`);
+  console.log(`  Regenerate: node apps/docs/scripts/generate-api-reference.mjs`);
+}
+
+if (errored.length || srcDrifted.length || docsDrifted.length) {
+  console.log(`\nExit: FAIL`);
+  process.exitCode = 1;
+} else {
+  console.log(`OK: ${results.length} package(s) in sync (source = dist = manifest = docs).`);
+  console.log(`Exit: OK (0)`);
+}

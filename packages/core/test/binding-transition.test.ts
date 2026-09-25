@@ -39,7 +39,15 @@ describe("core DOM + CSS bindings", () => {
     document.documentElement.removeAttribute("data-theme");
     document.documentElement.removeAttribute("data-theme-mode");
     document.documentElement.removeAttribute("data-theme-family");
+    document.documentElement.removeAttribute("data-theme-kit-animating");
     document.documentElement.classList.remove("dark");
+    // Clean up any transition stylesheets left in <head> by the coordinator.
+    document.head
+      .querySelectorAll("style[data-theme-kit-transition]")
+      .forEach((n) => n.remove());
+    document.head
+      .querySelectorAll("style[data-theme-kit-animating-style]")
+      .forEach((n) => n.remove());
   });
 
   it("DOM binding applies store changes when transition enabled", () => {
@@ -59,6 +67,60 @@ describe("core DOM + CSS bindings", () => {
 
     runtime.selection.toggleTheme();
     expect(el.getAttribute("data-theme")).toBe("mint-dark");
+
+    dom?.destroy();
+    css?.destroy();
+    runtime.destroy();
+  });
+
+  it("DOM binding disables transitions when transition.enabled is false", async () => {
+    const runtime = createThemeRuntime({
+      themes,
+      defaultTheme: "mint-light",
+      dom: false,
+      cssVariables: false,
+      persistence: null,
+    });
+
+    const dom = createDOMBinding(runtime.store, { transition: { enabled: false } });
+    const css = createCSSVariablesBinding(runtime.store, { transition: { enabled: false } });
+
+    const el = document.documentElement;
+
+    // No View Transition API in jsdom; the CSS transition should not be attached
+    // when enabled is explicitly false.
+    runtime.selection.toggleTheme();
+
+    expect(el.getAttribute("data-theme")).toBe("mint-dark");
+    // No transition stylesheet should be present when transitions are disabled.
+    expect(document.head.querySelector("style[data-theme-kit-transition]")).toBeNull();
+
+    dom?.destroy();
+    css?.destroy();
+    runtime.destroy();
+  });
+
+  it("DOM binding applies instantly when transition is false", async () => {
+    const runtime = createThemeRuntime({
+      themes,
+      defaultTheme: "mint-light",
+      dom: false,
+      cssVariables: false,
+      persistence: null,
+    });
+
+    // Simulate what the framework providers do: resolve `false` to `{ enabled: false }`
+    const resolvedTransition = { enabled: false };
+
+    const dom = createDOMBinding(runtime.store, { transition: resolvedTransition });
+    const css = createCSSVariablesBinding(runtime.store, { transition: resolvedTransition });
+
+    const el = document.documentElement;
+
+    runtime.selection.toggleTheme();
+
+    expect(el.getAttribute("data-theme")).toBe("mint-dark");
+    expect(document.head.querySelector("style[data-theme-kit-transition]")).toBeNull();
 
     dom?.destroy();
     css?.destroy();

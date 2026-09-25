@@ -77,6 +77,18 @@ function ensure(value: string | undefined, fallback: string): string {
   return value ?? fallback;
 }
 
+/**
+ * Builds a Material UI `ThemeOptions` from a resolved Theme Kit theme.
+ *
+ * Maps Theme Kit semantic tokens (colors, radius, typography, shadows,
+ * breakpoints) onto MUI's palette, shape, typography, shadows and breakpoints.
+ * The palette mode follows the resolved theme mode.
+ *
+ * @param theme The resolved theme to map from.
+ * @returns A Material UI `ThemeOptions` object.
+ *
+ * @see {@link MuiThemeProvider}
+ */
 export function buildMuiThemeOptions(theme: AdapterResolvedTheme): ThemeOptions {
   const c = (key: string, fallback?: string) => readColor(theme, key, fallback);
   const background = ensure(

@@ -1,19 +1,32 @@
 # `theme-kit validate`
 
+## Prerequisites
+- Node.js 22+
+- Theme file(s) to validate
+- Project with @theme-kit/cli installed or npx access
+
 Check a theme file against the Theme Kit schema: required semantic tokens,
 theme structure, references, and contrast calculations. It is a CI tool —
 run it before commit and in a pipeline, and branch on the exit code.
 
-```
-theme-kit validate <file> [options]
+<!-- cli-command:generated:start -->
+## Synopsis
+
+Checks a theme file against the Theme Kit schema, required tokens, references, and contrast calculations.
+
+```text
+Usage:
+  theme-kit validate <file> [options]
 ```
 
 ## Options
 
-| Option      | Description                                              |
-| ----------- | -------------------------------------------------------- |
-| `--file <path>` | Theme file to validate (or pass positionally). |
+| Option | Description | Default |
+| ------ | ----------- | ------- |
+| `--file <path>` | Theme file to validate (or pass positionally) | — |
 
+> Generated from `packages/cli/src/cli.ts` — the same text `theme-kit validate --help` prints.
+<!-- cli-command:generated:end -->
 ## Examples
 
 ```bash
@@ -67,5 +80,15 @@ tool:
 ```bash
 theme-kit validate themes/ || exit 1
 ```
+
+## Next Steps
+- [Inspect validation output](./inspect)
+- [Export as CSS or JSON](./export)
+- [CLI reference](./reference)
+
+## Related
+- [Theme Kit Quick Start](../quickstart)
+- [Custom Themes](../../custom-themes)
+- [API Reference](../../api-reference)
 
 Next: [inspect](/cli/inspect).

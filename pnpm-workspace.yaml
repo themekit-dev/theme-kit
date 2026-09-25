@@ -2,6 +2,9 @@ packages:
   - "packages/*"
   - "packages/adapters/*"
   - "examples/*"
+  # Consumer-style documentation-verification fixtures. One app per documented
+  # framework/integration target; see examples/apps/README.md.
+  - "examples/apps/*"
   - "apps/*"
 allowBuilds:
   '@parcel/watcher': true
@@ -9,3 +12,11 @@ allowBuilds:
   lmdb: true
   msgpackr-extract: true
   sharp: false
+# `verifyDepsBeforeRun` makes pnpm run `pnpm install` before any script
+# (`pnpm run`, `pnpm --filter <pkg> build`, …) whenever it believes the tree is
+# stale. On this host its content-addressable store index does not reuse what is
+# already on disk, so that install re-resolves the whole graph and re-downloads
+# 160+ packages instead of being a fast no-op. The installed links are healthy
+# (release:audit passes, every example app builds), so the guard is disabled
+# here. Re-enable it on a host where `pnpm install` settles immediately.
+verifyDepsBeforeRun: false

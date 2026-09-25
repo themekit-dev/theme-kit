@@ -42,21 +42,26 @@ function syncDarkClass(theme: ThemeDefinition) {
   document.documentElement.classList.toggle("dark", isDark);
 }
 
-function CookieSync<T extends ThemeDefinition>({
-  initial,
-  fingerprint,
-}: {
-  initial: InitialThemeResolution<T>;
-  fingerprint: string;
-}) {
+function CookieSync({ fingerprint }: { fingerprint: string }) {
   const runtime = useThemeRuntime();
 
   useEffect(() => {
-    syncDarkClass(initial.theme);
+    // Sync from the runtime's *current* theme, never from `initial.theme`.
+    //
+    // `initial` is the server's resolution, and for a "system" selection the
+    // server can only assume light — it cannot read the visitor's OS. By the
+    // time this passive effect runs, the system binding has already resolved
+    // `prefers-color-scheme` and set the store to the dark theme (and the DOM
+    // adapter has applied the `dark` class). Re-syncing from the server's
+    // assumption here would *strip* that class, leaving dark color tokens with
+    // light-mode `dark:` variants — a half-themed page. Reading the store is
+    // also simply more correct: it is the resolved state, not a stale guess.
+    const current = runtime.store.get();
+    syncDarkClass(current);
 
-    writeCookie("theme-family", initial.selection.family);
-    writeCookie("theme-mode", initial.selection.mode);
-    writeCookie("theme-name", String(initial.theme.name));
+    writeCookie("theme-family", runtime.selection.getFamily());
+    writeCookie("theme-mode", runtime.selection.getMode());
+    writeCookie("theme-name", String(current.name));
     writeCookie("theme-fingerprint", fingerprint);
 
     const unsubscribe = runtime.store.subscribe((theme) => {
@@ -68,7 +73,7 @@ function CookieSync<T extends ThemeDefinition>({
     });
 
     return unsubscribe;
-  }, [runtime, fingerprint, initial]);
+  }, [runtime, fingerprint]);
 
   return null;
 }
@@ -102,7 +107,7 @@ export function ClientThemeProvider<T extends ThemeDefinition>({
        {...(scheduled !== undefined ? { scheduled } : {})}
        {...(adapters ? { adapters } : {})}
      >
-      <CookieSync initial={initial} fingerprint={fingerprint} />
+      <CookieSync fingerprint={fingerprint} />
       {children}
     </ReactThemeProvider>
   );

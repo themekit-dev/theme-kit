@@ -36,7 +36,7 @@ export function LivePreview() {
         style={{
           background: "var(--theme-color-card)",
           borderColor: "var(--theme-color-border)",
-          color: "var(--theme-color-card-foreground, var(--theme-color-cardForeground))",
+          color: "var(--theme-color-cardForeground)",
         }}
       >
         <div className="flex items-center gap-3 mb-5">
@@ -44,7 +44,7 @@ export function LivePreview() {
             className="w-10 h-10 rounded-lg grid place-items-center font-bold"
             style={{
               background: "var(--theme-color-primary)",
-              color: "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+              color: "var(--theme-color-primaryForeground)",
             }}
           >
             T
@@ -57,7 +57,7 @@ export function LivePreview() {
             className="ml-auto px-2.5 py-1 rounded-full text-[11px] font-semibold"
             style={{
               background: "var(--theme-color-secondary)",
-              color: "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
+              color: "var(--theme-color-secondaryForeground)",
             }}
           >
             Re-themed live
@@ -70,7 +70,7 @@ export function LivePreview() {
             style={{
               background: "var(--theme-color-muted)",
               borderColor: "var(--theme-color-border)",
-              color: "var(--theme-color-muted-foreground, var(--theme-color-mutedForeground))",
+              color: "var(--theme-color-mutedForeground)",
             }}
           >
             <div className="text-[10px] uppercase tracking-wider opacity-50 mb-0.5">
@@ -83,7 +83,7 @@ export function LivePreview() {
             style={{
               background: "var(--theme-color-accent)",
               borderColor: "var(--theme-color-border)",
-              color: "var(--theme-color-accent-foreground, var(--theme-color-accentForeground))",
+              color: "var(--theme-color-accentForeground)",
             }}
           >
             <div className="text-[10px] uppercase tracking-wider opacity-50 mb-0.5">

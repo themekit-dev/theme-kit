@@ -40,6 +40,19 @@ function renderCSSVariables(vars: Record<string, string>): string {
   `).join("");
 }
 
+/**
+ * Creates a devtools panel DOM element bound to an inspector.
+ *
+ * Renders a tabbed panel (Inspector, Events, Perf, CSS Vars, History) that
+ * reads from the inspector and wires up the clear and export buttons. The
+ * returned element is a live DOM node; attach it to the document to display
+ * the panel.
+ *
+ * @param inspector The inspector to render and control.
+ * @returns An `HTMLElement` containing the devtools panel.
+ *
+ * @see {@link createDevToolsInspector}
+ */
 export function createDevToolsPanel(inspector: {
   getState(): { currentTheme: unknown; selection: unknown; history: unknown[]; cssVariables: Record<string, string> };
   getEntries(): unknown[];

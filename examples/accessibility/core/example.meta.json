@@ -1,0 +1,10 @@
+{
+  "feature": "accessibility",
+  "framework": "core",
+  "packages": ["@theme-kit/core"],
+  "peerDependencies": [],
+  "files": ["src/example.ts"],
+  "entry": "src/example.ts",
+  "prerequisites": [],
+  "expectedExportsUsed": ["defineTheme", "getContrastRatio", "validateThemeContrast"]
+}

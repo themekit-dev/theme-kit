@@ -10,6 +10,7 @@ import {
   type CSSProperties,
 } from "react";
 import { useServerInsertedHTML } from "next/navigation";
+import { Select } from "../ui/select";
 import type { TransitionPreset } from "@theme-kit/core";
 import {
   createScopedThemeBinding,
@@ -281,7 +282,7 @@ export function AnimationLab() {
               className="w-8 h-8 rounded-full grid place-items-center text-xs font-bold"
               style={{
                 background: "var(--theme-color-primary)",
-                color: "var(--theme-color-primary-foreground)",
+                color: "var(--theme-color-primaryForeground)",
               }}
             >
               A
@@ -319,7 +320,7 @@ export function AnimationLab() {
               className="px-4 py-2 rounded-lg text-sm font-semibold"
               style={{
                 background: "var(--theme-color-primary)",
-                color: "var(--theme-color-primary-foreground)",
+                color: "var(--theme-color-primaryForeground)",
               }}
             >
               Get started
@@ -335,7 +336,7 @@ export function AnimationLab() {
             style={{
               background: "var(--theme-color-primary)",
               color:
-                "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                "var(--theme-color-primaryForeground)",
             }}
           >
             Switch theme
@@ -362,17 +363,12 @@ export function AnimationLab() {
 
           <div>
             <div className="text-xs opacity-60 mb-1">Easing</div>
-            <select
+            <Select
               value={easing}
-              onChange={(e) => setEasing(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-border bg-muted text-sm outline-none focus:border-ring"
-            >
-              {EASINGS.map((e) => (
-                <option key={e} value={e}>
-                  {e}
-                </option>
-              ))}
-            </select>
+              onChange={setEasing}
+              label="Easing"
+              options={EASINGS.map((e) => ({ value: e, label: e }))}
+            />
           </div>
 
           <div>
@@ -427,42 +423,77 @@ export function AnimationLab() {
       <Callout>{note}</Callout>
 
 
-      <div className="rounded-xl border border-border overflow-hidden">
-        <div className="px-4 py-2 border-b border-border bg-muted/40 text-xs font-semibold uppercase tracking-wider opacity-50">
-          Scoped / nested region &#8212; transitions independently
+      <div className="rounded-xl border border-border overflow-hidden bg-card">
+        <div className="px-4 py-2.5 border-b border-border bg-muted/40 text-xs font-semibold uppercase tracking-wider opacity-60 flex items-center justify-between gap-2">
+          <span>Scoped / nested region &#8212; transitions independently</span>
+          <span
+            className="px-2 py-0.5 rounded-full text-[10px] font-semibold normal-case tracking-normal"
+            style={{
+              background:
+                scopedTheme === "scope-dark"
+                  ? "color-mix(in srgb, var(--theme-color-primary) 20%, transparent)"
+                  : "color-mix(in srgb, var(--theme-color-secondary) 25%, transparent)",
+              color:
+                scopedTheme === "scope-dark"
+                  ? "var(--theme-color-primary)"
+                  : "var(--theme-color-secondary)",
+            }}
+          >
+            {scopedTheme === "scope-dark" ? "scope-dark" : "scope-light"}
+          </span>
         </div>
-        <div className="p-4">
+        <div className="p-4 sm:p-5">
           {/* Scoped region - separate createScopedThemeBinding, runs its own transition */}
           <div
             ref={scopeRef}
             data-theme-kit-demo="scope"
-            className="rounded-xl p-4 flex items-center justify-between text-(--theme-color-foreground)"
-            style={tileStyle(scopePrePaint)}
+            className="rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border"
+            style={{
+              ...tileStyle(scopePrePaint),
+              borderColor: "var(--theme-color-border)",
+              background: "var(--theme-color-card)",
+              color: "var(--theme-color-foreground)",
+            }}
           >
-            <div>
-              <span className="text-sm font-semibold">Feature tile</span>
-              <span className="block text-xs opacity-60 mt-0.5">
-                Scoped via <code className="mono">createScopedThemeBinding</code> &#8212; runs its
-                own transition while the rest of the page is untouched.
+            <div className="min-w-0">
+              <span className="text-base font-semibold">Feature tile</span>
+              <span className="block text-sm mt-0.5 opacity-80">
+                Scoped via <code className="mono text-[0.85em]">createScopedThemeBinding</code> — runs its own
+                transition while the rest of the page is untouched.
+              </span>
+              <span className="mt-2 inline-flex items-center gap-1.5 text-xs opacity-70">
+                <span
+                  className="inline-block h-2 w-2 rounded-full"
+                  style={{
+                    background: "var(--theme-color-primary)",
+                    transition: "background 300ms ease",
+                  }}
+                />
+                Active theme:{" "}
+                <code className="mono">{scopedTheme === "scope-dark" ? "scope-dark" : "scope-light"}</code>
               </span>
             </div>
             <button
               type="button"
               onClick={switchScoped}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-opacity hover:opacity-80"
+              className="shrink-0 px-4 py-2 rounded-lg text-xs font-semibold border-2 cursor-pointer transition-all hover:brightness-110 active:translate-y-px"
               style={{
-                borderColor: "var(--theme-color-border)",
-                color: "var(--theme-color-primary)",
-                background: "var(--theme-color-primary-foreground)",
+                borderColor: "var(--theme-color-primary)",
+                color: scopedTheme === "scope-dark" ? "var(--theme-color-primaryForeground)" : "var(--theme-color-primary)",
+                background: scopedTheme === "scope-dark" ? "var(--theme-color-primary)" : "transparent",
               }}
             >
-              Restyle region
+              Restyle region →
             </button>
           </div>
-          <p className="m-0 mt-3 text-xs opacity-50">
-            Scoped subtree runs the real theme-kit animation pipeline
-            ({"createThemeDiff"}&#8594;{"createTransitionPlan"}&#8594;{"runThemeAnimation"}).
-            Its transition timeline is independent of the page-level theme.
+          <p className="m-0 mt-4 text-sm opacity-70 leading-relaxed">
+            This subtree runs the real theme-kit animation pipeline
+            (<code className="mono text-[0.85em]">createThemeDiff</code> →{" "}
+            <code className="mono text-[0.85em]">createTransitionPlan</code> →{" "}
+            <code className="mono text-[0.85em]">runThemeAnimation</code>).
+            Its transition timeline is independent of the page-level theme —
+            click <strong>Restyle region</strong> and watch only this card animate
+            while the page stays put.
           </p>
         </div>
       </div>

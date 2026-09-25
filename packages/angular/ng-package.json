@@ -6,10 +6,6 @@
   },
   "allowedNonPeerDependencies": [
     "@theme-kit/core",
-    "@theme-kit/web",
-    "@theme-kit/shadcn",
-    "@theme-kit/bootstrap",
-    "@theme-kit/daisyui",
-    "@theme-kit/open-props"
+    "@theme-kit/web"
   ]
 }

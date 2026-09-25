@@ -2,30 +2,21 @@ import type { Metadata } from "next";
 
 import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
-import { buildPageHeadings } from "../../lib/toc";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { AnimationGuide } from "./AnimationGuide";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/animation") },
   title: "Animation & Transition",
   description:
     "How Theme Kit animates theme changes: the diff → plan → scan → coordinate pipeline, transition presets (smooth / subtle / instant), the View Transitions cross-fade, and every transition option.",
 };
 
-// Headings live inside the client AnimationGuide (invisible to the layout's
-// RSC walk), so provide them here for the TOC rail.
-const animationHeadings = buildPageHeadings([
-  { text: "Enable it", level: 2 },
-  { text: "What animates — presets & properties", level: 2 },
-  { text: "Same prop on every framework", level: 3 },
-  { text: "Enable transitions in your framework", level: 2 },
-  { text: "View Transitions API", level: 2 },
-  { text: "Things to avoid", level: 2 },
-  { text: "API Reference", level: 2 },
-]);
-
 export default function AnimationPage() {
   return (
-    <DocsLayout headings={animationHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           icon={
@@ -55,7 +46,53 @@ export default function AnimationPage() {
             </>
           }
         />
+
+        <Prerequisites
+          items={[
+            {
+              label: "Core Package",
+              value: "@theme-kit/core",
+              href: "/packages/core",
+            },
+            {
+              label: "Provider Setup",
+              value: "Framework provider configured with themes",
+              href: "/quick-start",
+            },
+            {
+              label: "Knowledge",
+              value: "CSS transitions and interpolable properties",
+            },
+          ]}
+          className="mb-8"
+        />
+
         <AnimationGuide />
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Zero Flash SSR",
+              href: "/zero-flash",
+              description: "Flash-free theme loading",
+            },
+            {
+              title: "View Transitions",
+              href: "/known-limitations#view-transitions",
+              description: "Browser-native cross-fade API",
+            },
+            {
+              title: "Custom Scrollbar",
+              href: "/custom-scrollbar",
+              description: "Animated scrollbar theming",
+            },
+            {
+              title: "Core API Reference",
+              href: "/api-reference/core",
+              description: "Transition configuration options",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

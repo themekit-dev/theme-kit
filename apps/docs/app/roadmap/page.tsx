@@ -3,8 +3,10 @@ import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { getContent } from "../../lib/content";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/roadmap") },
   title: "Roadmap",
   description:
     "Where Theme Kit is heading — themes, adapters, tooling, and the community surface.",
@@ -103,7 +105,7 @@ function RoadmapCheckItem({ item }: { item: RoadmapItem }) {
             ? "var(--theme-color-primary)"
             : "transparent",
           color: item.completed
-            ? "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))"
+            ? "var(--theme-color-primaryForeground)"
             : "currentColor",
           border: item.completed
             ? "none"

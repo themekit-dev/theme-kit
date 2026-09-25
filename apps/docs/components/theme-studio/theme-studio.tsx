@@ -1,9 +1,14 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
 import { generateTheme, type GeneratedThemePair } from "@theme-kit/core";
 import { useThemeRuntime } from "@theme-kit/next/client";
+import { usePathname } from "next/navigation";
+import { Icon } from "@iconify/react";
 import { CopyButton } from "../ui/copy-button";
+import { NextSteps } from "../ui/next-step-card";
+import { RelatedLinks } from "../ui/related-links";
+import { Button } from "../ui/button";
 import { highlightCode } from "../../lib/highlight";
 
 function cn(...classes: (string | boolean | undefined | null)[]): string {
@@ -140,12 +145,26 @@ function ThemePreview({
 
 export function ThemeStudio({ compact = false }: { compact?: boolean }) {
   const runtime = useThemeRuntime();
+  const pathname = usePathname();
   const [seed, setSeed] = useState("#6366f1");
   const [family, setFamily] = useState("indigo");
   const [applied, setApplied] = useState<string | null>(null);
 
   const seedInputId = useId();
   const familyInputId = useId();
+
+  // Hide "Open in Playground" when already inside the playground.
+  const isOnPlayground = pathname === "/playground";
+
+  /** Convert "indigo-light" → "indigoLight" so the exported const name is a
+   *  valid JS/TS identifier. */
+  const sanitizeName = useCallback((value: string): string => {
+    const cleaned = value
+      .replace(/[-.\s]+/g, "_")
+      .replace(/[^a-zA-Z0-9_$]/g, "")
+      .replace(/^([0-9])/, "_$1");
+    return cleaned || "theme";
+  }, []);
 
   const isValid = /^#[0-9a-fA-F]{6}$/.test(seed);
 
@@ -165,6 +184,21 @@ export function ThemeStudio({ compact = false }: { compact?: boolean }) {
   }, [pair]);
 
   const json = useMemo(() => JSON.stringify(pair ?? null, null, 2), [pair]);
+
+  const tsCode = useMemo(() => {
+    if (!pair) return "";
+    const baseName = sanitizeName(pair.light.meta?.family || family);
+    const tsContent = `import { defineTheme } from "@theme-kit/core";
+
+export const ${baseName}Light = defineTheme(${JSON.stringify(pair.light, null, 2)});
+
+export const ${baseName}Dark = defineTheme(${JSON.stringify(pair.dark, null, 2)});
+
+// Include both as a pair for ThemeProvider:
+export const themes = [${baseName}Light, ${baseName}Dark];
+`;
+    return tsContent;
+  }, [pair, family, sanitizeName]);
 
   function apply(kind: "light" | "dark") {
     if (!pair) return;
@@ -323,31 +357,143 @@ export function ThemeStudio({ compact = false }: { compact?: boolean }) {
 
       <div className="mt-6 lg:mt-8">
         {pair ? (
-          <div className="code-block overflow-hidden">
-            <div className="code-block-toolbar">
-              <span className="code-block-filename" title="Theme JSON">
-                Theme JSON
-              </span>
-              <div className="flex items-center gap-1.5">
-                <code className="truncate mono text-[11px] opacity-40">
-                  {pair.light.name} · {pair.dark.name}
-                </code>
-                <span className="code-block-lang">json</span>
-                <CopyButton
-                  text={json}
-                  label="Copy"
-                  copiedLabel="Copied"
-                  className="code-block-copy"
-                />
+          <>
+            {/* Primary Output Actions */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              <CopyButton
+                text={tsCode}
+                label="Copy TS Definition"
+                title="Copy the TypeScript theme definition"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border text-sm font-semibold cursor-pointer transition-colors hover:border-ring"
+              />
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  const blob = new Blob([tsCode], { type: "text/typescript" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${sanitizeName(pair.light.meta?.family || family)}.ts`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+              >
+                <Icon icon="lucide:download" className="mr-2 h-4 w-4" />
+                Download .ts
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  const blob = new Blob([json], { type: "application/json" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${sanitizeName(pair.light.meta?.family || family)}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+              >
+                <Icon icon="lucide:download" className="mr-2 h-4 w-4" />
+                Download .json
+              </Button>
+              {!isOnPlayground && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  href="/playground?theme=custom"
+                >
+                  <span className="flex items-center gap-2">
+                    <Icon icon="lucide:cpu" className="h-4 w-4" />
+                    Open in Playground
+                  </span>
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="secondary"
+                className="ml-auto"
+                href="/api-reference/core"
+              >
+                <span className="flex items-center gap-2 text-xs">
+                  View API Reference
+                  <Icon icon="lucide:external-link" className="h-3 w-3" />
+                </span>
+              </Button>
+            </div>
+
+            {/* Theme JSON Output */}
+            <div className="code-block overflow-hidden">
+              <div className="code-block-toolbar">
+                <span className="code-block-filename" title="Theme JSON">
+                  Theme JSON
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <code className="truncate mono text-[11px] opacity-40">
+                    {pair.light.name} · {pair.dark.name}
+                  </code>
+                  <span className="code-block-lang">json</span>
+                  <CopyButton
+                    text={json}
+                    label="Copy JSON"
+                    className="code-block-copy"
+                  />
+                </div>
+              </div>
+              <div
+                className="max-h-72 overflow-auto sm:max-h-96"
+                dangerouslySetInnerHTML={{
+                  __html: highlightCode(json, "json"),
+                }}
+              />
+            </div>
+
+            {/* TypeScript Code Output */}
+            <div className="code-block overflow-hidden mt-4">
+              <div className="code-block-toolbar">
+                <span className="code-block-filename" title="TypeScript code">
+                  Theme Definition (TS)
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <code className="truncate mono text-[11px] opacity-40">
+                    {sanitizeName(pair.light.meta?.family || family)}
+                  </code>
+                  <span className="code-block-lang">TS</span>
+                  <CopyButton
+                    text={tsCode}
+                    label="Copy"
+                    className="code-block-copy"
+                  />
+                </div>
+              </div>
+              <div
+                className="max-h-72 overflow-auto sm:max-h-96"
+                dangerouslySetInnerHTML={{
+                  __html: highlightCode(tsCode, "typescript"),
+                }}
+              />
+            </div>
+
+            {/* Quick Import Statement */}
+            <div className="code-block overflow-hidden mt-4">
+              <div className="code-block-toolbar">
+                <span className="code-block-filename" title="Import statement">
+                  Import Statement
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <code className="truncate mono text-[11px] opacity-40">
+                    {`import { themes } from "./${sanitizeName(pair.light.meta?.family || family)}";`}
+                  </code>
+                  <CopyButton
+                    text={`import { themes } from "./${sanitizeName(pair.light.meta?.family || family)}";`}
+                    label="Copy"
+                    className="code-block-copy"
+                  />
+                </div>
               </div>
             </div>
-            <div
-              className="max-h-72 overflow-auto sm:max-h-96"
-              dangerouslySetInnerHTML={{
-                __html: highlightCode(json, "json"),
-              }}
-            />
-          </div>
+          </>
         ) : (
           <div className="rounded-lg border border-border bg-muted/30 p-6 text-center">
             <p className="text-sm opacity-60">

@@ -19,14 +19,34 @@ export function useMuiTheme<T extends ThemeDefinition>(
   return useRuntimeThemeFactory(runtime, createMuiTheme);
 }
 
+/**
+ * Props for {@link MuiThemeProvider}.
+ */
 export interface MuiThemeProviderProps<T extends ThemeDefinition> {
+  /** The Theme Kit runtime whose active theme drives the MUI theme. */
   runtime: ThemeRuntime<T>;
+  /** The React subtree rendered inside MUI's `ThemeProvider`. */
   children: React.ReactNode;
 }
 
 /**
  * `<MuiThemeProvider runtime={runtime}>` — wraps MUI's own `ThemeProvider` with
  * a theme derived from Theme Kit's semantic tokens.
+ *
+ * The provider owns the derived MUI theme: it subscribes to the runtime and
+ * rebuilds the theme whenever the active theme changes, so the wrapped subtree
+ * always renders with the current theme selection.
+ *
+ * @example
+ * ```tsx
+ * import { MuiThemeProvider } from "@theme-kit/mui";
+ *
+ * <MuiThemeProvider runtime={runtime}>
+ *   <App />
+ * </MuiThemeProvider>
+ * ```
+ *
+ * @see {@link useMuiTheme}
  */
 export function MuiThemeProvider<T extends ThemeDefinition>({
   runtime,

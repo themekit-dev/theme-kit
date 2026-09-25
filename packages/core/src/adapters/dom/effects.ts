@@ -2,6 +2,7 @@ import type { ThemeDefinition } from "../../model";
 import { getThemeMode } from "../../model";
 import type { ThemeTransitionOptions } from "../../transition";
 import { createDOMWriteBatch } from "./batch";
+import type { DOMSelectionSource } from "./types";
 
 export interface DOMEffectsOptions {
   target: HTMLElement;
@@ -9,6 +10,13 @@ export interface DOMEffectsOptions {
   theme: ThemeDefinition;
   transition?: ThemeTransitionOptions;
   suppressTransition?: boolean;
+  /**
+   * Selection source for `data-theme-selection-mode` /
+   * `data-theme-selection-family`. Omitted → neither attribute is written.
+   *
+   * @see {@link DOMBindingOptions.selection}
+   */
+  selection?: DOMSelectionSource | null;
 }
 
 export function applyDOMEffects(options: DOMEffectsOptions) {
@@ -45,6 +53,21 @@ export function applyDOMEffects(options: DOMEffectsOptions) {
     batch.setAttribute("data-theme-mode", theme.meta.mode);
   } else {
     batch.setAttribute("data-theme-mode", null);
+  }
+
+  // The visitor's selection, which the resolved attributes above cannot express
+  // — a `"system"` selection is resolved before `data-theme-mode` is written.
+  // Written in the same batch as the resolved attributes so the two can never be
+  // observed disagreeing.
+  if (options.selection) {
+    const selection = options.selection.getSelection();
+    batch.setAttribute("data-theme-selection-mode", selection.mode);
+    // The bootstrap and the SSR layouts only publish this when a family is
+    // known, so mirror that rather than emitting an empty attribute.
+    batch.setAttribute(
+      "data-theme-selection-family",
+      selection.family ?? null,
+    );
   }
 
   batch.toggleClass("dark", getThemeMode(theme) === "dark");

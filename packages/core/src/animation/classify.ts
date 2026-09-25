@@ -21,8 +21,19 @@ export const ANIMATED_GROUP_KEYS = [
   "opacity",
 ] as const;
 
+/**
+ * The name of an animatable token group.
+ */
 export type AnimatedGroupKey = (typeof ANIMATED_GROUP_KEYS)[number];
 
+/**
+ * Maps each animatable token group to the CSS properties it drives.
+ *
+ * `colors` maps to an empty list because theme colors flow through
+ * `@property`-registered custom properties on `:root` and animate by
+ * inheritance; every other group lists the concrete CSS properties animated
+ * on the scanned elements that use them.
+ */
 export const GROUP_PROPERTIES: Record<AnimatedGroupKey, string[]> = {
   colors: [],
   radius: ["border-radius"],

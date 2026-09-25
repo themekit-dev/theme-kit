@@ -1,27 +1,55 @@
 import type { ThemeMode, ThemeSelectionState } from "../model";
 import type { ThemeSelectionBroadcastAdapter } from "./theme-selection";
 
+/**
+ * A minimal subset of the `BroadcastChannel` API used by the broadcast
+ * adapters. Accepts any object with the same shape, enabling custom or
+ * polyfilled channels.
+ */
 export interface BroadcastChannelLike<T = unknown> {
+  /** Post a message to every other listener on the channel. */
   postMessage(message: T): void;
+  /** Register a listener for incoming messages. */
   addEventListener(
     type: "message",
     listener: (event: MessageEvent<T>) => void,
   ): void;
+  /** Remove a previously registered message listener. */
   removeEventListener(
     type: "message",
     listener: (event: MessageEvent<T>) => void,
   ): void;
+  /** Close the channel, releasing its resources. */
   close(): void;
 }
 
+/**
+ * A contract for broadcasting and observing the selected theme mode across
+ * tabs/windows. `subscribe` returns an unsubscribe function; `destroy`
+ * releases the underlying channel.
+ */
 export interface ThemeBroadcastAdapter {
+  /** Broadcast the given mode to other tabs/windows. */
   post(mode: ThemeMode): void;
+  /** Subscribe to modes broadcast by other tabs/windows. Returns an
+   *  unsubscribe function. */
   subscribe(listener: (mode: ThemeMode) => void): () => void;
+  /** Close the underlying channel. */
   destroy(): void;
 }
 
+/**
+ * Options for {@link createThemeBroadcast}.
+ *
+ * The adapter publishes the theme mode to a `BroadcastChannel` and applies
+ * incoming modes from other tabs/windows.
+ */
 export interface ThemeBroadcastOptions {
+  /** A custom channel to use. When omitted, a `BroadcastChannel` is created
+   *  from `channelName`. */
   channel?: BroadcastChannelLike<ThemeMode>;
+  /** Name of the `BroadcastChannel` created when `channel` is omitted.
+   *  @defaultValue `"theme-mode"` */
   channelName?: string;
 }
 
@@ -40,6 +68,26 @@ function isThemeSelectionState(value: unknown): value is ThemeSelectionState {
   );
 }
 
+/**
+ * Create a theme-mode broadcast adapter backed by `BroadcastChannel`.
+ *
+ * The adapter publishes the mode to a channel and notifies subscribers of
+ * modes broadcast by other tabs/windows. It requires `BroadcastChannel`
+ * support (or a custom `channel`); when neither is available it returns
+ * `null` (e.g. during SSR).
+ *
+ * @param options The broadcast configuration.
+ * @returns A `ThemeBroadcastAdapter`, or `null` when no channel is available.
+ *
+ * @example
+ * ```ts
+ * const broadcast = createThemeBroadcast({ channelName: "my-theme-mode" });
+ * broadcast?.post("dark");
+ * ```
+ *
+ * @see {@link createStorageEventSync}
+ * @see {@link ThemeSelectionBroadcastAdapter}
+ */
 export function createThemeBroadcast(
   options: ThemeBroadcastOptions = {},
 ): ThemeBroadcastAdapter | null {
@@ -78,8 +126,19 @@ export function createThemeBroadcast(
   };
 }
 
+/**
+ * Options for {@link createThemeSelectionBroadcast}.
+ *
+ * The adapter publishes the full theme selection (mode + family) to a
+ * `BroadcastChannel` and applies incoming selections from other
+ * tabs/windows.
+ */
 export interface ThemeSelectionBroadcastOptions {
+  /** Name of the `BroadcastChannel` created when `channel` is omitted.
+   *  @defaultValue `"theme-selection"` */
   channelName?: string;
+  /** A custom channel to use. When omitted, a `BroadcastChannel` is created
+   *  from `channelName`. */
   channel?: BroadcastChannelLike<ThemeSelectionState>;
 }
 

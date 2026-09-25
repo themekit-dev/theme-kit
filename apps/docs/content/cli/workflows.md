@@ -1,5 +1,10 @@
 # Theme workflows
 
+## Prerequisites
+- Node.js 22+
+- @theme-kit/cli installed (globally, locally, or via npx)
+- A Theme Kit project or JSON theme files to work with
+
 The CLI is a small, composable toolkit. The five commands chain into a real
 authoring loop you can run in a terminal or a pipeline.
 
@@ -89,8 +94,9 @@ import { ThemeProvider } from "@theme-kit/react";
 const themes = [light, dark];
 ```
 
-## Related
+## Next Steps
 
+- [Run in CI](/cli/ci) — wire validate into your build pipeline.
+- [CLI reference](/cli/reference) — all options and exit codes.
 - [Custom Themes](/custom-themes) — author a theme by hand.
 - [Adapters](/adapters) — map runtime tokens to MUI, shadcn, Bootstrap.
-- [CI & Automation](/cli/ci) — run validate in a pipeline.

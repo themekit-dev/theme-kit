@@ -5,6 +5,19 @@ const GLOBAL_DOLLAR_REF = /(?:\$([\w.]+))/g;
 const BRACE_REF = /(?:\{([\w.]+)\})/;
 const GLOBAL_BRACE_REF = /(?:\{([\w.]+)\})/g;
 
+/**
+ * Flatten a theme's token groups into a single dot-path → value map.
+ *
+ * Nested token objects are flattened with dot-separated paths (e.g.
+ * `colors.primary`, `typography.fontSizes.base`). Only string values are
+ * included; non-string values are skipped. The result is the lookup surface
+ * used to resolve token references.
+ *
+ * @param tokens The theme token groups to flatten.
+ * @returns A flat map of dot-path keys to string token values.
+ *
+ * @see {@link resolveTokens}
+ */
 export function flattenTokens(tokens: ThemeTokens): Record<string, string> {
   const flat: Record<string, string> = {};
 

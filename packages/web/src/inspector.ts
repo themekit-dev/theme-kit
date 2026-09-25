@@ -4,6 +4,7 @@ import {
   type ThemeRuntime,
 } from "@theme-kit/core";
 import { findProviderRuntime } from "./utils";
+import { CustomElementBase } from "./custom-element-base";
 
 /**
  * Framework-agnostic Theme Inspector.
@@ -73,7 +74,28 @@ function sectionHeader(label: string, count?: number): string {
   </div>`;
 }
 
-export class ThemeKitInspector extends HTMLElement {
+/**
+ * Custom element `<theme-kit-inspector>` that inspects the active theme.
+ *
+ * Framework-free (vanilla JS). Renders a floating toggle that opens a panel
+ * showing the active theme's identity, selection, tokens, and resolved CSS
+ * variables, updating live as the theme changes. Observes the `bottom`,
+ * `right`, `size`, and `z-index` attributes.
+ *
+ * @remarks
+ * Requires an ancestor `<theme-kit-provider>`. If the provider is not yet
+ * initialized, it waits for the `theme-ready` event. `define()` is SSR-safe
+ * and no-ops when `customElements` is unavailable.
+ *
+ * @example
+ * ```html
+ * <theme-kit-inspector bottom="24" right="24"></theme-kit-inspector>
+ * ```
+ *
+ * @see {@link defineCustomElements}
+ * @see {@link ThemeKitProvider}
+ */
+export class ThemeKitInspector extends CustomElementBase {
   static observedAttributes = ["bottom", "right", "size", "z-index"];
 
   private unsubscribe: (() => void) | null = null;
@@ -87,16 +109,28 @@ export class ThemeKitInspector extends HTMLElement {
   private size = DEFAULT_SIZE;
   private zIndex = DEFAULT_Z_INDEX;
 
+  /** Lifecycle hook: parses attributes and initializes the inspector. */
   connectedCallback() {
     this.parseAttributes();
     const runtime = findProviderRuntime(this);
     if (!runtime) {
-      this.addEventListener("theme-ready", () => this.init(), { once: true });
+      // Listen on the document, not on `this`: <theme-kit-provider> dispatches
+      // theme-ready on itself with bubbles:true, which travels *up* and can never
+      // reach a descendant. A self-listener therefore only fired when the
+      // provider happened to initialise first.
+      document.addEventListener(
+        "theme-ready",
+        () => {
+          if (this.isConnected) this.init();
+        },
+        { once: true },
+      );
       return;
     }
     this.init();
   }
 
+  /** Lifecycle hook: unsubscribes and removes global listeners. */
   disconnectedCallback() {
     this.unsubscribe?.();
     this.unsubscribe = null;
@@ -106,6 +140,7 @@ export class ThemeKitInspector extends HTMLElement {
     this.open = false;
   }
 
+  /** Lifecycle hook: re-renders the inspector when an observed attribute changes. */
   attributeChangedCallback() {
     this.parseAttributes();
     if (this.isConnected) {

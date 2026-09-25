@@ -5,9 +5,10 @@ import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
 import { Callout } from "../../components/ui/callout";
 import { libraries } from "../../lib/libraries";
-import { collectPageHeadings } from "../../lib/toc-tree";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/libraries") },
   title: "Libraries",
   description:
     "Adapters for the UI libraries you already use: shadcn/ui, Bootstrap, daisyUI, Open Props, Material UI, Chakra UI, Ant Design, Mantine, and UnoCSS.",
@@ -74,7 +75,7 @@ export default function LibrariesPage() {
                           background:
                             "linear-gradient(135deg, var(--theme-color-primary), color-mix(in srgb, var(--theme-color-primary) 40%, var(--theme-color-accent)))",
                           color:
-                            "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                            "var(--theme-color-primaryForeground)",
                         }}
                       >
                         <span className="grayscale group-hover:grayscale-0 transition-all duration-100">
@@ -110,8 +111,6 @@ export default function LibrariesPage() {
         })}
       </div>
   );
-  // Collect headings from the page's own tree (before RSC serialization hides
-  // subtrees that share a parent with client components from the layout walk).
-  const librariesHeadings = collectPageHeadings(content);
-  return <DocsLayout headings={librariesHeadings}>{content}</DocsLayout>;
+
+  return <DocsLayout>{content}</DocsLayout>;
 }

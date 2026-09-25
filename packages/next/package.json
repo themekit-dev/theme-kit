@@ -1,7 +1,7 @@
 {
   "name": "@theme-kit/next",
   "license": "MIT",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -30,16 +30,8 @@
     "react-dom": "^19.2.8"
   },
   "dependencies": {
-    "@theme-kit/core": "workspace:*",
-    "@theme-kit/react": "workspace:*",
-    "@theme-kit/shadcn": "workspace:*",
-    "@theme-kit/bootstrap": "workspace:*",
-    "@theme-kit/daisyui": "workspace:*",
-    "@theme-kit/open-props": "workspace:*",
-    "@theme-kit/mui": "workspace:*",
-    "@theme-kit/chakra": "workspace:*",
-    "@theme-kit/antd": "workspace:*",
-    "@theme-kit/mantine": "workspace:*"
+    "@theme-kit/core": "workspace:^",
+    "@theme-kit/react": "workspace:^"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

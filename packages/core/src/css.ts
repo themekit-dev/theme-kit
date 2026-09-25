@@ -1,6 +1,9 @@
 import type { ThemeDefinition } from "./model";
 import { resolveTokens } from "./resolve";
 
+/**
+ * The name of a token group that can be emitted as CSS custom properties.
+ */
 export type TokenGroup =
   | "colors"
   | "spacing"
@@ -12,8 +15,19 @@ export type TokenGroup =
   | "typography"
   | "code";
 
+/**
+ * Options for {@link themeToCSSVariables}.
+ */
 export interface ThemeToCSSVariablesOptions {
+  /**
+   * CSS custom property prefix. The token group name is appended to it.
+   * @defaultValue `"theme-"`
+   */
   prefix?: string;
+  /**
+   * Restrict emission to the listed token groups. When omitted, all groups
+   * are emitted.
+   */
   groups?: TokenGroup[];
 }
 
@@ -39,13 +53,21 @@ function addEntries(
 
 /**
  * Flatten a theme's semantic tokens into CSS custom properties
- *    (`--theme-*`), optionally filtered by token group.
- * 
- *    ```ts
- *    const vars = themeToCSSVariables(theme); // { "--theme-color-background": "#fff", ... }
- *    ```
- * 
- *    Pass `{ groups: ["colors"] }` to emit only specific token groups.
+ * (`--theme-*`), optionally filtered by token group.
+ *
+ * @param theme Theme whose tokens are flattened.
+ * @param options Emission options (prefix, group filter).
+ * @returns A flat map of CSS custom property name → value.
+ *
+ * @example
+ * ```ts
+ * const vars = themeToCSSVariables(theme); // { "--theme-color-background": "#fff", ... }
+ * ```
+ *
+ * @remarks
+ * Pass `{ groups: ["colors"] }` to emit only specific token groups.
+ * @see {@link flattenTokens}
+ * @see {@link ThemeToCSSVariablesOptions}
  */
 export function themeToCSSVariables(
   theme: ThemeDefinition,

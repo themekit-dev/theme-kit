@@ -21,7 +21,7 @@
     "dev": "tsup src/index.ts --watch --format esm,cjs --dts"
   },
   "dependencies": {
-    "@theme-kit/core": "workspace:*"
+    "@theme-kit/core": "workspace:^"
   },
   "devDependencies": {
     "tsup": "^8.5.1",

@@ -7,24 +7,51 @@ import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
 import { highlightCode } from "../../lib/highlight";
-import { buildPageHeadings } from "../../lib/toc";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { NextSteps } from "../../components/ui/next-step-card";
+import { RelatedLinks } from "../../components/ui/related-links";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/migration") },
   title: "Migration",
   description:
     "How to migrate themes across versions: version bumps, breaking changes, token remapping, custom migration functions, and CI integration.",
 };
 
-// Headings render via SectionHeading (invisible to the layout's RSC tree
-// walk), so provide them here for the TOC rail.
-const migrationHeadings = buildPageHeadings([
-  { text: "When to migrate", level: 2 },
-  { text: "migrateTheme(theme, options)", level: 2 },
-  { text: "registerMigration({ from, to, remapColors?, migrate? })", level: 2 },
-  { text: "Multi-step migration", level: 2 },
-  { text: "remapColors vs migrate", level: 2 },
-  { text: "CI integration", level: 2 },
-]);
+// Version-aware breaking-change record. Each row is one schema bump a theme
+// author may need to bridge; `auto` means migrateTheme handles it once the
+// matching registerMigration step is loaded.
+const breakingChanges = [
+  {
+    from: "0.1",
+    to: "0.2",
+    change: "`bg` token renamed to `background`",
+    automated: true,
+    note: "Pure rename — handled by remapColors.",
+  },
+  {
+    from: "0.2",
+    to: "0.3",
+    change: "Nested color tokens flattened into a semantic palette",
+    automated: true,
+    note: "Structural — needs a custom migrate function.",
+  },
+  {
+    from: "0.3",
+    to: "0.4",
+    change: "`text` token renamed to `foreground`; `muted` derived token added",
+    automated: true,
+    note: "Rename plus a derived default.",
+  },
+  {
+    from: "1.0",
+    to: "1.3",
+    change: "None — all releases since 1.0.0 are backward compatible",
+    automated: false,
+    note: "No migration step required.",
+  },
+] as const;
 
 const whenToMigrateSnippet = {
   lang: "ts",
@@ -207,7 +234,7 @@ jobs:
 
 export default function MigrationPage() {
   return (
-    <DocsLayout headings={migrationHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           eyebrow="Migration"
@@ -219,6 +246,21 @@ export default function MigrationPage() {
               renames to full structural rewrites.
             </>
           }
+        />
+
+        <Prerequisites
+          items={[
+            {
+              label: "@theme-kit/core installed",
+              value: "Migration utilities are exported from core",
+              href: "/packages/core",
+            },
+            {
+              label: "Theme definitions with versions",
+              value: "Each theme needs a meta.version field",
+              href: "/custom-themes",
+            },
+          ]}
         />
 
         <section id="when-to-migrate" className="scroll-mt-24 mb-10">
@@ -256,9 +298,88 @@ export default function MigrationPage() {
           />
         </section>
 
-        <section id="register-migration" className="scroll-mt-24 mb-10">
+        <section id="schema-versions" className="scroll-mt-24 mb-10">
           <SectionHeading
             num={2}
+            desc="What each schema bump changed, and whether the engine can bridge it automatically."
+          >
+            Schema versions &amp; breaking changes
+          </SectionHeading>
+          <p className="text-sm opacity-80 leading-relaxed mb-3">
+            A theme declares the schema it was authored for in{" "}
+            <code className="mono text-[0.9em]">meta.version</code>. The table
+            below is the authoritative record of every breaking schema change
+            and the target version it lands in. If your theme is several
+            versions behind, the engine walks every intermediate hop.
+          </p>
+          <div className="rounded-xl border border-border overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider whitespace-nowrap">
+                      From → To
+                    </th>
+                    <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider">
+                      Breaking change
+                    </th>
+                    <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider whitespace-nowrap">
+                      Auto-migratable
+                    </th>
+                    <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider">
+                      Notes
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {breakingChanges.map((row) => (
+                    <tr
+                      key={`${row.from}-${row.to}`}
+                      className="border-b border-border last:border-0 align-top"
+                    >
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <code className="mono text-[0.85em] font-semibold">
+                          {row.from} → {row.to}
+                        </code>
+                      </td>
+                      <td className="px-4 py-3 opacity-80 leading-relaxed">
+                        {row.change}
+                      </td>
+                      <td className="px-4 py-3">
+                        {row.automated ? (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                            Yes
+                          </span>
+                        ) : (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+                            N/A
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 opacity-60 text-xs leading-relaxed">
+                        {row.note}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <Callout variant="info" className="mt-3">
+            <strong>Theme Kit 1.x is backward compatible</strong>{" "}
+            <span className="mx-1 opacity-40">|</span>
+            Every release since 1.0.0 ships without breaking theme schemas. The
+            versions above cover the pre-1.0 schema line. See the{" "}
+            <Link href="/changelog" className="text-primary hover:underline">
+              changelog
+            </Link>{" "}
+            for per-release detail.
+          </Callout>
+        </section>
+
+        <section id="register-migration" className="scroll-mt-24 mb-10">
+          <SectionHeading
+            num={3}
             desc="migrateTheme(theme, options) reads meta.version, walks the migration chain, and returns an updated theme."
           >
             migrateTheme(theme, options)
@@ -302,7 +423,7 @@ export default function MigrationPage() {
 
         <section id="register-migration-fn" className="scroll-mt-24 mb-10">
           <SectionHeading
-            num={3}
+            num={4}
             desc="registerMigration adds a step between two versions. Each step can carry a color remap table, a custom migrate function, or both."
           >
             registerMigration({"{"} from, to, remapColors?, migrate? {"}"})
@@ -324,7 +445,7 @@ export default function MigrationPage() {
 
         <section id="multi-step" className="scroll-mt-24 mb-10">
           <SectionHeading
-            num={4}
+            num={5}
             desc="When a theme is several versions behind, the engine walks every intermediate step automatically."
           >
             Multi-step migration
@@ -346,7 +467,7 @@ export default function MigrationPage() {
 
         <section id="remap-vs-migrate" className="scroll-mt-24 mb-10">
           <SectionHeading
-            num={5}
+            num={6}
             desc="Use remapColors for simple renames. Use migrate when the transformation requires logic or structural changes."
           >
             remapColors vs migrate
@@ -397,7 +518,7 @@ export default function MigrationPage() {
 
         <section id="ci" className="scroll-mt-24 mb-10">
           <SectionHeading
-            num={6}
+            num={7}
             desc="Catch outdated themes in CI before they ship. Run migrateTheme against every theme and fail the build if any are behind."
           >
             CI integration
@@ -434,32 +555,130 @@ export default function MigrationPage() {
           </ul>
         </section>
 
-        <div className="mt-6 flex flex-col gap-2">
-          <Link
-            href="/tokens"
-            className="glass-card card-lift p-4 no-underline flex items-center justify-between gap-3"
+        <section id="checklist" className="scroll-mt-24 mb-10">
+          <SectionHeading
+            num={8}
+            desc="The same repeatable sequence for every schema bump — run it once per theme file."
           >
-            <div>
-              <div className="font-semibold">Tokens &amp; Typography</div>
-              <div className="text-xs opacity-60">
-                Every semantic path available for remapping.
-              </div>
-            </div>
-            <span style={{ color: "var(--theme-color-primary)" }}>→</span>
-          </Link>
-          <Link
-            href="/accessibility"
-            className="glass-card card-lift p-4 no-underline flex items-center justify-between gap-3"
-          >
-            <div>
-              <div className="font-semibold">Accessibility</div>
-              <div className="text-xs opacity-60">
-                Contrast checking and CVD simulation for migrated themes.
-              </div>
-            </div>
-            <span style={{ color: "var(--theme-color-primary)" }}>→</span>
-          </Link>
-        </div>
+            Migration checklist
+          </SectionHeading>
+          <p className="text-sm opacity-80 leading-relaxed mb-3">
+            Work through this in order. Steps 1–3 are read-only; nothing in your
+            project changes until step 4.
+          </p>
+          <div className="rounded-xl border border-border overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider w-10">
+                    #
+                  </th>
+                  <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider">
+                    Step
+                  </th>
+                  <th className="px-4 py-2.5 text-left font-semibold text-xs uppercase tracking-wider">
+                    Verify it passed
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    step: "Back up the theme files (or commit them) before touching anything.",
+                    verify: "A clean revert point exists in git.",
+                  },
+                  {
+                    step: "Read meta.version on every theme and compare it against the table above.",
+                    verify: "You know which themes are behind and by how many hops.",
+                  },
+                  {
+                    step: "Register a migration step for each consecutive version pair you need to bridge.",
+                    verify: "Every from → to hop in the chain is covered.",
+                  },
+                  {
+                    step: "Run migrateTheme against one theme and diff the result against the input.",
+                    verify: "Only the intended tokens changed; meta.version advanced to the target.",
+                  },
+                  {
+                    step: "Validate the migrated theme with validateTheme (and validateThemeContrast if colors moved).",
+                    verify: "The migrated theme still satisfies the required token set and contrast rules.",
+                  },
+                  {
+                    step: "Apply the output to your project and exercise theme switching in the app.",
+                    verify: "Light/dark switching and CSS variables render as before.",
+                  },
+                  {
+                    step: "Add the CI check so this theme can never silently fall behind again.",
+                    verify: "The pipeline fails on an outdated meta.version.",
+                  },
+                ].map((row, i) => (
+                  <tr
+                    key={i}
+                    className="border-b border-border last:border-0 align-top"
+                  >
+                    <td className="px-4 py-3 font-mono text-xs opacity-50">
+                      {i + 1}
+                    </td>
+                    <td className="px-4 py-3 opacity-80 leading-relaxed">
+                      {row.step}
+                    </td>
+                    <td className="px-4 py-3 opacity-60 text-xs leading-relaxed">
+                      {row.verify}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Callout variant="warning" className="mt-3">
+            <strong>Never edit themes by hand mid-chain</strong>{" "}
+            <span className="mx-1 opacity-40">|</span>
+            Register the steps, then let{" "}
+            <code className="mono text-[0.9em]">migrateTheme</code> walk them.
+            Hand-editing one hop breaks the assumption the next hop starts from
+            a known shape.
+          </Callout>
+        </section>
+
+        <NextSteps
+          steps={[
+            {
+              title: "Register migrations for your schema",
+              description: "Add migration steps between consecutive versions",
+              href: "#register-migration-fn",
+            },
+            {
+              title: "Add CI checks",
+              description: "Catch outdated themes before they ship",
+              href: "#ci",
+            },
+            {
+              title: "Test multi-step chains",
+              description: "Verify migrations across multiple versions",
+              href: "#multi-step",
+            },
+          ]}
+        />
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Tokens & Typography",
+              description: "Every semantic path available for remapping",
+              href: "/tokens",
+            },
+            {
+              title: "Accessibility",
+              description: "Contrast checking and CVD simulation for migrated themes",
+              href: "/accessibility",
+            },
+            {
+              title: "Custom Themes",
+              description: "Define versioned themes that support migration",
+              href: "/custom-themes",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

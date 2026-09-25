@@ -1,6 +1,20 @@
 import type { ThemeRuntime, ThemeDefinition, ThemeSelectionState, HistoryEntry } from "@theme-kit/core";
 import type { DevToolsInspector, DevToolsState, DevToolsEntry, DevToolsPerformanceEntry, DevToolsInspectorOptions } from "./types";
 
+/**
+ * Creates a devtools inspector that records theme events and performance
+ * measurements for a runtime.
+ *
+ * The inspector retains a bounded number of event and performance entries
+ * (see {@link DevToolsInspectorOptions}), exposes the current state, and
+ * provides export and destroy operations. It is bound to a runtime by the
+ * devtools plugin.
+ *
+ * @param options Optional limits for the number of retained entries.
+ * @returns A {@link DevToolsInspector}.
+ *
+ * @see {@link createDevToolsPlugin}
+ */
 export function createDevToolsInspector<T extends ThemeDefinition>(
   options?: DevToolsInspectorOptions,
 ): DevToolsInspector<T> {

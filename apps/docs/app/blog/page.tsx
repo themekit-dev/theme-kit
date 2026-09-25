@@ -2,8 +2,10 @@ import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
 import { BlogExplorer } from "../../components/blog-explorer";
 import { getPosts } from "../../lib/blog";
+import { docsUrl } from "../../lib/site";
 
 export const metadata = {
+  alternates: { canonical: docsUrl("/blog") },
   title: "Blog",
   description:
     "Theme Kit blog — release notes, deep dives on theming architecture, multi-window sync, scheduling and accessibility.",

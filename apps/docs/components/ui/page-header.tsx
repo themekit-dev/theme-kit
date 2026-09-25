@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Badge } from "./badge";
+import { VerifiedBadge } from "./version-badge";
 
 export function PageHeader({
   icon,
@@ -9,6 +10,7 @@ export function PageHeader({
   description,
   badges,
   actions,
+  verified,
 }: {
   icon?: ReactNode;
   eyebrow?: ReactNode;
@@ -17,6 +19,8 @@ export function PageHeader({
   description?: ReactNode;
   badges?: { label: string; tone?: React.ComponentProps<typeof Badge>["tone"] }[];
   actions?: ReactNode;
+  /** Version evidence strip: "Verified with Theme Kit vX.Y.Z · Updated YYYY-MM-DD". */
+  verified?: { version: string; date: string };
 }) {
   return (
     <header className="mb-10">
@@ -28,7 +32,7 @@ export function PageHeader({
               background:
                 "linear-gradient(135deg, var(--theme-color-primary), color-mix(in srgb, var(--theme-color-primary) 40%, var(--theme-color-accent)))",
               color:
-                "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                "var(--theme-color-primaryForeground)",
             }}
           >
             {icon}
@@ -63,6 +67,11 @@ export function PageHeader({
         </p>
       ) : null}
       {actions ? <div className="mt-6 flex flex-wrap gap-3">{actions}</div> : null}
+      {verified ? (
+        <div className="mt-5">
+          <VerifiedBadge version={verified.version} date={verified.date} />
+        </div>
+      ) : null}
     </header>
   );
 }

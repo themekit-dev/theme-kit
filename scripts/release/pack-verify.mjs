@@ -25,9 +25,17 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(join(here, "..", ".."));
 const outDir = join(repoRoot, "release-test", "tarballs");
 
+// Windows ships bsdtar at %SystemRoot%\System32\tar.exe. Git Bash's GNU tar
+// misparses drive-letter paths ("D:\...") as remote archive specifiers, so pin
+// to the system bsdtar on win32 rather than relying on PATH resolution.
+const TAR =
+  process.platform === "win32"
+    ? join(process.env.SystemRoot ?? "C:\\Windows", "System32", "tar.exe")
+    : "tar";
+
 function readTarball(tarballPath) {
   // npm ships with a vendored tar; use the system tar (Windows 10+ has bsdtar)
-  const out = execSync(`tar -tzf "${tarballPath.replace(/"/g, '\\"')}"`, {
+  const out = execSync(`"${TAR}" -tzf "${tarballPath.replace(/"/g, '\\"')}"`, {
     encoding: "utf8",
     maxBuffer: 64 * 1024 * 1024,
   });
@@ -37,7 +45,7 @@ function readTarball(tarballPath) {
 function tarballFile(tarballPath, entry) {
   const tmp = join(process.env.TEMP ?? "/tmp", `tk-untar-${Date.now()}`);
   mkdirSync(tmp, { recursive: true });
-  execSync(`tar -xzf "${tarballPath.replace(/"/g, '\\"')}" -C "${tmp.replace(/"/g, '\\"')}" "${entry}"`, {
+  execSync(`"${TAR}" -xzf "${tarballPath.replace(/"/g, '\\"')}" -C "${tmp.replace(/"/g, '\\"')}" "${entry}"`, {
     stdio: "pipe",
   });
   const content = readFileSync(join(tmp, entry), "utf8");

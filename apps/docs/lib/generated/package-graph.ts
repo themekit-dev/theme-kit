@@ -46,7 +46,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/angular",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "angular",
     repoDir: "packages/angular",
     description: "Angular integration for Theme Kit",
@@ -70,7 +70,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/astro",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "astro",
     repoDir: "packages/astro",
     description: "Astro integration for Theme Kit.",
@@ -82,7 +82,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/bootstrap",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "adapters/bootstrap",
     repoDir: "packages/adapters/bootstrap",
     description: "Bootstrap adapter for Theme Kit.",
@@ -118,7 +118,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/core",
-    version: "1.3.0",
+    version: "1.4.0",
     dir: "core",
     repoDir: "packages/core",
     description: "Framework-agnostic theming engine: theme store, runtime, transitions, scheduling, accessibility, and DOM adapters.",
@@ -130,7 +130,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/daisyui",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "adapters/daisyui",
     repoDir: "packages/adapters/daisyui",
     description: "DaisyUI adapter for Theme Kit.",
@@ -155,8 +155,8 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   {
     name: "@theme-kit/mantine",
     version: "1.3.0",
-    dir: "mantine",
-    repoDir: "packages/mantine",
+    dir: "adapters/mantine",
+    repoDir: "packages/adapters/mantine",
     description: "Mantine adapter for Theme Kit.",
     internalDeps: ["@theme-kit/adapters", "@theme-kit/core"],
     usedBy: [],
@@ -178,7 +178,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/next",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "next",
     repoDir: "packages/next",
     description: "Next.js integration for Theme Kit with SSR-first theming and zero-flash bootstrapping.",
@@ -190,7 +190,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/nuxt",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "nuxt",
     repoDir: "packages/nuxt",
     description: "Nuxt module for Theme Kit: SSR, cookies, and zero-flash theming.",
@@ -202,7 +202,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/open-props",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "adapters/open-props",
     repoDir: "packages/adapters/open-props",
     description: "Open Props adapter for Theme Kit.",
@@ -214,7 +214,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/react",
-    version: "1.3.0",
+    version: "1.3.1",
     dir: "react",
     repoDir: "packages/react",
     description: "React bindings for Theme Kit: provider, hooks, and runtime access.",
@@ -226,7 +226,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/remix",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "remix",
     repoDir: "packages/remix",
     description: "Remix integration for Theme Kit.",
@@ -238,7 +238,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/shadcn",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "adapters/shadcn",
     repoDir: "packages/adapters/shadcn",
     description: "shadcn/ui adapter for Theme Kit.",
@@ -250,7 +250,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/solid",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "solid",
     repoDir: "packages/solid",
     description: "SolidJS bindings for Theme Kit.",
@@ -262,7 +262,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/svelte",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "svelte",
     repoDir: "packages/svelte",
     description: "Svelte 5 bindings for Theme Kit.",
@@ -298,7 +298,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/vue",
-    version: "1.3.0",
+    version: "2.0.0",
     dir: "vue",
     repoDir: "packages/vue",
     description: "Vue 3 bindings for Theme Kit.",
@@ -310,7 +310,7 @@ export const PACKAGE_GRAPH: PackageGraphEntry[] = [
   },
   {
     name: "@theme-kit/web",
-    version: "1.3.0",
+    version: "1.4.0",
     dir: "web",
     repoDir: "packages/web",
     description: "Vanilla JS theme runtime and DOM bindings for Theme Kit.",

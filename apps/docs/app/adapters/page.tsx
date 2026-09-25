@@ -6,10 +6,13 @@ import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
-import { buildPageHeadings } from "../../lib/toc";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/adapters") },
   title: "Adapters",
   description:
     "How Theme Kit translates themes into Bootstrap, shadcn/ui, daisyUI, Open Props, MUI, Chakra, Ant Design, Mantine and UnoCSS — strategies, plugins, the registry, and how to use them in every framework.",
@@ -18,11 +21,12 @@ export const metadata: Metadata = {
 const shadcnHookSnippet = {
   lang: "tsx",
   title: "react — one-line binding",
-  code: `import { ThemeProvider, useTheme } from "@theme-kit/react";
-import { useShadcnTheme } from "@theme-kit/shadcn";
+  code: `import { ThemeProvider, useTheme, useThemeRuntime } from "@theme-kit/react";
+import { useShadcnTheme } from "@theme-kit/shadcn/react";
 
 function App() {
-  useShadcnTheme();                 // one line — the adapter runs itself
+  const runtime = useThemeRuntime();
+  useShadcnTheme(runtime);          // one line — the adapter runs itself
   const { mode, toggleTheme } = useTheme();
   return (
     <button onClick={toggleTheme}>{mode}</button>
@@ -59,7 +63,7 @@ const shadcnAdapterSnippet = {
   code: `import { createThemeRuntime } from "@theme-kit/core";
 import { createShadcnAdapter } from "@theme-kit/shadcn/factory";
 
-const runtime = createThemeRuntime({ initial: "light" });
+const runtime = createThemeRuntime({ defaultTheme: "light" });
 const handle = runtime.adapters.use(createShadcnAdapter());
 
 // switch themes at runtime — variables update automatically
@@ -93,11 +97,11 @@ export function App() {
 const unocssPresetSnippet = {
   lang: "ts",
   title: "uno.config.ts",
-  code: `import { presetThemeKit } from "@theme-kit/unocss";
-import { defineConfig } from "unocss";
+  code: `import { defineConfig, presetWind3 } from "unocss";
+import { presetThemeKit } from "@theme-kit/unocss";
 
 export default defineConfig({
-  presets: [presetUno(), presetThemeKit()],
+  presets: [presetWind3(), presetThemeKit()],
 });`,
 };
 
@@ -105,7 +109,11 @@ const unocssStaticSnippet = {
   lang: "ts",
   title: "build-time static output",
   code: `import { createUnoTheme } from "@theme-kit/unocss";
-import { resolveInitialTheme } from "@theme-kit/core";
+import { getBuiltInThemes, resolveInitialTheme } from "@theme-kit/core";
+
+// resolveInitialTheme takes the registry explicitly; the built-in set is a
+// valid registry, so no theme file is needed.
+const themes = getBuiltInThemes();
 
 const { theme } = resolveInitialTheme({
   themes,
@@ -116,19 +124,9 @@ const { theme } = resolveInitialTheme({
 const staticTheme = createUnoTheme(theme);`,
 };
 
-// Headings render via SectionHeading (invisible to the layout's RSC walk).
-const adaptersHeadings = buildPageHeadings([
-  { text: "CSS Variables (default, automatic)", level: 2 },
-  { text: "Tailwind CSS v4", level: 2 },
-  { text: "shadcn/ui adapter", level: 2 },
-  { text: "Ant Design adapter", level: 2 },
-  { text: "UnoCSS adapter", level: 2 },
-  { text: "What's next", level: 2 },
-]);
-
 export default function AdaptersPage() {
   return (
-    <DocsLayout headings={adaptersHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           icon={
@@ -158,6 +156,26 @@ export default function AdaptersPage() {
           }
         />
 
+        <Prerequisites
+          items={[
+            {
+              label: "Core Package",
+              value: "@theme-kit/core",
+              href: "/packages/core",
+            },
+            {
+              label: "Runtime",
+              value: "Active ThemeRuntime instance",
+              href: "/quick-start",
+            },
+            {
+              label: "UI Library",
+              value: "Bootstrap, shadcn/ui, daisyUI, MUI, Ant Design, or other supported library",
+            },
+          ]}
+          className="mb-8"
+        />
+
         <Callout title="Key idea">
           Adapters are <strong>framework-agnostic</strong>. The{" "}
           <code>createXxxAdapter</code> factories run in plain TypeScript with
@@ -177,7 +195,13 @@ export default function AdaptersPage() {
           <p className="text-sm opacity-80 leading-relaxed mb-3">
             Every CSS-variable adapter follows the same shape: a{" "}
             <code className="mono text-[0.9em]">factory</code> entry for
-            framework-neutral use, a React hook, and a CSS injector. By default
+            framework-neutral use, framework wrapper subpaths ({" "}
+            <code className="mono text-[0.9em]">/react</code>,{" "}
+            <code className="mono text-[0.9em]">/vue</code>,{" "}
+            <code className="mono text-[0.9em]">/svelte</code>,{" "}
+            <code className="mono text-[0.9em]">/solid</code>,{" "}
+            <code className="mono text-[0.9em]">/angular</code>) that take an
+            explicit runtime, and a CSS injector. By default
             <code className="mono text-[0.9em]"> injectCSS: true</code> — the
             compatibility stylesheet is injected automatically at install time.
           </p>
@@ -191,8 +215,11 @@ export default function AdaptersPage() {
           <div className="mt-3 text-sm opacity-70 leading-relaxed">
             <p>
               The <code className="mono text-[0.9em]">factory</code> subpath
-              imports adapters <strong>without React</strong>. Vue, Svelte, Solid
-              and Angular packages all consume the same entry point.
+              imports adapters <strong>without React</strong>. The adapter
+              packages own their own framework wrappers behind subpaths, so a
+              Vue app imports from{" "}
+              <code className="mono text-[0.9em]">@theme-kit/shadcn/vue</code>{" "}
+              — no React dependency is pulled in.
             </p>
           </div>
         </section>
@@ -365,6 +392,31 @@ export default function AdaptersPage() {
             </Link>
           </div>
         </section>
+
+        <RelatedLinks
+          links={[
+            {
+              title: "Custom Themes",
+              href: "/custom-themes",
+              description: "Define and compose custom themes",
+            },
+            {
+              title: "Framework Integration",
+              href: "/framework-guides",
+              description: "Use adapters in React, Vue, Svelte",
+            },
+            {
+              title: "Core Concepts",
+              href: "/core-concepts",
+              description: "Theme runtime and tokens",
+            },
+            {
+              title: "Adapter API Reference",
+              href: "/api-reference/core#adapters",
+              description: "Complete adapter API docs",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

@@ -5,9 +5,14 @@ import { CodeBlock } from "../../components/code-block";
 import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
+import { Prerequisites } from "../../components/ui/prerequisites";
+import { NextSteps } from "../../components/ui/next-step-card";
+import { RelatedLinks } from "../../components/ui/related-links";
 import { highlightCode } from "../../lib/highlight";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/vanilla") },
   title: "Framework-Free",
   description:
     "Use Theme Kit without React, Vue, or Svelte — a single ThemeKit class gives you mode switching, family selection, CSS variable binding, and localStorage persistence.",
@@ -22,8 +27,7 @@ const kit = new ThemeKit({
   defaultTheme: "light",
 });
 
-// Or use the static shorthand
-const kit = ThemeKit.init({ defaultTheme: "light" });`,
+// ThemeKit.init({ defaultTheme: "light" }) is the same thing.`,
 };
 
 const readSnippet = {
@@ -203,6 +207,20 @@ export default function VanillaPage() {
           }
         />
 
+        <Prerequisites
+          items={[
+            {
+              label: "@theme-kit/core installed",
+              value: "Install the core package with npm, pnpm, or yarn",
+              href: "/get-started",
+            },
+            {
+              label: "Basic JavaScript knowledge",
+              value: "Familiarity with ES modules and DOM APIs",
+            },
+          ]}
+        />
+
         <section id="why" className="scroll-mt-24 mb-10">
           <SectionHeading
             num={1}
@@ -350,6 +368,41 @@ export default function VanillaPage() {
             className="m-0"
           />
         </section>
+
+        <NextSteps
+          steps={[
+            {
+              title: "Build custom themes",
+              description: "Define your own token sets and theme families",
+              href: "/custom-themes",
+            },
+            {
+              title: "Add plugins",
+              description: "Extend functionality with lifecycle hooks",
+              href: "/plugins",
+            },
+          ]}
+        />
+
+        <RelatedLinks
+          links={[
+            {
+              title: "DOM Adapters",
+              description: "How CSS variables and attributes are applied",
+              href: "/dom-adapters",
+            },
+            {
+              title: "Architecture",
+              description: "Core concepts and runtime design",
+              href: "/architecture",
+            },
+            {
+              title: "Web Framework Guide",
+              description: "Framework-agnostic integration patterns",
+              href: "/framework-guides/web",
+            },
+          ]}
+        />
       </div>
     </DocsLayout>
   );

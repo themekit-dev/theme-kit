@@ -7,6 +7,11 @@ import type { Theme as MuiTheme } from "@mui/material/styles";
 import { createMuiTheme } from "./theme";
 import type { MuiAdapterOptions } from "./defaults";
 
+/**
+ * Options for {@link createMuiAdapter}.
+ *
+ * @see {@link createMuiAdapter}
+ */
 export interface CreateMuiAdapterOptions extends MuiAdapterOptions {}
 
 /**
@@ -16,7 +21,17 @@ export interface CreateMuiAdapterOptions extends MuiAdapterOptions {}
  */
 export interface MuiThemeAdapter<T extends ThemeDefinition>
   extends ThemeAdapter<T> {
+  /**
+   * Returns the latest generated MUI theme, or `null` before the first install
+   * or after uninstall.
+   */
   getSnapshot(): MuiTheme | null;
+  /**
+   * Registers a listener invoked whenever the generated theme changes.
+   *
+   * @param listener The callback to invoke on change.
+   * @returns A function that unregisters the listener.
+   */
   subscribe(listener: () => void): () => void;
 }
 
@@ -24,6 +39,8 @@ export interface MuiThemeAdapter<T extends ThemeDefinition>
  * Runtime-owned Material UI adapter. On install it subscribes to the Theme Kit
  * store and rebuilds a MUI `Theme` whenever the active theme changes. The
  * generated theme is available through `getSnapshot` for React consumption.
+ *
+ * @see {@link createMuiAdapter}
  */
 export function createMuiAdapter<T extends ThemeDefinition>(
   _options: CreateMuiAdapterOptions = {},

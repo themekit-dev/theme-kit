@@ -1,19 +1,32 @@
 # `theme-kit inspect`
 
+## Prerequisites
+- Node.js 22+
+- Theme JSON file(s) to inspect
+- Project with @theme-kit/cli installed or npx access
+
 Print a human-readable summary of what is inside a theme: its name, family,
 mode, token groups, and metadata. Useful for documentation, review, and
 explaining a theme to a teammate.
 
-```
-theme-kit inspect <file> [options]
+<!-- cli-command:generated:start -->
+## Synopsis
+
+Prints a human-readable summary of a theme's meta, token groups, and references.
+
+```text
+Usage:
+  theme-kit inspect <file> [options]
 ```
 
 ## Options
 
-| Option      | Description                                              |
-| ----------- | -------------------------------------------------------- |
-| `--file <path>` | Theme file to inspect (or pass positionally). |
+| Option | Description | Default |
+| ------ | ----------- | ------- |
+| `--file <path>` | Theme file to inspect (or pass positionally) | — |
 
+> Generated from `packages/cli/src/cli.ts` — the same text `theme-kit inspect --help` prints.
+<!-- cli-command:generated:end -->
 ## Examples
 
 ```bash
@@ -60,5 +73,16 @@ use `export --format json` or read the JSON directly.
 | `0`  | Inspected successfully. |
 | `1`  | File not found / unreadable. |
 | `2`  | No theme file supplied. |
+
+## Next Steps
+- [Migrate themes to new schema](./migrate)
+- [Export current tokens](./export)
+- [Validate theme structure](./validate)
+- [CLI reference](./reference)
+
+## Related
+- [Theme Kit Quick Start](../quickstart)
+- [Custom Themes](../../custom-themes)
+- [API Reference](../../api-reference)
 
 Next: [migrate](/cli/migrate).

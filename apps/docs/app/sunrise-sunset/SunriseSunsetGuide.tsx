@@ -8,10 +8,20 @@ import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
 import { FrameworkPicker, getExample } from "../../components/framework-picker";
 
-const frameworkSnippet = (lang: string, title: string, code: string) => ({ lang, title, code });
+const frameworkSnippet = (lang: string, title: string, code: string) => ({
+  lang,
+  title,
+  code,
+});
 
-const mountExamples: Record<string, { lang: string; title: string; code: string }> = {
-  react: frameworkSnippet("tsx", "App.tsx", `import { ThemeProvider } from "@theme-kit/react";
+const mountExamples: Record<
+  string,
+  { lang: string; title: string; code: string }
+> = {
+  react: frameworkSnippet(
+    "tsx",
+    "App.tsx",
+    `import { ThemeProvider } from "@theme-kit/react";
 
 export function App() {
   return (
@@ -19,20 +29,20 @@ export function App() {
       themes={themes}
       defaultTheme="mint-light"
       scheduled={{
-        // Everything is optional. lightTheme/darkTheme adapt to the current
-        // theme family (fallback: neutral light/dark), and coordinates are
-        // auto-detected from the visitor's timezone — so the schedule is
-        // correct for every user anywhere, with no config at all.
-        // lightTheme: "mint-light",
-        // darkTheme: "mint-dark",
-        // timeZone: "Asia/Kathmandu",
+        enabled: true,
+        // auto-detected from the visitor's timezone
+        timeZone: "Asia/Kathmandu",
       }}
     >
       <ThemeSwitcher />
     </ThemeProvider>
   );
-}`),
-  next: frameworkSnippet("tsx", "app/layout.tsx", `// app/layout.tsx
+}`,
+  ),
+  next: frameworkSnippet(
+    "tsx",
+    "app/layout.tsx",
+    `// app/layout.tsx
 import { ThemeProvider } from "@theme-kit/next";
 
 export default function RootLayout({ children }) {
@@ -40,17 +50,17 @@ export default function RootLayout({ children }) {
     <ThemeProvider
       themes={themes}
       defaultTheme="mint-light"
-      scheduled={{
-        // No themes or coordinates needed: light/dark adapt to the current
-        // theme family, and the client schedule resolves each visitor's
-        // location from their browser timezone automatically.
-      }}
+      scheduled={{ enabled: true }}
     >
       {children}
     </ThemeProvider>
   );
-}`),
-  vue: frameworkSnippet("vue", "App.vue", `<script setup>
+}`,
+  ),
+  vue: frameworkSnippet(
+    "vue",
+    "App.vue",
+    `<script setup>
 import { ThemeProvider } from "@theme-kit/vue";
 import { themes } from "./themes";
 </script>
@@ -59,29 +69,29 @@ import { themes } from "./themes";
   <ThemeProvider
     :themes="themes"
     defaultTheme="mint-light"
-    :scheduled="{
-      // Optional: light/dark adapt to the current family, coordinates
-      // auto-detect from the visitor's timezone.
-      // lightTheme: 'mint-light',
-      // darkTheme: 'mint-dark',
-    }"
+    :scheduled="{enabled: true}"
   >
     <ThemeSwitcher />
   </ThemeProvider>
-</template>`),
-  nuxt: frameworkSnippet("ts", "nuxt.config.ts", `// nuxt.config.ts
+</template>`,
+  ),
+  nuxt: frameworkSnippet(
+    "ts",
+    "nuxt.config.ts",
+    `// nuxt.config.ts
 export default defineNuxtConfig({
   modules: ["@theme-kit/nuxt"],
   themeKit: {
     themes,
     defaultTheme: "mint-light",
-    scheduled: {
-      // Optional: light/dark adapt to the current family, and the runtime
-      // detects each visitor's timezone for their local sunrise/sunset.
-    },
+    scheduled={{ enabled: true }}
   },
-});`),
-  svelte: frameworkSnippet("svelte", "App.svelte", `<script>
+});`,
+  ),
+  svelte: frameworkSnippet(
+    "svelte",
+    "App.svelte",
+    `<script>
   import { ThemeProvider } from "@theme-kit/svelte";
   import { themes } from "./themes";
 </script>
@@ -89,44 +99,47 @@ export default defineNuxtConfig({
 <ThemeProvider
   themes={themes}
   defaultTheme="mint-light"
-  scheduled={{
-    // Optional: light/dark adapt to the current family, coordinates
-    // auto-detect from the visitor's timezone.
-  }}
+  scheduled={{ enabled: true }}
 >
   {@render children()}
-</ThemeProvider>`),
-  solid: frameworkSnippet("tsx", "App.tsx", `import { ThemeProvider } from "@theme-kit/solid";
+</ThemeProvider>`,
+  ),
+  solid: frameworkSnippet(
+    "tsx",
+    "App.tsx",
+    `import { ThemeProvider } from "@theme-kit/solid";
 
 export function App() {
   return (
     <ThemeProvider
       themes={themes}
       defaultTheme="mint-light"
-      scheduled={{
-        // Optional: light/dark adapt to the current family, coordinates
-        // auto-detect from the visitor's timezone.
-      }}
+      scheduled={{ enabled: true }}
     >
       <YourApp />
     </ThemeProvider>
   );
-}`),
-  angular: frameworkSnippet("ts", "app.config.ts", `import { provideThemeKit } from "@theme-kit/angular";
+}`,
+  ),
+  angular: frameworkSnippet(
+    "ts",
+    "app.config.ts",
+    `import { provideThemeKit } from "@theme-kit/angular";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideThemeKit({
       themes,
       defaultTheme: "mint-light",
-      scheduled: {
-        // Optional: light/dark adapt to the current family, coordinates
-        // auto-detect from the visitor's timezone.
-      },
+      scheduled={{ enabled: true }}
     }),
   ],
-};`),
-  web: frameworkSnippet("html", "index.html", `<script type="module">
+};`,
+  ),
+  web: frameworkSnippet(
+    "html",
+    "index.html",
+    `<script type="module">
   import { defineCustomElements } from "@theme-kit/web";
   import { themes } from "./themes.js";
 
@@ -136,46 +149,45 @@ export const appConfig: ApplicationConfig = {
   provider.setAttribute("default-theme", "mint-light");
   provider.setAttribute(
     "scheduled",
-    JSON.stringify({
-      // Optional: light/dark adapt to the current family, coordinates
-      // auto-detect from the visitor's timezone.
-    })
+    JSON.stringify({enabled: true})
   );
 </script>
 
 <theme-kit-provider>
   <your-app></your-app>
-</theme-kit-provider>`),
-  astro: frameworkSnippet("astro", "src/pages/index.astro", `---
-import { ThemeProviderClient } from "@theme-kit/astro";
+</theme-kit-provider>`,
+  ),
+  astro: frameworkSnippet(
+    "astro",
+    "src/pages/index.astro",
+    `---
+import { ThemeProviderClient } from "@theme-kit/astro/client";
 import { themes } from "virtual:theme-kit-themes";
 ---
 
-<html>
-  <head>
-    <title>My site</title>
-  </head>
-  <body>
-    <ThemeProviderClient
-      themes={themes}
-      defaultTheme="mint-light"
-      scheduled={{
-        // Optional: light/dark adapt to the current family, coordinates
-        // auto-detect from the visitor's timezone.
-      }}
-    />
-    <ThemeSwitcher client:load />
-  </body>
-</html>`),
-  tailwind: frameworkSnippet("css", "globals.css", `@import "tailwindcss";
+<ThemeProviderClient
+  themes={themes}
+  defaultTheme="mint-light"
+  scheduled={{ enabled: true }}
+/>
+<ThemeSwitcher client:load />`,
+  ),
+  tailwind: frameworkSnippet(
+    "css",
+    "globals.css",
+    `@import "tailwindcss";
 @import "@theme-kit/tailwind";
 
 /* Theme Kit schedules via the core runtime. Wire it in your
    framework shell (React/Vue/etc.) with createThemeRuntime({
    scheduled: {} }) — light/dark themes adapt to the current family and
    coordinates auto-detect from each visitor's timezone.
-   The CSS here only maps tokens — scheduling is runtime-driven. */`),
-  remix: frameworkSnippet("tsx", "app/root.tsx", `import { ThemeProvider } from "@theme-kit/remix";
+   The CSS here only maps tokens — scheduling is runtime-driven. */`,
+  ),
+  remix: frameworkSnippet(
+    "tsx",
+    "app/root.tsx",
+    `import { ThemeProvider } from "@theme-kit/remix";
 import { themes } from "./themes";
 
 export default function App() {
@@ -191,11 +203,18 @@ export default function App() {
       <Outlet />
     </ThemeProvider>
   );
-}`),
+}`,
+  ),
 };
 
-const controllerExamples: Record<string, { lang: string; title: string; code: string }> = {
-  react: frameworkSnippet("tsx", "ScheduleToggle.jsx", `import { useThemeSchedule } from "@theme-kit/react";
+const controllerExamples: Record<
+  string,
+  { lang: string; title: string; code: string }
+> = {
+  react: frameworkSnippet(
+    "tsx",
+    "ScheduleToggle.jsx",
+    `import { useThemeSchedule } from "@theme-kit/react";
 
 export function ScheduleToggle() {
   const schedule = useThemeSchedule();
@@ -230,8 +249,12 @@ export function ScheduleToggle() {
       </select>
     </div>
   );
-}`),
-  next: frameworkSnippet("tsx", "components/schedule-toggle.tsx", `// components/schedule-toggle.tsx
+}`,
+  ),
+  next: frameworkSnippet(
+    "tsx",
+    "components/schedule-toggle.tsx",
+    `// components/schedule-toggle.tsx
 "use client";
 import { useThemeSchedule } from "@theme-kit/next/client";
 
@@ -256,8 +279,12 @@ export function ScheduleToggle() {
       </p>
     </div>
   );
-}`),
-  vue: frameworkSnippet("vue", "ScheduleToggle.vue", `<script setup>
+}`,
+  ),
+  vue: frameworkSnippet(
+    "vue",
+    "ScheduleToggle.vue",
+    `<script setup>
 import { useThemeSchedule } from "@theme-kit/vue";
 // state is a Ref — access it with .value in <script>, auto-unwrapped
 // when destructured in the template.
@@ -279,8 +306,12 @@ const { state } = schedule;
   <select @change="schedule.set({ timeZone: ($event.target as HTMLSelectElement).value })">
     <option value="">Auto (my location)</option>
   </select>
-</template>`),
-  nuxt: frameworkSnippet("vue", "ScheduleToggle.vue", `<script setup>
+</template>`,
+  ),
+  nuxt: frameworkSnippet(
+    "vue",
+    "ScheduleToggle.vue",
+    `<script setup>
 // useThemeSchedule is auto-imported by the module
 const schedule = useThemeSchedule();
 const { state } = schedule;
@@ -297,8 +328,12 @@ const { state } = schedule;
     Timezone: {{ state.timeZone ?? "auto-detected" }} · Sunrise
     {{ state.sunrise?.toLocaleTimeString() }}
   </p>
-</template>`),
-  svelte: frameworkSnippet("svelte", "ScheduleToggle.svelte", `<script>
+</template>`,
+  ),
+  svelte: frameworkSnippet(
+    "svelte",
+    "ScheduleToggle.svelte",
+    `<script>
   import { useThemeSchedule, getThemeSchedule } from "@theme-kit/svelte";
 
   const schedule = useThemeSchedule();
@@ -311,8 +346,12 @@ const { state } = schedule;
   {$schedule.enabled ? "Disable" : "Enable"} schedule
 </button>
 <p>Status: {$schedule.status}</p>
-<p>Timezone: {$schedule.timeZone ?? "auto-detected"}</p>`),
-  solid: frameworkSnippet("tsx", "ScheduleToggle.jsx", `import { useThemeSchedule } from "@theme-kit/solid";
+<p>Timezone: {$schedule.timeZone ?? "auto-detected"}</p>`,
+  ),
+  solid: frameworkSnippet(
+    "tsx",
+    "ScheduleToggle.jsx",
+    `import { useThemeSchedule } from "@theme-kit/solid";
 
 function ScheduleToggle() {
   const schedule = useThemeSchedule();
@@ -333,8 +372,12 @@ function ScheduleToggle() {
       </p>
     </div>
   );
-}`),
-  angular: frameworkSnippet("ts", "schedule-toggle.ts", `import { Component, computed } from "@angular/core";
+}`,
+  ),
+  angular: frameworkSnippet(
+    "ts",
+    "schedule-toggle.ts",
+    `import { Component, computed } from "@angular/core";
 import { injectThemeSchedule } from "@theme-kit/angular";
 
 @Component({
@@ -359,8 +402,12 @@ export class ScheduleToggleComponent {
   toggle() {
     this.enabled() ? this.schedule?.disable() : this.schedule?.enable();
   }
-}`),
-  web: frameworkSnippet("ts", "schedule.ts", `import { getThemeSchedule } from "@theme-kit/web";
+}`,
+  ),
+  web: frameworkSnippet(
+    "ts",
+    "schedule.ts",
+    `import { getThemeSchedule } from "@theme-kit/web";
 
 // Web Components expose the same reactive accessor as the hooks.
 // Returns null when the provider has no scheduled option configured.
@@ -370,8 +417,12 @@ schedule?.enable();   // starts the sunrise/sunset timer
 schedule?.disable();  // stops it — theme stays where it is
 schedule?.set({ timeZone: "Asia/Kathmandu" });           // pin a timezone
 schedule?.set({ latitude: 51.5074, longitude: -0.1278 }); // …or coordinates
-schedule?.set({ autoDetectLocation: true });             // back to auto-detection`),
-  astro: frameworkSnippet("astro", "ScheduleToggle.astro", `---
+schedule?.set({ autoDetectLocation: true });             // back to auto-detection`,
+  ),
+  astro: frameworkSnippet(
+    "astro",
+    "ScheduleToggle.astro",
+    `---
 const { useThemeSchedule } = await import("@theme-kit/astro");
 ---
 <button id="schedule-toggle">Enable schedule</button>
@@ -384,8 +435,12 @@ const { useThemeSchedule } = await import("@theme-kit/astro");
     schedule?.state?.enabled ? schedule?.disable() : schedule?.enable()
   );
   // schedule.set({ timeZone: "Asia/Kathmandu" }) repositions at runtime.
-</script>`),
-  tailwind: frameworkSnippet("ts", "schedule.ts", `import { createThemeRuntime } from "@theme-kit/core";
+</script>`,
+  ),
+  tailwind: frameworkSnippet(
+    "ts",
+    "schedule.ts",
+    `import { createThemeRuntime } from "@theme-kit/core";
 import { themes } from "./themes";
 
 // Tailwind is a CSS layer — scheduling runs in the core runtime
@@ -401,8 +456,12 @@ const runtime = createThemeRuntime({
 
 runtime.schedule.enable();
 runtime.schedule.disable();
-runtime.schedule.set({ timeZone: "Australia/Sydney" });`),
-  remix: frameworkSnippet("tsx", "schedule-toggle.tsx", `// app/routes/schedule-toggle.tsx
+runtime.schedule.set({ timeZone: "Australia/Sydney" });`,
+  ),
+  remix: frameworkSnippet(
+    "tsx",
+    "schedule-toggle.tsx",
+    `// app/routes/schedule-toggle.tsx
 "use client";
 import { useThemeSchedule } from "@theme-kit/remix";
 
@@ -425,7 +484,8 @@ export default function ScheduleToggle() {
       </p>
     </div>
   );
-}`),
+}`,
+  ),
 };
 
 function snippetBlock(snippet: { lang: string; title: string; code: string }) {
@@ -460,31 +520,34 @@ export function SunriseSunsetGuide({
       <section id="how-it-works" className="scroll-mt-24 mb-10">
         <SectionHeading
           num={1}
-          desc="One scheduling engine in core; frameworks only add native reactivity."
+          desc="The schedule lives in the runtime. Frameworks only add their own way of reading it."
         >
           How it works
         </SectionHeading>
         <div className="flex flex-col gap-2 text-sm opacity-80 leading-relaxed">
           <p>
-            <code className="mono text-[0.9em]">calculateSunTimes(date, lat, lon)</code>{" "}
+            <code className="mono text-[0.9em]">
+              calculateSunTimes(date, lat, lon)
+            </code>{" "}
             computes today&apos;s sunrise and sunset using the NOAA solar
             algorithm (zenith-based, corrected for the equation of time). At
             runtime the schedule checks the clock every{" "}
-            <code className="mono text-[0.9em]">checkInterval</code> and
-            applies <code className="mono text-[0.9em]">lightTheme</code>{" "}
-            during the day or{" "}
-            <code className="mono text-[0.9em]">darkTheme</code> at night.
+            <code className="mono text-[0.9em]">checkInterval</code> and applies{" "}
+            <code className="mono text-[0.9em]">lightTheme</code> during the day
+            or <code className="mono text-[0.9em]">darkTheme</code> at night.
           </p>
           <p>
             <strong className="opacity-100">No themes required either.</strong>{" "}
             <code className="mono text-[0.9em]">lightTheme</code> and{" "}
             <code className="mono text-[0.9em]">darkTheme</code> are optional.
-            When omitted, the schedule derives them from the currently
-            selected theme&apos;s family — pick <code className="mono text-[0.9em]">plum-dark</code>{" "}
-            in your switcher and the schedule uses{" "}
+            When omitted, the schedule derives them from the currently selected
+            theme&apos;s family — pick{" "}
+            <code className="mono text-[0.9em]">plum-dark</code> in your
+            switcher and the schedule uses{" "}
             <code className="mono text-[0.9em]">plum-light</code> /{" "}
             <code className="mono text-[0.9em]">plum-dark</code> — and falls
-            back to Theme Kit&apos;s neutral <code className="mono text-[0.9em]">light</code> /{" "}
+            back to Theme Kit&apos;s neutral{" "}
+            <code className="mono text-[0.9em]">light</code> /{" "}
             <code className="mono text-[0.9em]">dark</code> themes when the
             current theme has no family counterpart. The resolved pair
             re-derives automatically whenever the user switches family, and is
@@ -494,9 +557,8 @@ export function SunriseSunsetGuide({
           </p>
           <p>
             <strong className="opacity-100">No coordinates required.</strong>{" "}
-            When you omit{" "}
-            <code className="mono text-[0.9em]">latitude</code> and{" "}
-            <code className="mono text-[0.9em]">longitude</code>, Theme Kit
+            When you omit <code className="mono text-[0.9em]">latitude</code>{" "}
+            and <code className="mono text-[0.9em]">longitude</code>, Theme Kit
             resolves the location from the visitor&apos;s IANA timezone (via{" "}
             <code className="mono text-[0.9em]">
               Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -512,14 +574,16 @@ export function SunriseSunsetGuide({
           </p>
           <p>
             <strong className="opacity-100">SSR boundary.</strong> The engine
-            attaches its timer and DOM apply logic only on the client
-            (<code className="mono text-[0.9em]">typeof window !== "undefined"</code>),
-            and auto-detection runs only on the client too — so server renders
-            never leak timers and stay deterministic. Your SSR framework
-            resolves the initial theme as usual (zero flash of the wrong
-            theme); the client-side schedule takes over activation from there.
-            Configure the schedule on the server provider (Next.js / Nuxt) and
-            the same settings apply to the hydrated client runtime.
+            attaches its timer and DOM apply logic only on the client (
+            <code className="mono text-[0.9em]">
+              typeof window !== "undefined"
+            </code>
+            ), and auto-detection runs only on the client too — so server
+            renders never leak timers and stay deterministic. Your SSR framework
+            resolves the initial theme as usual (zero-flash of the wrong theme);
+            the client-side schedule takes over activation from there. Configure
+            the schedule on the server provider (Next.js / Nuxt) and the same
+            settings apply to the hydrated client runtime.
           </p>
           <p>
             Because detection happens per visitor, the schedule is correct
@@ -534,7 +598,7 @@ export function SunriseSunsetGuide({
       <section id="setup" className="scroll-mt-24 mb-10">
         <SectionHeading
           num={2}
-          desc="Pass `scheduled` to your provider (or module). One block, no per-framework solar engine."
+          desc="Pass `scheduled` to your provider, or set it in your module config. One block."
         >
           Setup
         </SectionHeading>
@@ -544,7 +608,7 @@ export function SunriseSunsetGuide({
       <section id="read-control" className="scroll-mt-24 mb-10">
         <SectionHeading
           num={3}
-          desc="The accessor exposes the same contract everywhere: reactive `enabled`, `active`, `status`, `sunrise`, `sunset`, `nextTransition`, `timeZone`, `latitude`, `longitude`, plus `enable()` / `disable()` / `set()`."
+          desc="`useThemeSchedule()` returns `null` when no schedule is configured, and a reactive controller when one is — `enabled`, `active`, `status`, `sunrise`, `sunset`, `nextTransition` and the `enable()` / `disable()` / `set()` methods."
         >
           Read &amp; control the schedule
         </SectionHeading>
@@ -555,8 +619,7 @@ export function SunriseSunsetGuide({
           <code className="mono text-[0.9em]">enabled</code> — schedule is on.{" "}
           <code className="mono text-[0.9em]">active</code> — enabled{" "}
           <em>and</em> the applied theme is one of the scheduled light/dark
-          themes.{" "}
-          <code className="mono text-[0.9em]">status</code> —{" "}
+          themes. <code className="mono text-[0.9em]">status</code> —{" "}
           <code className="mono text-[0.9em]">"active"</code> or{" "}
           <code className="mono text-[0.9em]">"disabled"</code>.{" "}
           <code className="mono text-[0.9em]">timeZone</code> — the resolved
@@ -564,15 +627,13 @@ export function SunriseSunsetGuide({
           explicit coordinates are used).{" "}
           <code className="mono text-[0.9em]">latitude</code> /{" "}
           <code className="mono text-[0.9em]">longitude</code> — the resolved
-          coordinates.{" "}
-          <code className="mono text-[0.9em]">autoDetected</code> — coordinates
-          came from a timezone rather than explicit values.{" "}
+          coordinates. <code className="mono text-[0.9em]">autoDetected</code> —
+          coordinates came from a timezone rather than explicit values.{" "}
           <code className="mono text-[0.9em]">lightTheme</code> /{" "}
           <code className="mono text-[0.9em]">darkTheme</code> — the resolved
           scheduled pair (auto-derived from the current theme family when not
-          configured).{" "}
-          <code className="mono text-[0.9em]">nextTransition</code> —{" "}
-          <code className="mono text-[0.9em]">{"{ at, theme, type }"}</code>{" "}
+          configured). <code className="mono text-[0.9em]">nextTransition</code>{" "}
+          — <code className="mono text-[0.9em]">{"{ at, theme, type }"}</code>{" "}
           where <code className="mono text-[0.9em]">type</code> is{" "}
           <code className="mono text-[0.9em]">"activation"</code> (sunrise) or{" "}
           <code className="mono text-[0.9em]">"deactivation"</code> (sunset).
@@ -582,7 +643,7 @@ export function SunriseSunsetGuide({
       <section id="options" className="scroll-mt-24 mb-10">
         <SectionHeading
           num={4}
-          desc="Every `scheduled` option, and the runtime `set()` method for repositioning."
+          desc="Every option `scheduled` accepts, plus the runtime `set()` for repositioning."
         >
           Options
         </SectionHeading>
@@ -597,7 +658,10 @@ export function SunriseSunsetGuide({
             </thead>
             <tbody>
               {optionRows.map((row) => (
-                <tr key={row.name} className="border-b border-border last:border-0">
+                <tr
+                  key={row.name}
+                  className="border-b border-border last:border-0"
+                >
                   <td className="px-4 py-2 mono text-[0.9em] align-top">
                     {row.name}
                   </td>
@@ -621,8 +685,8 @@ export function SunriseSunsetGuide({
                   <code className="mono text-[0.9em]">latitude</code>,{" "}
                   <code className="mono text-[0.9em]">longitude</code>,{" "}
                   <code className="mono text-[0.9em]">timeZone</code>,{" "}
-                  <code className="mono text-[0.9em]">autoDetectLocation</code>
-                  , <code className="mono text-[0.9em]">checkInterval</code>,{" "}
+                  <code className="mono text-[0.9em]">autoDetectLocation</code>,{" "}
+                  <code className="mono text-[0.9em]">checkInterval</code>,{" "}
                   <code className="mono text-[0.9em]">skipApplyMs</code> or{" "}
                   <code className="mono text-[0.9em]">enabled</code>. Pass{" "}
                   <code className="mono text-[0.9em]">
@@ -651,10 +715,10 @@ export function SunriseSunsetGuide({
             <code className="mono text-[0.9em]">checkInterval</code>.
           </li>
           <li>
-            A manual pick of any other theme is honored until the next check,
-            at which point the schedule re-applies its light/dark selection.
-            While overridden, <code className="mono text-[0.9em]">active</code>{" "}
-            is <code className="mono text-[0.9em]">false</code>.
+            A manual pick of any other theme is honored until the next check, at
+            which point the schedule re-applies its light/dark selection. While
+            overridden, <code className="mono text-[0.9em]">active</code> is{" "}
+            <code className="mono text-[0.9em]">false</code>.
           </li>
           <li>
             <code className="mono text-[0.9em]">skipApplyMs</code> widens the
@@ -666,8 +730,9 @@ export function SunriseSunsetGuide({
             current theme untouched — the schedule simply stops re-applying.
           </li>
           <li>
-            If a configured <code className="mono text-[0.9em]">lightTheme</code>{" "}
-            or <code className="mono text-[0.9em]">darkTheme</code> doesn&apos;t
+            If a configured{" "}
+            <code className="mono text-[0.9em]">lightTheme</code> or{" "}
+            <code className="mono text-[0.9em]">darkTheme</code> doesn&apos;t
             exist in the theme registry, the schedule stays off (status{" "}
             <code className="mono text-[0.9em]">"disabled"</code>).
           </li>

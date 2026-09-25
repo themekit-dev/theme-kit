@@ -19,7 +19,6 @@ switches the theme at the right moment:
 import { createThemeRuntime } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   scheduled: {
     // Everything optional. lightTheme/darkTheme adapt to the currently
     // selected theme family (fallback: neutral light/dark), and each

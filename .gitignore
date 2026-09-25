@@ -9,6 +9,9 @@ build
 .nuxt
 .output
 
+# Svelte components compiled by packages/svelte/scripts/compile-svelte.mjs
+packages/svelte/src/generated
+
 # TypeScript
 *.tsbuildinfo
 
@@ -17,6 +20,14 @@ coverage
 
 # Logs
 *.log
+# Captured stderr from the audit / release-gate runs
+*.err
+
+# tsup writes a bundled copy of its config next to the config file
+tsup.config.bundled_*.mjs
+
+# Scratch scripts — a leading underscore marks throwaway diagnostics
+scripts/**/_*.mjs
 
 # Environment
 .env
@@ -33,13 +44,10 @@ coverage
 .DS_Store
 Thumbs.db
 
-# Kilo / agent state
-.kilo/
-
 # Vercel
 .vercel
 
-# Release tooling — generated reports and tarballs
+# Release tooling — reports and tarballs
 scripts/release/reports/
 scripts/release/export-inventory-output.txt
 release-test/tarballs/
@@ -47,11 +55,41 @@ release-test/*/node_modules/
 release-test/*/package-lock.json
 release-test/pack-verify-report.json
 
-# Test fixtures that are generated at install time
+# Test fixtures
 release-test/vanilla-app/package.json
 release-test/react-app/package.json
 release-test/cli-app/package.json
 release-test/clean-app/package.json
 
-# Examples (local playgrounds — not part of the published packages)
-/examples/
+# Examples (local playgrounds)
+/examples/*
+/examples/apps/*
+!/examples/basic-theme/
+!/examples/theme-scope/
+!/examples/persistence/
+!/examples/transitions/
+!/examples/scheduling/
+!/examples/custom-scrollbar/
+!/examples/history/
+!/examples/snapshots/
+!/examples/themes/
+!/examples/tokens/
+!/examples/runtime/
+!/examples/scopes/
+!/examples/multi-window-sync/
+!/examples/sunrise-sunset/
+!/examples/accessibility/
+!/examples/theme-generation/
+!/examples/plugins/
+!/examples/zero-flash/
+!/examples/cli/
+!/examples/families-modes/
+!/examples/devtools/
+!/examples/diagnostics/
+# repository documentation
+!/examples/README.md
+
+# Local tooling state — machine-local
+.playwright-mcp/
+.workbuddy-ai/
+.kilo/

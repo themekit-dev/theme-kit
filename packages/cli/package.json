@@ -27,7 +27,7 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "@theme-kit/core": "workspace:*"
+    "@theme-kit/core": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

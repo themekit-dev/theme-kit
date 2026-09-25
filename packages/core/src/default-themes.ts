@@ -105,6 +105,13 @@ function makeTheme(family: Family, mode: "light" | "dark") {
   });
 }
 
+/**
+ * Build the default theme family set: a light and dark theme for each of the
+ * built-in color families (oat, berry, mint, citrus, cocoa, plum).
+ *
+ * @returns An array of `ThemeDefinition` objects, one light and one dark per
+ *   family, ready to be registered with a theme runtime.
+ */
 export function getDefaultThemes() {
   return families.flatMap((family) => [
     makeTheme(family, "light"),

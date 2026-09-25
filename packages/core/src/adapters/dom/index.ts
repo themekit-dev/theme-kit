@@ -7,6 +7,9 @@ import type { DOMBindingOptions } from "./types";
  * Create a binding that syncs the store theme to the DOM: `data-theme`,
  *    `data-theme-mode`, `data-theme-family`, the `dark` class, and the
  *    `color-scheme` style — with transition support.
+ *
+ * @see {@link DOMBindingOptions}
+ * @see {@link createCSSVariablesBinding}
  */
 export function createDOMBinding(
   store: ThemeStore,
@@ -28,11 +31,14 @@ export function createDOMBinding(
   // (no white-shift) and nothing pipes a second View Transition on top.
   const subscribe = options.subscribe ?? true;
 
+  const selection = options.selection ?? null;
+
   const applyTheme = (theme: ThemeDefinition, emitOptions?: { suppressTransition?: boolean }) => {
     applyDOMEffects({
       target,
       attributeName,
       theme,
+      selection,
       ...(options.transition !== undefined
         ? {
             transition: {
@@ -49,6 +55,21 @@ export function createDOMBinding(
     });
   };
 
+  // The selection attributes need their own subscription. A selection change
+  // that resolves to the same theme — `setMode("light")` while the OS
+  // preference is already light, or `setMode("system")` while the resolved
+  // theme is unchanged — emits no store change, so the store subscription
+  // alone would leave `data-theme-selection-mode` describing the previous
+  // choice.
+  //
+  // It is deliberately wired even when the store subscription is not, because
+  // it is not a second theme write: a same-theme selection change leaves every
+  // `--theme-*` variable untouched, so applying it on its own cannot publish a
+  // half-applied palette. When the store subscription *is* disabled, this is
+  // the only thing that keeps the selection attributes honest.
+  const unsubscribeSelection =
+    selection?.subscribe(() => applyTheme(store.get())) ?? null;
+
   if (subscribe) {
     // Initial synchronization must never animate. The theme bootstrap (when
     // present) has already established the first-paint state, and a binding
@@ -56,17 +77,24 @@ export function createDOMBinding(
     // theme change.
     applyTheme(store.get(), { suppressTransition: true });
     const unsubscribe = store.subscribe(applyTheme);
+
     return {
       apply: applyTheme,
       destroy() {
         unsubscribe();
+        unsubscribeSelection?.();
       },
     };
   }
 
+  // No store subscription: a co-binding (the CSS-variables binding) drives
+  // `apply` from inside its own single commit point via `onBeforeSwap`. See
+  // the note on `subscribe` in {@link DOMBindingOptions}.
   return {
     apply: applyTheme,
-    destroy() {},
+    destroy() {
+      unsubscribeSelection?.();
+    },
   };
 }
 

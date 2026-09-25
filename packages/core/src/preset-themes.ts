@@ -458,6 +458,18 @@ const palettes: Palette[] = [
   },
 ];
 
+/**
+ * Build the curated preset theme set: a light and dark theme for each preset
+ * color family (oat, berry, mint, citrus, cocoa, plum, iris, sky, graphite).
+ *
+ * Each preset is a WCAG-conscious token set with per-palette foreground colors
+ * chosen for readability. Optional per-family, per-mode token overrides are
+ * applied on top of the base palettes.
+ *
+ * @param overrides Optional per-family, per-mode token overrides.
+ * @returns An array of preset theme definitions, one light and one dark per
+ *   family.
+ */
 export function getPresetThemes(overrides?: PresetOverrides) {
   return palettes.flatMap((palette) => [
     makeTheme(palette, "light", overrides?.[palette.family]?.light),

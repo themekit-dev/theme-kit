@@ -22,12 +22,12 @@
     "test": "vitest"
   },
   "peerDependencies": {
+    "@unocss/core": "^66.0.0",
     "unocss": "^66.0.0"
   },
   "dependencies": {
-    "@theme-kit/adapters": "workspace:*",
-    "@theme-kit/core": "workspace:*",
-    "@unocss/core": "^66.0.0"
+    "@theme-kit/adapters": "workspace:^",
+    "@theme-kit/core": "workspace:^"
   },
   "devDependencies": {
     "unocss": "^66.0.0",

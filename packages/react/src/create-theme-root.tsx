@@ -24,14 +24,11 @@ import { ThemeProvider, type ThemeProviderProps } from "./provider";
  *   ```tsx
  *   createThemeRoot({
  *     container,
- *     themes,
  *     defaultTheme: "mint-light",
  *     initialMode: "system",
  *     render: ({ runtime }) => (
- *       <MuiThemeProvider theme={createMuiTheme(runtime)}>
- *         <QueryClientProvider client={queryClient}>
- *           <App />
- *         </QueryClientProvider>
+ *       <MuiThemeProvider runtime={runtime}>
+ *         <App />
  *       </MuiThemeProvider>
  *     ),
  *   });
@@ -39,8 +36,9 @@ import { ThemeProvider, type ThemeProviderProps } from "./provider";
  *
  *   Composition belongs in JSX, so arbitrary provider trees (MUI, Chakra,
  *   React Query, Redux, Router, …) are fully under the application's control.
- *   `render` is the primary (and only) composition mechanism — there is no
- *   separate `children` option.
+ *   `MuiThemeProvider` above is the `@theme-kit/mui` adapter provider, which
+ *   takes the runtime directly. `render` is the primary (and only) composition
+ *   mechanism — there is no separate `children` option.
  */
 export interface CreateThemeRootOptions<T extends ThemeDefinition>
   extends Omit<ThemeProviderProps<T>, "children" | "runtime"> {
@@ -78,7 +76,7 @@ export interface ThemeRootHandle<T extends ThemeDefinition> {
  * ```tsx
  * const root = createRoot(container);
  * root.render(
- *   <ThemeProvider themes={themes} defaultTheme="mint-light" initialMode="system">
+ *   <ThemeProvider defaultTheme="mint-light" initialMode="system">
  *     <App />
  *   </ThemeProvider>,
  * );
@@ -93,12 +91,11 @@ export interface ThemeRootHandle<T extends ThemeDefinition> {
  *
  * const handle = createThemeRoot({
  *   container: document.getElementById("root")!,
- *   themes,
  *   defaultTheme: "mint-light",
  *   initialMode: "system",
  *   transition: { enabled: true },
  *   render: ({ runtime }) => (
- *     <MuiThemeProvider theme={createMuiTheme(runtime)}>
+ *     <MuiThemeProvider runtime={runtime}>
  *       <App />
  *     </MuiThemeProvider>
  *   ),
@@ -115,6 +112,8 @@ export interface ThemeRootHandle<T extends ThemeDefinition> {
  * Do **not** use this helper for SSR/SSG applications — server-rendered HTML
  * must be hydrated with `hydrateRoot()` (or a framework integration such as
  * `@theme-kit/next`), not replaced by a fresh `createRoot`.
+ *
+ * @see {@link ThemeProvider}
  */
 export function createThemeRoot<T extends ThemeDefinition>(
   options: CreateThemeRootOptions<T>,

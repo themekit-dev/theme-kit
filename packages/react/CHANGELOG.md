@@ -1,5 +1,40 @@
 # @theme-kit/react
 
+## 1.3.1
+
+### Patch Changes
+
+- Type the `useThemeLifecycle()` handler per event name instead of `unknown`.
+
+  `runtime.lifecycle.on` in `@theme-kit/core` is generic over the event name —
+  `on("beforeThemeChange", ({ next }) => …)` gives you `next: T`. The React
+  wrapper widened the handler to `(data: unknown) => void`, so the same call in a
+  component lost the payload type and `data.next` did not compile, despite the
+  docs describing these as "typed lifecycle events".
+
+  ```ts
+  // before — `data` is `unknown`
+  on: (event: ThemeLifecycleEventName, listener: (data: unknown) => void) => () => void;
+
+  // after
+  on: <K extends ThemeLifecycleEventName>(
+    event: K,
+    listener: (data: ThemeLifecycleEventMap<T>[K]) => void,
+  ) => () => void;
+  ```
+
+  Type-only: the runtime behaviour is unchanged and no exports were added or
+  removed. Handlers that took `unknown` still typecheck (a function accepting
+  `unknown` is assignable to one accepting a specific payload), so this only turns
+  previously-erroring code into working code.
+
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+  - @theme-kit/core@1.4.0
+
 ## 1.3.0
 
 ### Minor Changes

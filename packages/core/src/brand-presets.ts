@@ -223,6 +223,13 @@ function makeTheme(
   });
 }
 
+/**
+ * Build the brand preset theme set: a light and dark theme for each brand
+ * (Apple, GitHub, Vercel, Slack, Discord), using each brand's signature colors.
+ *
+ * @returns An array of brand theme definitions, one light and one dark per
+ *   brand.
+ */
 export function getBrandPresets() {
   return brands.flatMap((brand) => [
     makeTheme(brand, "light"),

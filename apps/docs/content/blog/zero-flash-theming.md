@@ -22,7 +22,7 @@ import { ThemeProvider } from "@theme-kit/next";
 
 export default function RootLayout({ children }) {
   return (
-    <ThemeProvider themes={themes} defaultTheme="light">
+    <ThemeProvider defaultTheme="light">
       {children}
     </ThemeProvider>
   );
@@ -41,9 +41,9 @@ reads the persisted selection from `localStorage`, falls back to
 `prefers-color-scheme`, and flips `data-theme` before the browser paints:
 
 ```ts
-import { createThemeBootstrapScript } from "@theme-kit/core";
+import { createThemeBootstrapScript, getBuiltInThemes } from "@theme-kit/core";
 
-const script = createThemeBootstrapScript({ themes, defaultTheme: "light" });
+const script = createThemeBootstrapScript({ themes: getBuiltInThemes(), defaultTheme: "light" });
 // → a self-contained <script> string you can inline in <head>
 ```
 

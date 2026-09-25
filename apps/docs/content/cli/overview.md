@@ -76,5 +76,18 @@ The CLI is deliberately file-oriented: it reads a theme, prints, and exits.
 It has **no config files**, no daemon, no editor, and no implicit workspace —
 the only "opinion" is the JSON theme format it reads and writes.
 
+## Next Steps
+
+- [Install the CLI](/cli/installation) — global, npx, or project-local.
+- [Run a 5-minute Quick Start](/cli/quickstart) — generate, validate, inspect, export.
+- [Use in CI](/cli/ci) — exit codes as a gate.
+- [Explore workflows](/cli/workflows) — the authoring loop, light/dark pairs.
+
+## Related
+
+- [Theme Kit Quick Start](/quick-start)
+- [Custom Themes](/custom-themes)
+- [API Reference](/api-reference)
+
 Next: [Installation](/cli/installation), or jump straight to a
 [Quick Start](/cli/quickstart) workflow.

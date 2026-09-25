@@ -29,9 +29,8 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@theme-kit/adapters": "workspace:*",
-    "@theme-kit/core": "workspace:*",
-    "@theme-kit/react": "workspace:*"
+    "@theme-kit/adapters": "workspace:^",
+    "@theme-kit/core": "workspace:^"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",

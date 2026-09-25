@@ -66,126 +66,144 @@ function cssAdapterFrameworks(opts: {
     {
       label: "React",
       lang: "tsx",
-      code: `import { ThemeProvider } from "@theme-kit/react";
-import { ${hook} } from "${pkg}";
+      code: `// src/components/InstallAdapter.tsx
+import { useThemeRuntime } from "@theme-kit/react";
+import { ${hook} } from "${pkg}/react";
 
-function Inside() {
-  ${hook}();
+// Mount this inside <ThemeProvider>. The hook registers the adapter on the
+// provider's runtime and disposes it when the component unmounts.
+export function InstallAdapter() {
+  ${hook}(useThemeRuntime());
   return null;
-}
-
-export function App() {
-  return (
-    <ThemeProvider>
-      <Inside />
-      <YourApp />
-    </ThemeProvider>
-  );
 }`,
     },
     {
       label: "Vue 3",
       lang: "vue",
-      code: `<script setup>
-import { createThemeRuntime } from "@theme-kit/core";
-import { provideThemeRuntime, ${hook} } from "@theme-kit/vue";
+      code: `<!-- src/components/InstallAdapter.vue -->
+<script setup lang="ts">
+import { useThemeRuntime } from "@theme-kit/vue";
+import { ${hook} } from "${pkg}/vue";
 
-provideThemeRuntime(createThemeRuntime({ initial: "light" }));
-${hook}();
+// Mount this inside <ThemeProvider>.
+${hook}(useThemeRuntime());
 </script>
 
 <template>
-  <YourApp />
+  <!-- renders nothing -->
 </template>`,
     },
     {
       label: "Svelte",
       lang: "svelte",
-      code: `<script>
-  import { createThemeRuntime } from "@theme-kit/core";
-  import { setThemeRuntime, ${hook} } from "@theme-kit/svelte";
+      code: `<!-- src/components/InstallAdapter.svelte -->
+<script lang="ts">
+  import { getThemeRuntime } from "@theme-kit/svelte";
+  import { ${hook} } from "${pkg}/svelte";
 
-  setThemeRuntime(createThemeRuntime({ initial: "light" }));
-  ${hook}();
-</script>
-
-<YourApp />`,
+  // Mount this inside <ThemeProvider>.
+  ${hook}(getThemeRuntime());
+</script>`,
     },
     {
       label: "Solid",
       lang: "tsx",
-      code: `import { ThemeProvider, ${hook} } from "@theme-kit/solid";
+      code: `// src/components/InstallAdapter.tsx
+import { useThemeRuntime } from "@theme-kit/solid";
+import { ${hook} } from "${pkg}/solid";
 
-export function App() {
-  ${hook}();
-  return <YourApp />;
+// Mount this inside <ThemeProvider>.
+export function InstallAdapter() {
+  ${hook}(useThemeRuntime());
+  return null;
 }`,
     },
     {
       label: "Angular",
       lang: "ts",
-      code: `import { provideThemeKit, ${injectable} } from "@theme-kit/angular";
+      code: `// src/app/app.component.ts
+import { Component } from "@angular/core";
+import { injectThemeRuntime } from "@theme-kit/angular";
+import { ${injectable} } from "${pkg}/angular";
 
-// app.config.ts
-export const appConfig: ApplicationConfig = {
-  providers: [provideThemeKit({ themes: getBuiltInThemes() })],
-};
-
-// app.component.ts
-@Component({})
+@Component({
+  selector: "app-root",
+  standalone: true,
+  template: "<router-outlet />",
+})
 export class AppComponent {
   constructor() {
-    ${injectable}();
+    // A constructor IS an injection context. The adapter is registered on the
+    // runtime provided by provideThemeKit() and disposed with the component.
+    ${injectable}(injectThemeRuntime());
   }
 }`,
     },
     {
       label: "Next.js",
       lang: "tsx",
-      code: `"use client";
-import { ${hook} } from "@theme-kit/next/client";
+      code: `// app/install-adapter.tsx
+"use client";
+import { useThemeRuntime } from "@theme-kit/next/client";
+import { ${hook} } from "${pkg}/react";
 
-export function RootClient() {
-  ${hook}();
+// Mount this anywhere below the root layout's <ThemeProvider>.
+export function InstallAdapter() {
+  ${hook}(useThemeRuntime());
   return null;
 }`,
     },
     {
       label: "Nuxt",
       lang: "vue",
-      code: `<script setup>
-import { ${hook} } from "@theme-kit/nuxt";
+      code: `<!-- components/InstallAdapter.vue -->
+<script setup lang="ts">
+import { useThemeRuntime } from "@theme-kit/nuxt";
+import { ${hook} } from "${pkg}/vue";
 
-${hook}();
+// The module already provides the runtime — just mount this in your app.
+${hook}(useThemeRuntime());
 </script>
 
 <template>
-  <YourApp />
+  <!-- renders nothing -->
 </template>`,
     },
     {
       label: "Remix",
       lang: "tsx",
-      code: `import { ${hook} } from "@theme-kit/remix";
+      code: `// app/components/install-adapter.tsx
+import { useThemeRuntime } from "@theme-kit/remix";
+import { ${hook} } from "${pkg}/react";
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  ${hook}();
-  return <>{children}</>;
+// Mount this below the <ThemeProvider> in app/root.tsx.
+export function InstallAdapter() {
+  ${hook}(useThemeRuntime());
+  return null;
 }`,
     },
     {
       label: "Astro",
       lang: "tsx",
-      code: `// src/components/theme-adapter.tsx (client island)
-import { ${hook} } from "@theme-kit/astro/client";
+      code: `// src/components/ThemeIsland.tsx
+import { ThemeProviderClient, useThemeRuntime } from "@theme-kit/astro/client";
+import { ${hook} } from "${pkg}/react";
 
-export default function ThemeAdapter() {
-  ${hook}();
+function InstallAdapter() {
+  ${hook}(useThemeRuntime());
   return null;
 }
 
-// In layout.astro:
-// <ThemeAdapter client:only="react" />`,
+// ThemeProviderClient renders nothing — it installs the runtime. The adapter is
+// a sibling that reads it, and both hydrate as one island.
+export default function ThemeIsland() {
+  return (
+    <>
+      <ThemeProviderClient initialMode="system" />
+      <InstallAdapter />
+    </>
+  );
+}`,
     },
   ];
 }
@@ -199,33 +217,29 @@ function generatedThemeFrameworks(opts: {
     {
       label: "React",
       lang: "tsx",
-      code: `import { ThemeProvider, useThemeRuntime } from "@theme-kit/react";
+      code: `// src/components/ThemeZone.tsx
+import type { ReactNode } from "react";
+import { useThemeRuntime } from "@theme-kit/react";
 import { ${provider} } from "${pkg}";
 
-function Zone() {
+// Mount this inside <ThemeProvider>. The provider rebuilds the library's
+// native theme from Theme Kit tokens on every theme change.
+export function ThemeZone({ children }: { children: ReactNode }) {
   const runtime = useThemeRuntime();
-  return (
-    <${provider} runtime={runtime}>
-      <YourApp />
-    </${provider}>
-  );
-}
-
-export function App() {
-  return (
-    <ThemeProvider>
-      <Zone />
-    </ThemeProvider>
-  );
+  return <${provider} runtime={runtime}>{children}</${provider}>;
 }`,
     },
     {
       label: "Next.js",
       lang: "tsx",
-      code: `"use client";
-import { ${provider}, useThemeRuntime } from "@theme-kit/next/client";
+      code: `// app/theme-zone.tsx
+"use client";
+import type { ReactNode } from "react";
+import { useThemeRuntime } from "@theme-kit/next/client";
+import { ${provider} } from "${pkg}";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+// Mount this below the root layout's <ThemeProvider>.
+export function ThemeZone({ children }: { children: ReactNode }) {
   const runtime = useThemeRuntime();
   return <${provider} runtime={runtime}>{children}</${provider}>;
 }`,
@@ -233,9 +247,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
     {
       label: "Remix",
       lang: "tsx",
-      code: `import { ${provider}, useThemeRuntime } from "@theme-kit/remix";
+      code: `// app/components/theme-zone.tsx
+import type { ReactNode } from "react";
+import { useThemeRuntime } from "@theme-kit/remix";
+import { ${provider} } from "${pkg}";
 
-export function RootLayout({ children }: { children: React.ReactNode }) {
+// Mount this below the <ThemeProvider> in app/root.tsx.
+export function ThemeZone({ children }: { children: ReactNode }) {
   const runtime = useThemeRuntime();
   return <${provider} runtime={runtime}>{children}</${provider}>;
 }`,
@@ -243,16 +261,19 @@ export function RootLayout({ children }: { children: React.ReactNode }) {
     {
       label: "Astro",
       lang: "tsx",
-      code: `// src/components/zone.tsx (client island)
-import { ${provider}, useThemeRuntime } from "@theme-kit/astro/client";
+      code: `// src/components/ThemeZone.tsx (client island)
+import type { ReactNode } from "react";
+import { useThemeRuntime } from "@theme-kit/astro/client";
+import { ${provider} } from "${pkg}";
 
-export default function Zone({ children }: { children: React.ReactNode }) {
+export default function ThemeZone({ children }: { children: ReactNode }) {
   const runtime = useThemeRuntime();
   return <${provider} runtime={runtime}>{children}</${provider}>;
 }
 
-// In layout.astro:
-// <Zone client:only="react">{children}</Zone>`,
+// In your page — ThemeProviderClient installs the shared runtime first:
+//   <ThemeProviderClient client:only="react" />
+//   <ThemeZone client:only="react">{/* … */}</ThemeZone>`,
     },
   ];
 }
@@ -261,19 +282,19 @@ function unocssFrameworkExample(): LibraryFrameworkExample[] {
   return [
     {
       label: "Any framework",
-      lang: "tsx",
-      code: `// vite.config.ts
+      lang: "ts",
+      code: `// vite.config.ts — the preset exposes Theme Kit tokens as utilities such as
+// \`bg-primary\`, \`text-foreground\`, \`border-border\` and \`rounded-lg\`. Their
+// values reference the live \`--theme-*\` variables, so they follow whichever
+// theme is active at runtime — no rebuild needed when the theme changes.
 import { defineConfig } from "vite";
 import UnoCSS from "unocss/vite";
-import presetUno from "unocss/preset-uno";
+import { presetWind3 } from "unocss";
 import { presetThemeKit } from "@theme-kit/unocss";
 
 export default defineConfig({
-  plugins: [UnoCSS({ presets: [presetUno(), presetThemeKit()] })],
-});
-
-// Then use the semantic utilities in whatever framework you like:
-<div className="bg-primary text-primary-foreground rounded-lg shadow-md" />`,
+  plugins: [UnoCSS({ presets: [presetWind3(), presetThemeKit()] })],
+});`,
     },
   ];
 }
@@ -304,12 +325,12 @@ export const rawLibraries: RawLibrary[] = [
             desc: "Installs a tagged `:root` style element whose `--*` variables (colors, radius, border, shadow, typography) update as the theme changes.",
           },
           {
-            name: "createShadcnVariables(source)",
-            desc: "Generates the concrete shadcn CSS-variable map from a theme definition or tokens, without touching the DOM.",
+            name: "createShadcnVariables(tokens)",
+            desc: "Deprecated — prefer `createShadcnAdapter`. Generates the shadcn CSS-variable map from a token set (`theme.tokens`), without touching the DOM. Passing a theme definition yields empty values.",
           },
           {
-            name: "useShadcnTheme(options?)",
-            desc: "React hook that creates, installs, and disposes the adapter onto the active runtime. Call once in your app root.",
+            name: "useShadcnTheme(runtime, options?)",
+            desc: "React hook (from `@theme-kit/shadcn/react`) that installs and disposes the adapter onto an explicit runtime. Call once in your app root.",
           },
           {
             name: "injectShadcnCSS()",
@@ -335,13 +356,14 @@ export const rawLibraries: RawLibrary[] = [
       title: "Standalone variables",
       lang: "ts",
       code: `import { createShadcnVariables } from "@theme-kit/shadcn";
-import { resolveInitialTheme, getBuiltInThemes } from "@theme-kit/core";
+import { getBuiltInThemes } from "@theme-kit/core";
 
-const themes = getBuiltInThemes();
-const { theme } = resolveInitialTheme({ themes, family: "mint" });
+// These factories read \`tokens\` as-is — pass the token set, not a theme and
+// not a \`{ family, mode }\` pair. Built-in themes ship a complete token set.
+const [theme] = getBuiltInThemes();
 
-const css = createShadcnVariables(theme);
-// css -> { "--background": "#...", "--primary": "#...", ... }`,
+const css = createShadcnVariables(theme.tokens!);
+// css -> { "--background": "#f8fafc", "--foreground": "#0f172a", … }`,
     },
   },
   {
@@ -369,12 +391,12 @@ const css = createShadcnVariables(theme);
             desc: "Maintains a tagged `:root` style element with concrete Bootstrap variables, including derived color pairs, kept in sync at runtime.",
           },
           {
-            name: "createBootstrapVariables(source)",
-            desc: "Produces the concrete Bootstrap CSS custom-property map from a theme source — no DOM required.",
+            name: "createBootstrapVariables(tokens)",
+            desc: "Produces the concrete Bootstrap CSS custom-property map from a token set (`theme.tokens`) — no DOM required. A theme definition leaves the derived color pairs empty.",
           },
           {
-            name: "useBootstrapTheme(options?)",
-            desc: "React hook that creates, installs, and disposes the adapter on the current runtime.",
+            name: "useBootstrapTheme(runtime, options?)",
+            desc: "React hook (from `@theme-kit/bootstrap/react`) that installs and disposes the adapter on the current runtime.",
           },
           {
             name: "injectBootstrapCSS()",
@@ -400,12 +422,14 @@ const css = createShadcnVariables(theme);
       title: "Static variables",
       lang: "ts",
       code: `import { createBootstrapVariables } from "@theme-kit/bootstrap";
+import { getBuiltInThemes } from "@theme-kit/core";
 
-const css = createBootstrapVariables({
-  family: "plum",
-  mode: "dark",
-});
-// css -> { "--bs-body-bg": "...", "--bs-primary": "...", ... }`,
+// Pass the token set — a \`{ family, mode }\` pair is not a ThemeTokens and
+// silently yields empty values ("--bs-body-bg": "").
+const [theme] = getBuiltInThemes();
+
+const css = createBootstrapVariables(theme.tokens!);
+// css -> { "--bs-body-bg": "#f8fafc", "--bs-body-color": "#0f172a", … }`,
     },
   },
   {
@@ -433,12 +457,12 @@ const css = createBootstrapVariables({
             desc: "Installs a tagged `:root` style element with concrete daisyUI variables (background, foreground, base-100/200/300, primary, etc.).",
           },
           {
-            name: "createDaisyVariables(source)",
-            desc: "Generates the daisyUI CSS custom-property map from a theme definition or tokens.",
+            name: "createDaisyVariables(tokens)",
+            desc: "Generates the daisyUI CSS custom-property map from a token set (`theme.tokens`). A theme definition collapses the output to radius tokens only.",
           },
           {
-            name: "useDaisyTheme(options?)",
-            desc: "React hook that installs the daisyUI adapter onto the active runtime.",
+            name: "useDaisyTheme(runtime, options?)",
+            desc: "React hook (from `@theme-kit/daisyui/react`) that installs the daisyUI adapter onto an explicit runtime.",
           },
           {
             name: "injectDaisyCSS()",
@@ -464,9 +488,14 @@ const css = createBootstrapVariables({
       title: "Static variables",
       lang: "ts",
       code: `import { createDaisyVariables } from "@theme-kit/daisyui";
+import { getBuiltInThemes } from "@theme-kit/core";
 
-const css = createDaisyVariables({ family: "berry", mode: "dark" });
-// css contains --dbg-base-100, --dbg-primary, --dbg-accent, ...`,
+// Pass the token set — a \`{ family, mode }\` pair yields only the radius and
+// border variables, with every color missing.
+const [theme] = getBuiltInThemes();
+
+const css = createDaisyVariables(theme.tokens!);
+// css -> { "--color-base-100": "#f8fafc", "--color-primary": "…", … }`,
     },
   },
   {
@@ -494,12 +523,12 @@ const css = createDaisyVariables({ family: "berry", mode: "dark" });
             desc: "Installs a tagged `:root` style element with concrete `--op-*` variables updated as the theme changes.",
           },
           {
-            name: "createOpenPropsVariables(source)",
-            desc: "Builds the Open Props variable map from a theme definition or tokens.",
+            name: "createOpenPropsVariables(tokens)",
+            desc: "Builds the Open Props variable map from a token set (`theme.tokens`). A theme definition leaves the color entries empty.",
           },
           {
-            name: "useOpenPropsTheme(options?)",
-            desc: "React hook that installs the Open Props adapter onto the active runtime.",
+            name: "useOpenPropsTheme(runtime, options?)",
+            desc: "React hook (from `@theme-kit/open-props/react`) that installs the Open Props adapter onto an explicit runtime.",
           },
           {
             name: "injectOpenPropsCSS()",
@@ -525,9 +554,12 @@ const css = createDaisyVariables({ family: "berry", mode: "dark" });
       title: "Static variables",
       lang: "ts",
       code: `import { createOpenPropsVariables } from "@theme-kit/open-props";
+import { getBuiltInThemes } from "@theme-kit/core";
 
-const css = createOpenPropsVariables({ family: "cocoa" });
-// css: "--op-primary", "--op-background", "--op-radius-md", ...`,
+const [theme] = getBuiltInThemes();
+
+const css = createOpenPropsVariables(theme.tokens!);
+// css -> { "--color-canvas": "#f8fafc", "--color-text": "#0f172a", … }`,
     },
   },
   {
@@ -563,7 +595,7 @@ const css = createOpenPropsVariables({ family: "cocoa" });
         features: [
           {
             name: "createMuiTheme(source)",
-            desc: "Builds a `Theme` from a theme definition or tokens with `createTheme`.",
+            desc: "Builds a MUI `Theme` from a theme definition, its tokens, or a runtime.",
           },
           {
             name: "buildMuiThemeOptions(theme)",
@@ -597,10 +629,13 @@ const css = createOpenPropsVariables({ family: "cocoa" });
       title: "Static theme",
       lang: "ts",
       code: `import { createMuiTheme } from "@theme-kit/mui";
-import { resolveInitialTheme, getBuiltInThemes } from "@theme-kit/core";
+import { getBuiltInThemes } from "@theme-kit/core";
 
+// createMuiTheme accepts a runtime, a store, a theme definition, or raw
+// tokens. A \`{ family, mode }\` object is none of those — the factory then
+// falls back to MUI's stock palette instead of the theme you asked for.
 const themes = getBuiltInThemes();
-const { theme } = resolveInitialTheme({ themes, family: "plum" });
+const theme = themes.find((t) => t.name === "mint-light")!;
 
 const muiTheme = createMuiTheme(theme);`,
     },
@@ -638,7 +673,7 @@ const muiTheme = createMuiTheme(theme);`,
         features: [
           {
             name: "createChakraTheme(source)",
-            desc: "Builds a Chakra UI system from a theme definition or source.",
+            desc: "Builds a Chakra UI system from a theme definition, its tokens, or a runtime.",
           },
           {
             name: "buildChakraConfig(theme)",
@@ -672,8 +707,12 @@ const muiTheme = createMuiTheme(theme);`,
       title: "Static theme",
       lang: "ts",
       code: `import { createChakraTheme } from "@theme-kit/chakra";
+import { getBuiltInThemes } from "@theme-kit/core";
 
-const system = createChakraTheme({ family: "mint", mode: "dark" });`,
+const themes = getBuiltInThemes();
+const theme = themes.find((t) => t.name === "mint-dark")!;
+
+const system = createChakraTheme(theme);`,
     },
   },
   {
@@ -709,7 +748,7 @@ const system = createChakraTheme({ family: "mint", mode: "dark" });`,
         features: [
           {
             name: "createAntdTheme(source)",
-            desc: "Builds an Ant Design `ThemeConfig` from a theme definition or source.",
+            desc: "Builds an Ant Design `ThemeConfig` from a theme definition, its tokens, or a runtime.",
           },
           {
             name: "buildAntdConfig(theme)",
@@ -743,8 +782,12 @@ const system = createChakraTheme({ family: "mint", mode: "dark" });`,
       title: "Static config",
       lang: "ts",
       code: `import { createAntdTheme } from "@theme-kit/antd";
+import { getBuiltInThemes } from "@theme-kit/core";
 
-const config = createAntdTheme({ family: "plum", mode: "dark" });`,
+const themes = getBuiltInThemes();
+const theme = themes.find((t) => t.name === "plum-dark")!;
+
+const config = createAntdTheme(theme);`,
     },
   },
   {
@@ -780,7 +823,7 @@ const config = createAntdTheme({ family: "plum", mode: "dark" });`,
         features: [
           {
             name: "createMantineTheme(source)",
-            desc: "Builds a Mantine theme — colors (with generated shades), fonts, radius, spacing, shadows, breakpoints.",
+            desc: "Builds a Mantine theme from a theme definition, its tokens, or a runtime — colors (with generated shades), fonts, radius, spacing, shadows, breakpoints.",
           },
         ],
       },
@@ -789,8 +832,12 @@ const config = createAntdTheme({ family: "plum", mode: "dark" });`,
       title: "Static theme",
       lang: "ts",
       code: `import { createMantineTheme } from "@theme-kit/mantine";
+import { getBuiltInThemes } from "@theme-kit/core";
 
-const theme = createMantineTheme({ family: "cocoa", mode: "dark" });`,
+const themes = getBuiltInThemes();
+const builtIn = themes.find((t) => t.name === "cocoa-dark")!;
+
+const theme = createMantineTheme(builtIn);`,
     },
   },
   {

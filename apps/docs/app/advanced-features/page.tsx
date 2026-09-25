@@ -3,14 +3,17 @@ import { Markdown } from "../../components/markdown";
 import { DocsLayout } from "../../components/docs-layout";
 import { PageHeader } from "../../components/ui/page-header";
 import { getContent } from "../../lib/content";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/advanced-features") },
   title: "Advanced Features",
   description:
     "Deep dives into Theme Kit's advanced capabilities — theme packs, snapshots, scheduling, adapters, scoping and multi-window sync.",
 };
 
 export default function AdvancedFeaturesPage() {
+  const content = getContent("advanced-features");
   return (
     <DocsLayout>
       <div className="max-w-3xl">
@@ -34,7 +37,7 @@ export default function AdvancedFeaturesPage() {
           description="Deep dives into live theme generation, validation, migration, token resolution, plugin authoring, runtime snapshots, and accessibility profiles."
         />
         <div className="prose-doc -mt-6">
-          <Markdown content={getContent("advanced-features")} />
+          <Markdown content={content} />
         </div>
       </div>
     </DocsLayout>

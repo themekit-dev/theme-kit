@@ -9,6 +9,20 @@ export const THEME_SELECTION_KEY = makeStateKey<ThemeSelectionState>("theme-kit:
 
 const STORAGE_KEY = "theme-selection";
 
+/**
+ * Creates an Angular-aware theme selection persistence adapter.
+ *
+ * May be called from an Angular injection context. The adapter reads and
+ * writes the theme selection (mode and theme family) to `localStorage` in the
+ * browser and to `TransferState` on the server, so the selection survives
+ * server-side rendering and is hydrated on the client. It also subscribes to
+ * cross-tab `storage` events.
+ *
+ * @returns A `ThemeSelectionPersistenceAdapter` bound to the current platform.
+ *
+ * @see `createThemePersistence`
+ * @see {@link provideThemeKit}
+ */
 export function createAngularPersistence(): ThemeSelectionPersistenceAdapter {
   const platformId = inject(PLATFORM_ID);
   const transferState = inject(TransferState);

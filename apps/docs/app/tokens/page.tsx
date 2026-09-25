@@ -7,9 +7,10 @@ import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
 import { highlightCode } from "../../lib/highlight";
-import { buildPageHeadings } from "../../lib/toc";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/tokens") },
   title: "Semantic Tokens & Typography",
   description:
     "Theme Kit's token system goes far beyond colors: typography, spacing, radius, shadows, border widths, z-index and breakpoints all ship as semantic, theme-aware tokens.",
@@ -277,18 +278,9 @@ console.log(light.tokens.code); // Full code token set`,
   },
 };
 
-// Headings render via SectionHeading (invisible to the layout's RSC walk).
-const tokensHeadings = buildPageHeadings([
-  { text: "Define every group in one theme", level: 2 },
-  { text: "Token references & derived values", level: 2 },
-  { text: "Token helpers — complete examples", level: 2 },
-  { text: "Code Tokens", level: 2 },
-  { text: "Go deeper", level: 2 },
-]);
-
 export default function TokensPage() {
   return (
-    <DocsLayout headings={tokensHeadings}>
+    <DocsLayout>
       <div className="max-w-3xl">
         <PageHeader
           icon={
@@ -441,7 +433,7 @@ export default function TokensPage() {
             Code Tokens
           </SectionHeading>
           <p className="mb-4 text-sm opacity-70">
-            Theme Kit includes a dedicated <code className="mono">code</code> token group with 22 semantic tokens
+            Theme Kit includes a dedicated <code className="mono">code</code> token group with 19 semantic tokens
             for syntax highlighting. Every token maps to a <code className="mono">--theme-code-*</code> CSS
             variable that any highlighter (Shiki, Prism, etc.) can consume — so code blocks re-theme
             automatically when users switch themes, families, or modes.

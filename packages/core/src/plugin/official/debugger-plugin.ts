@@ -1,14 +1,39 @@
 import type { ThemeDefinition } from "../../model/theme";
 import type { ThemePlugin } from "../types";
 
+/**
+ * Options for {@link createDebuggerPlugin}.
+ */
 export interface DebuggerPluginOptions {
+  /** Log theme changes to the console. Default `true`. */
   logThemeChanges?: boolean;
+  /** Log active theme tokens after a theme change. Default `true`. */
   logTokenUpdates?: boolean;
+  /** Log theme selection persistence events. Default `true`. */
   logPersistence?: boolean;
+  /** Log history events. Default `false`. */
   logHistory?: boolean;
+  /** Prefix used for all debug log output. Default `"[theme-kit:debug]"`. */
   label?: string;
 }
 
+/**
+ * Creates a plugin that logs theme runtime activity to the console.
+ *
+ * The plugin logs theme changes, active theme tokens, and persistence events
+ * (before and after) to the console, gated by the corresponding options.
+ *
+ * @param options - Debugger configuration.
+ * @returns A `"debugger"` theme plugin.
+ *
+ * @example
+ * ```ts
+ * const manager = createPluginManager();
+ * manager.use(createDebuggerPlugin({ label: "[my-app]" }));
+ * ```
+ *
+ * @see {@link DebuggerPluginOptions}
+ */
 export function createDebuggerPlugin<T extends ThemeDefinition>(
   options?: DebuggerPluginOptions,
 ): ThemePlugin<T> {

@@ -1,3 +1,11 @@
+/**
+ * Theme Kit UnoCSS integration.
+ *
+ * Provides the `presetThemeKit` UnoCSS preset and the `createUnoTheme`
+ * adapter-source helper that map Theme Kit tokens to UnoCSS theme values.
+ *
+ * @packageDocumentation
+ */
 import { definePreset, type Preset } from "@unocss/core";
 import type { ThemeTokens } from "@theme-kit/core";
 import type { AdapterSource } from "@theme-kit/adapters";
@@ -17,6 +25,8 @@ function pairForeground(name: string): string {
  * UnoCSS preset that exposes Theme Kit semantic tokens as utilities such as
  * `bg-primary`, `text-foreground`, `border-border`, `rounded-lg`, etc.
  * Values reference the live `--theme-*` variables, so they update at runtime.
+ *
+ * @see {@link createUnoTheme}
  */
 export function presetThemeKit(): Preset {
   return definePreset({
@@ -80,6 +90,8 @@ export function presetThemeKit(): Preset {
 /**
  * Returns a static UnoCSS theme object with concrete values for a given set of
  * Theme Kit tokens (useful for build-time generation instead of runtime vars).
+ *
+ * @see {@link presetThemeKit}
  */
 export function createUnoTheme(source: AdapterSource) {
   const theme = resolveAdapterSource(source);

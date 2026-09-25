@@ -1,23 +1,125 @@
 ---
 import {
+  buildThemeCssMap,
+  createPrePaintScrollbarCSS,
+  createThemeReadoutScript,
   getBuiltInThemes,
   resolveInitialTheme,
-  resolveSelectionTheme,
   themeToCSSVariables,
+  type InitialThemeResolution,
   type ThemeDefinition,
   type ThemeMode,
 } from "@theme-kit/core";
 import { computeFingerprint } from "./fingerprint";
-import { buildThemeCssMap, darkModeCSSTemplate, createBlockingScript } from "./blocking-script";
-import ThemeProviderClient from "./client";
+import { publishTransportedConfig } from "./transport";
+import {
+  buildThemeBootstrapPayload,
+  systemModeCSSTemplate,
+  createBlockingScript,
+} from "./blocking-script";
+import type { ThemeKitThemeConfig } from "@theme-kit/core";
 
 export interface Props {
+  /**
+   * The provider's theme configuration — the same object you pass to
+   * `themeKit({ config })` and `getInitialThemeState`.
+   *
+   * @remarks
+   * Prefer this to the individual props below. This component owns the
+   * server-rendered `<html>`, the integration owns the injected script and the
+   * island owns the runtime; giving all three one object is what stops them
+   * disagreeing about the registry, the fallback theme or the initial mode.
+   */
+  config?: ThemeKitThemeConfig<ThemeDefinition>;
+  /**
+   * @deprecated Pass {@link Props.config} instead.
+   */
   themes?: readonly ThemeDefinition[];
+  /**
+   * @deprecated Pass {@link Props.config} instead.
+   */
   defaultTheme?: string;
+  /**
+   * Mode used when the visitor has no valid `theme-mode` cookie. Defaults to
+   * the mode `defaultTheme` resolves to, so the server-rendered `<html>` and
+   * the blocking script cannot disagree.
+   *
+   * @remarks
+   * Pass `"system"` to follow `prefers-color-scheme`. Whatever you choose must
+   * match the `themeKit({ mode })` integration option and the `initialMode`
+   * given to the island that mounts the runtime — the integration owns the
+   * injected script, this component owns the server render, and the island owns
+   * the runtime, so none of the three can see the others' configuration.
+   *
+   * @deprecated Pass {@link Props.config} instead — one object, so there is
+   * nothing to mirror.
+   */
+  mode?: ThemeMode;
+  /**
+   * A selection already resolved for this request (from
+   * `getInitialThemeState`). When provided it is used as-is and the theme
+   * cookies are not re-read.
+   *
+   * @remarks
+   * Pass the same object to the React island's `initial` prop. The document and
+   * the island then cannot disagree — both render the one resolution — and the
+   * cookies are read once per request instead of once per consumer. Omitting it
+   * is supported (the provider resolves the cookies itself, as before), but a
+   * page that renders an island should pass it: an island whose `initial` came
+   * from a second, independent resolution is free to drift from the document.
+   */
+  initial?: InitialThemeResolution<ThemeDefinition>;
   lang?: string;
+  /**
+   * Emit the inline blocking bootstrap in `<head>`. Defaults to `true`.
+   * Pass `false` when the `themeKit()` integration already injects it, so it is
+   * not emitted twice.
+   */
+  bootstrap?: boolean;
+  /**
+   * Server-render the `tk-scrollbar` class and the pre-paint scrollbar CSS, so
+   * the native scrollbar is never painted — the same markup `@theme-kit/nuxt`
+   * emits. Defaults to `false`.
+   *
+   * @remarks
+   * Server rendering cannot detect the pointer type, so unlike the
+   * `themeKit({ scrollbar })` option (which keeps native scrollbars on
+   * coarse-pointer devices unless `touch` is set) this applies to every
+   * device. Enable it only when the page mounts `ThemeScrollbar`.
+   */
+  scrollbar?: boolean;
 }
 
-const { themes, defaultTheme, lang = "en" } = Astro.props as Props;
+const {
+  config,
+  themes: themesProp,
+  defaultTheme: defaultThemeProp,
+  mode: modeProp,
+  initial: initialProp,
+  lang = "en",
+  bootstrap = true,
+  scrollbar = false,
+} = Astro.props as Props;
+
+// Publish the configuration for **server**-rendered islands, before the slot
+// renders them.
+//
+// The integration already transports it to the browser by injecting
+// `window.__THEME_KIT_CONFIG__` into `<head>` — but `injectScript` emits a
+// `<script>` tag, which does nothing during SSR. Without this publish an island
+// renders its server markup from the built-in themes and its hydrated markup
+// from the real registry, React reports a text mismatch (error #418) and
+// re-renders the island, and the visitor sees the text fluctuate on every load.
+//
+// This frontmatter runs before the slot, so it is early enough for every island
+// the page renders. See `publishTransportedConfig`.
+if (config) publishTransportedConfig(config);
+
+// `config` is the provider's own configuration, so it wins outright rather than
+// merging: a value has exactly one source.
+const themes = config?.themes ?? themesProp;
+const defaultTheme = config?.defaultTheme ?? defaultThemeProp;
+const configuredMode = config?.initialMode ?? modeProp;
 
 const resolvedThemes = themes?.length
   ? themes
@@ -25,60 +127,167 @@ const resolvedThemes = themes?.length
 
 const fingerprint = computeFingerprint(resolvedThemes, defaultTheme);
 
-let mode: ThemeMode = "system";
-let family: string | undefined;
+let initial: InitialThemeResolution<ThemeDefinition>;
 
-const modeCookie = Astro.cookies.get("theme-mode")?.value;
-const familyCookie = Astro.cookies.get("theme-family")?.value;
-const savedFingerprint = Astro.cookies.get("theme-fingerprint")?.value;
+if (initialProp) {
+  // The page resolved the selection for this request already and hands the same
+  // object to the island, so the document and the island render one resolution
+  // and cannot drift.
+  initial = initialProp;
+} else {
+  // A valid cookie wins; otherwise fall back to the `mode` prop. Leaving both
+  // unset is deliberate — `resolveInitialTheme` then derives the mode from
+  // `defaultTheme`, which is the same derivation the client runtime performs.
+  let mode: ThemeMode | undefined = configuredMode;
+  let family: string | undefined;
 
-if (savedFingerprint === fingerprint) {
-  if (modeCookie === "light" || modeCookie === "dark" || modeCookie === "system") {
-    mode = modeCookie;
+  // A prerendered page has no request, so there are no cookies to read — and
+  // touching them would emit Astro's "Astro.request.headers" warning at build
+  // time. Static pages rely on the injected bootstrap instead, which reads the
+  // same selection from `localStorage` in the browser.
+  if ((Astro as { isPrerendered?: boolean }).isPrerendered !== true) {
+    const modeCookie = Astro.cookies.get("theme-mode")?.value;
+    const familyCookie = Astro.cookies.get("theme-family")?.value;
+    const savedFingerprint = Astro.cookies.get("theme-fingerprint")?.value;
+
+    if (savedFingerprint === fingerprint) {
+      if (modeCookie === "light" || modeCookie === "dark" || modeCookie === "system") {
+        mode = modeCookie;
+      }
+      if (familyCookie) {
+        family = familyCookie;
+      }
+    }
   }
-  if (familyCookie) {
-    family = familyCookie;
-  }
+
+  initial = resolveInitialTheme({
+    themes: resolvedThemes,
+    ...(defaultTheme !== undefined ? { defaultTheme } : {}),
+    ...(family ? { family } : {}),
+    ...(mode !== undefined ? { mode } : {}),
+  });
 }
-
-const initial = resolveInitialTheme({
-  themes: resolvedThemes,
-  ...(defaultTheme !== undefined ? { defaultTheme } : {}),
-  ...(family ? { family } : {}),
-  ...(mode !== "system" ? { mode } : {}),
-});
 
 const cssVars = themeToCSSVariables(initial.theme);
 const themeMode = initial.selection.mode === "dark" ? "dark" : "light" as const;
 const themeName = String(initial.theme.name);
 
-let darkStyle = "";
-if (initial.selection.mode === "system") {
-  const dark = resolveSelectionTheme({
-    themes: resolvedThemes,
-    selection: { family: initial.selection.family, mode: "dark" },
-  });
-  const darkVariables = themeToCSSVariables(dark.theme);
-  darkStyle = darkModeCSSTemplate(darkVariables);
-}
+const {
+  names,
+  defaults,
+  family: fallbackFamily,
+  families,
+} = buildThemeBootstrapPayload(resolvedThemes, initial.selection.family);
+
+// What the bootstrap script will write onto <html>, declared here so the
+// server-rendered markup already carries it. React's hydration diff (and the
+// equivalent in an island) reports an attribute that is in the DOM but absent
+// from the rendered props as a mismatch, so a server that stayed silent about
+// any of these warned on every page load in development.
+//
+// `data-theme-mode` is the *resolved* mode; the selection is the visitor's
+// actual choice, which the resolved mode cannot recover — a `"system"`
+// selection is resolved to `"light"`/`"dark"` before it is written.
+const selectionFamily = initial.selection.family ?? fallbackFamily;
+
+// A `"system"` selection is resolved by CSS, never by the server: the server
+// cannot know the visitor's preference, and a guess inlined as a `style`
+// attribute would outrank the media query meant to correct it. So for `system`
+// the variables move into a stylesheet carrying BOTH schemes and the inline
+// `style` keeps only `color-scheme` — which is what makes an OS-dark visitor
+// correct even with scripts blocked. For an explicit light/dark selection the
+// server does know the answer, so the variables stay inline.
+const isSystemMode = initial.selection.mode === "system";
+const systemStyle = isSystemMode
+  ? systemModeCSSTemplate(defaults.light, defaults.dark)
+  : "";
 
 const themeCssMap = buildThemeCssMap(resolvedThemes);
-const blockingScript = createBlockingScript(fingerprint, themeCssMap);
-const ssrStyle = { colorScheme: themeMode, ...cssVars } as Record<string, string>;
+const blockingScript = createBlockingScript(fingerprint, themeCssMap, {
+  // Always forward the mode resolved above rather than letting this function
+  // apply its own `"system"` default. That default was a second, independent
+  // source of truth for the same decision — the drift the shared applier
+  // exists to prevent — and it disagreed with the `<html>` rendered above
+  // whenever `mode` was omitted, which is how a default-config Astro app
+  // flashed.
+  mode: initial.selection.mode,
+  family: fallbackFamily,
+  // The registry's families, so the script can reject a persisted family that is
+  // no longer registered — a cookie from before the app changed its family set.
+  // Without it the browser would name a family with no variables behind it while
+  // the theme resolved to `__default-*`, and this page's `data-theme-family`
+  // would disagree with `data-theme-selection-family`.
+  families,
+  names,
+  defaults,
+});
+const htmlClass = [
+  themeMode === "dark" ? "dark" : "",
+  scrollbar ? "tk-scrollbar" : "",
+]
+  .filter(Boolean)
+  .join(" ");
+
+const ssrStyle = (
+  isSystemMode
+    ? // `light dark` tells the browser both schemes are supported, so native
+      // form controls and scrollbars follow the OS while the media blocks below
+      // pick the colors. The runtime replaces this with the concrete scheme
+      // once it mounts.
+      { colorScheme: "light dark" }
+    : { colorScheme: themeMode, ...cssVars }
+) as Record<string, string>;
 ---
 
-<html lang={lang} data-theme={themeName} class={themeMode === "dark" ? "dark" : ""} style={ssrStyle}>
+<html
+  lang={lang}
+  data-theme={themeName}
+  data-theme-mode={themeMode}
+  data-theme-family={fallbackFamily}
+  data-theme-selection-mode={initial.selection.mode}
+  data-theme-selection-family={selectionFamily}
+  data-theme-ready="true"
+  class={htmlClass}
+  style={ssrStyle}
+>
   <head>
-    <script set:html={blockingScript} />
-    {darkStyle && <style set:html={darkStyle} />}
+    {/*
+      Must be the FIRST element in <head>, and within the first 1024 bytes.
+
+      This component renders its own <html>/<head> rather than letting Astro
+      synthesise one, and Astro does not inject a charset for you — so without
+      this the response is `text/html` with no charset, the browser falls back to
+      windows-1252, and every non-ASCII character in the server-rendered markup
+      is mojibake (`·` → `Â·`, `—` → `â€"`). That is not only cosmetic: when an
+      island is server-rendered, the mojibake'd text no longer matches what the
+      client renders, and React throws a hydration mismatch and re-renders the
+      whole tree — the flash this integration exists to prevent.
+    */}
+    <meta charset="utf-8" />
+    {bootstrap && <script set:html={blockingScript} />}
+    {/* `data-theme-kit` lets the integration's own stylesheet install detect
+        this element and skip, so the two never stack a duplicate sheet. */}
+    {systemStyle && <style data-theme-kit="system" set:html={systemStyle} />}
+    {scrollbar && <style set:html={createPrePaintScrollbarCSS()} />}
     <slot name="head" />
   </head>
   <body>
-    <ThemeProviderClient
-      client:load
-      themes={resolvedThemes}
-      initial={initial}
-    />
     <slot />
+    {/*
+      Bootstrap readouts, patched from the end of the body.
+
+      This has to be here rather than in the integration: Astro's `injectScript`
+      stages offer `head-inline` (too early — the elements below do not exist
+      yet) and `page` (a *bundled module*, so it runs after hydration, which is
+      the settle it exists to prevent). This component owns `<body>`, so it is
+      the one place that can emit a script after the markup and before the paint.
+
+      It is emitted unconditionally: the script returns immediately when the
+      bootstrap did not publish a payload, so a page that renders no readouts
+      pays only for the query.
+
+      @see {@link createThemeReadoutScript}
+    */}
+    <script is:inline set:html={createThemeReadoutScript()} />
   </body>
 </html>

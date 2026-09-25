@@ -1,3 +1,14 @@
+/**
+ * Theme Kit Angular integration.
+ *
+ * Provides the DI tokens (`THEME_KIT_RUNTIME`, `THEME_KIT_SCOPED_RUNTIME`),
+ * the `provideThemeKit` / `provideThemeKitRuntime` providers, the
+ * `injectTheme*` injection functions, the `ThemeScopeDirective`,
+ * `ThemeScrollbarDirective`, and `ThemeInspectorComponent`, plus the
+ * persistence and blocking-script (zero-flash) helpers.
+ *
+ * @packageDocumentation
+ */
 export { THEME_KIT_RUNTIME, THEME_KIT_SCOPED_RUNTIME } from "./lib/tokens";
 
 export {
@@ -22,14 +33,6 @@ export {
   type ThemeScheduleController,
 } from "./lib/hooks";
 
-export {
-  injectShadcnTheme,
-  injectBootstrapTheme,
-  injectDaisyTheme,
-  injectOpenPropsTheme,
-  type InjectAdapterOptions,
-} from "./lib/hooks-adapters";
-
 export { ThemeScopeDirective } from "./lib/theme-scope.directive";
 
 export { ThemeScrollbarDirective } from "./lib/theme-scrollbar.directive";
@@ -43,5 +46,6 @@ export {
 export {
   createBlockingScriptContent,
   buildThemeCSSMap,
+  type BlockingScriptOptions,
   type ThemeCSSMap,
 } from "./lib/blocking-script";

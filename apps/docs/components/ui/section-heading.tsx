@@ -25,7 +25,7 @@ export function SectionHeading({
             style={{
               background: "var(--theme-color-primary)",
               color:
-                "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                "var(--theme-color-primaryForeground)",
             }}
           >
             {num}

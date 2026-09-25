@@ -25,7 +25,17 @@ export type ScopedThemeSelection =
   | { name: string }
   | { family: string; mode?: ThemeMode };
 
+/**
+ * Options for {@link createScopedThemeBinding}.
+ *
+ * The binding applies a scoped theme's CSS variables inline on a target
+ * element and cleans them up on destroy. Local theme definitions are resolved
+ * first, then the parent runtime's themes fall back — no second runtime is
+ * ever created.
+ */
 export interface ScopedThemeBindingOptions {
+  /** Prefix for the emitted custom properties.
+   *  @defaultValue `"theme-"` */
   prefix?: string;
   /** Transition applied when the scoped theme changes. When omitted, the change
    *  is applied instantly (the previous behaviour). Pass the owning runtime's
@@ -36,7 +46,8 @@ export interface ScopedThemeBindingOptions {
    *  runtime is ever created. */
   localThemes?: readonly ThemeDefinition[];
   /** Whether the OS prefers dark (used to resolve `mode: "system"` and the
-   *  default light fallback for family-only selections). */
+   *  default light fallback for family-only selections).
+   *  @defaultValue The OS `prefers-color-scheme` preference (when available) */
   prefersDark?: boolean;
 }
 
@@ -146,13 +157,30 @@ export function scopeToCSSVariables(
   return aliasVars;
 }
 
+/**
+ * Options for {@link resolveScopedThemePrePaint}.
+ *
+ * Controls how a scope's first-paint CSS is generated.
+ */
 export interface ScopedThemePrePaintOptions {
+  /** Prefix for the emitted custom properties.
+   *  @defaultValue `"theme-"` */
   prefix?: string;
   /** CSS selector targeting the scope element (e.g.
-   *  `[data-theme-kit-scope="…"]`). Only used by the `@media` override. */
+   *  `[data-theme-kit-scope="…"]`). Only used by the `@media` override.
+   *  @defaultValue `"[data-theme-kit-scope]"` */
   selector?: string;
 }
 
+/**
+ * Everything a scoped region needs to render correctly at first paint,
+ * resolved generically from its theme data.
+ *
+ * When the scope's selection is OS-dependent, `css` carries a
+ * `@media (prefers-color-scheme: dark)` block so the region renders light OR
+ * dark before hydration; the live binding takes over through its own inline
+ * variables afterwards.
+ */
 export interface ScopedThemePrePaint {
   /** True when the scope's resolved theme depends on the OS scheme (its
    *  selection is a family / boundary following a `system` mode, so resolving
@@ -263,6 +291,8 @@ export function resolveScopeTransition(
 /**
  * Create a scoped-theme binding for an element: applies the scoped theme's
  *    CSS variables inline on the element and cleans them up on destroy.
+ *
+ * @see {@link ScopedThemeBindingOptions}
  */
 export function createScopedThemeBinding<T extends ThemeDefinition>(
   themes: readonly T[],

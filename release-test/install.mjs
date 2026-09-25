@@ -3,7 +3,7 @@
  * Consumer install runner for release-test/ (checklist item 2).
  *
  * Re-generates each fixture app's package.json so that every @theme-kit/*
- * dependency points at a local tarball (file:../tarballs/<name>-1.0.0.tgz)
+ * dependency points at a local tarball (file:../tarballs/<name>-<version>.tgz)
  * instead of the registry or workspace, then runs `npm install` in each app.
  *
  * Usage: node release-test/install.mjs
@@ -19,15 +19,22 @@ const tarballsDir = join(here, "tarballs");
 
 const APPS = ["vanilla-app", "react-app", "cli-app", "clean-app"];
 
-function tarballFor(pkgName, version = "1.0.0") {
+function tarballFor(pkgName) {
   const scope = pkgName.startsWith("@") ? pkgName.split("/")[0].replace("@", "") : "theme-kit";
   const unscoped = pkgName.startsWith("@") ? pkgName.split("/")[1] : pkgName;
-  const file = `${scope}-${unscoped}-${version}.tgz`;
-  const abs = join(tarballsDir, file);
-  if (!existsSync(abs)) {
-    throw new Error(`Missing tarball: ${file} — run "pnpm --filter <pkg> pack" or scripts/release/pack-verify.mjs first`);
+  // Resolve by prefix rather than a hardcoded version: the fixtures must track
+  // whatever version was just packed, otherwise this gate silently stops running
+  // the moment the release version changes.
+  const prefix = `${scope}-${unscoped}-`;
+  const match = readdirSync(tarballsDir).find(
+    (f) => f.startsWith(prefix) && f.endsWith(".tgz"),
+  );
+  if (!match) {
+    throw new Error(
+      `Missing tarball for ${pkgName} (expected ${prefix}<version>.tgz) — run scripts/release/pack-verify.mjs first`,
+    );
   }
-  return `file:../tarballs/${file}`;
+  return `file:../tarballs/${match}`;
 }
 
 const APPS_CONFIG = {

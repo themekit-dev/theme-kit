@@ -50,14 +50,20 @@ export function Toc({ initialItems, onHasToc }: { initialItems?: TocItem[]; onHa
       });
     }
 
+    // The scan is authoritative *for completeness* — it also sees headings
+    // rendered inside client components, which the RSC collector cannot walk.
+    // But it must never produce a *smaller* list than the server already
+    // painted: that swap is a visible flash on reload (the rail appeared with
+    // eight items and then vanished). So the server list is a floor.
+    const serverCount = initialItems?.length ?? 0;
+    const resolved = list.length >= serverCount ? list : (initialItems ?? list);
+
     // Report whether the page actually has a TOC (at least two headings). The
     // layout uses this to collapse the rail column so pages without a TOC get
-    // the full content width instead of a fixed-width empty rail — even in the
-    // SSR HTML, since `onHasToc` is only ever true here when the client scan
-    // (authoritative: it also sees client-component headings) finds one.
-    onHasToc?.(list.length >= 2);
+    // the full content width instead of a fixed-width empty rail.
+    onHasToc?.(resolved.length >= 2);
 
-    if (list.length > 0) setItems(list);
+    if (resolved.length > 0) setItems(resolved);
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -127,6 +133,7 @@ export function Toc({ initialItems, onHasToc }: { initialItems?: TocItem[]; onHa
               <a
                 ref={isActive ? activeRef : undefined}
                 href={`#${item.id}`}
+                aria-current={isActive ? "location" : undefined}
                 onClick={(e) => {
                   e.preventDefault();
                   setActiveId(item.id);

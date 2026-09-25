@@ -21,7 +21,7 @@ import {
   createThemeRuntime,
   type ThemeDefinition,
 } from "@theme-kit/core";
-import { useShadcnTheme } from "@theme-kit/shadcn";
+import { useShadcnTheme } from "@theme-kit/shadcn/react";
 
 // ---------------------------------------------------------------- scenario 1
 // "I want dark mode."
@@ -80,9 +80,9 @@ void NextRootLayout;
 // ---------------------------------------------------------------- scenario 4
 // "I use shadcn." — install the adapter into a component
 function ShadcnConsumer() {
-  useShadcnTheme(); // installs the shadcn CSS-variable adapter on the runtime
-  const { store, selection } = useThemeRuntime<ThemeDefinition>();
-  return createElement("div", null, String(store.get().name), selection.getFamily());
+  const runtime = useThemeRuntime<ThemeDefinition>();
+  useShadcnTheme(runtime); // installs the shadcn CSS-variable adapter on the runtime
+  return createElement("div", null, String(runtime.store.get().name), runtime.selection.getFamily());
 }
 void ShadcnConsumer;
 

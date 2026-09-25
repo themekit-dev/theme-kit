@@ -9,6 +9,7 @@ import { GITHUB_LICENSE, GITHUB_URL } from "../../lib/site";
 export const metadata = legalMetadata(
   "License",
   "Theme Kit is MIT-licensed open source software. What that means and where to read the full text.",
+  "/license",
 );
 
 const updated = "August 24, 2026";

@@ -1,17 +1,77 @@
 ## @theme-kit/next
+Theme Kit Next.js App Router integration.
+
+Provides the SSR-safe `ThemeProvider` (with `ThemeProviderHtmlProps` /
+`ThemeProviderBodyProps` for zero-flash layout wiring) plus the React
+`ThemeScope` and `ThemeScrollbar` re-exports.
 
 > Generated from `packages/next/src` by `apps/docs/scripts/generate-api-reference.mjs`. Do not edit by hand — run `pnpm --filter @theme-kit/docs api:generate`.
 
 ## Functions
 
-### `ThemeProvider<T extends ThemeDefinition<string>>(__namedParameters): Promise<Element>`
-**Returns** `Promise<Element>`
+### `ThemeProvider<T extends ThemeDefinition<string>>(props): Promise<Element>`
+App Router theme provider. Must be used in the root layout: it renders the
+`<html>` and `<body>` elements, resolves the initial theme server-side from
+the persisted cookies (zero-flash), emits a blocking bootstrap script plus
+the SSR CSS variables, and mounts the client runtime inside the body.
+
+The server cannot know the client's OS preference, so a `"system"` selection
+is resolved to the light theme for SSR; the client runtime receives the
+`"system"` selection and creates the system binding, which resolves the
+correct theme for the client's OS via `prefers-color-scheme`.
+
+**See also:** `ThemeProviderProps`, `ThemeProviderBodyProps`, `ThemeProviderHtmlProps`
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `props` | `ThemeProviderProps<T>` | The provider props (see ThemeProviderProps). |
+
+**Returns** `Promise<Element>` — The themed `<html>`/`<body>` tree wrapping the application content.
+
+Because this component renders the document shell, it must be the root of
+the App Router layout tree. `body` props are forwarded to the `<body>`
+element; `className`/`style` are merged with the theme's SSR output.
+
+```ts
+// app/layout.tsx
+import { ThemeProvider } from "@theme-kit/next";
+
+export default function RootLayout({ children }) {
+  return (
+    <ThemeProvider defaultTheme="light" scrollbar>
+      {children}
+    </ThemeProvider>
+  );
+}
+```
 
 ---
 
 
 ### `ThemeScope(__namedParameters): Element`
+Applies a theme to a subtree without replacing the global runtime.
+
+The scope resolves local themes (`themes` prop) before falling back to the
+parent runtime's theme registry. Nested scopes override their parent within
+their own boundary. Theme changes are reactive: `theme`/`family`/`mode`
+props and global mode changes re-resolve and animate in place without
+remounting.
+
+**See also:** `useScopedTheme`
+
 **Returns** `Element`
+
+Scope-local transitions inherit the parent transition configuration unless
+explicitly overridden or disabled. First paint is server-safe: explicit
+selections ship resolved variables inline, while OS-dependent selections
+(system mode / family-following scopes) ship no inline variables plus a
+`@media (prefers-color-scheme: dark)` override, so no flash occurs.
+
+```ts
+<ThemeScope family="plum" mode="dark">
+  <Editor />
+</ThemeScope>
+```
 
 ---
 
@@ -36,6 +96,8 @@ and `icons` — but every option is also accepted as a flat, top-level prop
     icons={{ up: <ArrowUpIcon />, down: <ArrowDownIcon /> }}
   />
 
+**See also:** `ThemeProvider`
+
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `props` | `ThemeScrollbarProps` | — |
@@ -49,54 +111,56 @@ and `icons` — but every option is also accepted as a flat, top-level prop
 ### `ThemeProviderBodyProps`
 
 **Extends** `Omit<HTMLAttributes<HTMLBodyElement>, "children" | "className" | "style">`
+Attributes forwarded to the rendered `<body>` element. `className` and
+`style` are merged with the theme's SSR output (the resolved font family is
+applied to the body) rather than replaced.
+
+**See also:** `ThemeProvider`
+
 | Member | Type | Description |
 | ------ | ---- | ----------- |
 | `about` (optional) | `string` | — |
 | `accessKey` (optional) | `string` | — |
 | `aria-activedescendant` (optional) | `string` | Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. |
 | `aria-atomic` (optional) | `Booleanish` | Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. |
-| `aria-autocomplete` (optional) | `"none" | "list" | "inline" | "both"` | Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
-presented if they are made. |
+| `aria-autocomplete` (optional) | `"none" \| "list" \| "inline" \| "both"` | Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be presented if they are made. |
 | `aria-braillelabel` (optional) | `string` | Defines a string value that labels the current element, which is intended to be converted into Braille. |
 | `aria-brailleroledescription` (optional) | `string` | Defines a human-readable, author-localized abbreviated description for the role of an element, which is intended to be converted into Braille. |
 | `aria-busy` (optional) | `Booleanish` | — |
-| `aria-checked` (optional) | `boolean | "true" | "false" | "mixed"` | Indicates the current "checked" state of checkboxes, radio buttons, and other widgets. |
+| `aria-checked` (optional) | `boolean \| "true" \| "false" \| "mixed"` | Indicates the current "checked" state of checkboxes, radio buttons, and other widgets. |
 | `aria-colcount` (optional) | `number` | Defines the total number of columns in a table, grid, or treegrid. |
 | `aria-colindex` (optional) | `number` | Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid. |
 | `aria-colindextext` (optional) | `string` | Defines a human readable text alternative of aria-colindex. |
 | `aria-colspan` (optional) | `number` | Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid. |
 | `aria-controls` (optional) | `string` | Identifies the element (or elements) whose contents or presence are controlled by the current element. |
-| `aria-current` (optional) | `boolean | "true" | "false" | "page" | "step" | "location" | "date" | "time"` | Indicates the element that represents the current item within a container or set of related elements. |
+| `aria-current` (optional) | `boolean \| "true" \| "false" \| "page" \| "step" \| "location" \| "date" \| "time"` | Indicates the element that represents the current item within a container or set of related elements. |
 | `aria-describedby` (optional) | `string` | Identifies the element (or elements) that describes the object. |
 | `aria-description` (optional) | `string` | Defines a string value that describes or annotates the current element. |
 | `aria-details` (optional) | `string` | Identifies the element that provides a detailed, extended description for the object. |
 | `aria-disabled` (optional) | `Booleanish` | Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable. |
-| `aria-dropeffect` (optional) | `"none" | "link" | "copy" | "execute" | "move" | "popup"` | Indicates what functions can be performed when a dragged object is released on the drop target. |
+| `aria-dropeffect` (optional) | `"none" \| "link" \| "copy" \| "execute" \| "move" \| "popup"` | Indicates what functions can be performed when a dragged object is released on the drop target. |
 | `aria-errormessage` (optional) | `string` | Identifies the element that provides an error message for the object. |
 | `aria-expanded` (optional) | `Booleanish` | Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. |
-| `aria-flowto` (optional) | `string` | Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
-allows assistive technology to override the general default of reading in document source order. |
+| `aria-flowto` (optional) | `string` | Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion, allows assistive technology to override the general default of reading in document source order. |
 | `aria-grabbed` (optional) | `Booleanish` | Indicates an element's "grabbed" state in a drag-and-drop operation. |
-| `aria-haspopup` (optional) | `boolean | "true" | "false" | "dialog" | "grid" | "listbox" | "menu" | "tree"` | Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. |
+| `aria-haspopup` (optional) | `boolean \| "true" \| "false" \| "dialog" \| "grid" \| "listbox" \| "menu" \| "tree"` | Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. |
 | `aria-hidden` (optional) | `Booleanish` | Indicates whether the element is exposed to an accessibility API. |
-| `aria-invalid` (optional) | `boolean | "true" | "false" | "grammar" | "spelling"` | Indicates the entered value does not conform to the format expected by the application. |
+| `aria-invalid` (optional) | `boolean \| "true" \| "false" \| "grammar" \| "spelling"` | Indicates the entered value does not conform to the format expected by the application. |
 | `aria-keyshortcuts` (optional) | `string` | Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. |
 | `aria-label` (optional) | `string` | Defines a string value that labels the current element. |
 | `aria-labelledby` (optional) | `string` | Identifies the element (or elements) that labels the current element. |
 | `aria-level` (optional) | `number` | Defines the hierarchical level of an element within a structure. |
-| `aria-live` (optional) | `"off" | "assertive" | "polite"` | Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. |
+| `aria-live` (optional) | `"off" \| "assertive" \| "polite"` | Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. |
 | `aria-modal` (optional) | `Booleanish` | Indicates whether an element is modal when displayed. |
 | `aria-multiline` (optional) | `Booleanish` | Indicates whether a text box accepts multiple lines of input or only a single line. |
 | `aria-multiselectable` (optional) | `Booleanish` | Indicates that the user may select more than one item from the current selectable descendants. |
-| `aria-orientation` (optional) | `"horizontal" | "vertical"` | Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. |
-| `aria-owns` (optional) | `string` | Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
-between DOM elements where the DOM hierarchy cannot be used to represent the relationship. |
-| `aria-placeholder` (optional) | `string` | Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
-A hint could be a sample value or a brief description of the expected format. |
+| `aria-orientation` (optional) | `"horizontal" \| "vertical"` | Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. |
+| `aria-owns` (optional) | `string` | Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship between DOM elements where the DOM hierarchy cannot be used to represent the relationship. |
+| `aria-placeholder` (optional) | `string` | Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value. A hint could be a sample value or a brief description of the expected format. |
 | `aria-posinset` (optional) | `number` | Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. |
-| `aria-pressed` (optional) | `boolean | "true" | "false" | "mixed"` | Indicates the current "pressed" state of toggle buttons. |
+| `aria-pressed` (optional) | `boolean \| "true" \| "false" \| "mixed"` | Indicates the current "pressed" state of toggle buttons. |
 | `aria-readonly` (optional) | `Booleanish` | Indicates that the element is not editable, but is otherwise operable. |
-| `aria-relevant` (optional) | `"text" | "additions" | "additions removals" | "additions text" | "all" | "removals" | "removals additions" | "removals text" | "text additions" | "text removals"` | Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified. |
+| `aria-relevant` (optional) | `"text" \| "additions" \| "additions removals" \| "additions text" \| "all" \| "removals" \| "removals additions" \| "removals text" \| "text additions" \| "text removals"` | Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified. |
 | `aria-required` (optional) | `Booleanish` | Indicates that user input is required on the element before a form may be submitted. |
 | `aria-roledescription` (optional) | `string` | Defines a human-readable, author-localized description for the role of an element. |
 | `aria-rowcount` (optional) | `number` | Defines the total number of rows in a table, grid, or treegrid. |
@@ -105,33 +169,33 @@ A hint could be a sample value or a brief description of the expected format. |
 | `aria-rowspan` (optional) | `number` | Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid. |
 | `aria-selected` (optional) | `Booleanish` | Indicates the current "selected" state of various widgets. |
 | `aria-setsize` (optional) | `number` | Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. |
-| `aria-sort` (optional) | `"none" | "ascending" | "descending" | "other"` | Indicates if items in a table or grid are sorted in ascending or descending order. |
+| `aria-sort` (optional) | `"none" \| "ascending" \| "descending" \| "other"` | Indicates if items in a table or grid are sorted in ascending or descending order. |
 | `aria-valuemax` (optional) | `number` | Defines the maximum allowed value for a range widget. |
 | `aria-valuemin` (optional) | `number` | Defines the minimum allowed value for a range widget. |
 | `aria-valuenow` (optional) | `number` | Defines the current value for a range widget. |
 | `aria-valuetext` (optional) | `string` | Defines the human readable text alternative of aria-valuenow for a range widget. |
-| `autoCapitalize` (optional) | `string & object | "off" | "none" | "on" | "sentences" | "words" | "characters"` | — |
+| `autoCapitalize` (optional) | `string & object \| "off" \| "none" \| "on" \| "sentences" \| "words" \| "characters"` | — |
 | `autoCorrect` (optional) | `string` | — |
 | `autoFocus` (optional) | `boolean` | — |
 | `autoSave` (optional) | `string` | — |
-| `className` (optional) | `string` | — |
+| `className` (optional) | `string` | Extra classes merged onto the `<body>` element alongside the theme output. |
 | `color` (optional) | `string` | — |
 | `content` (optional) | `string` | — |
-| `contentEditable` (optional) | `Booleanish | "inherit" | "plaintext-only"` | — |
+| `contentEditable` (optional) | `Booleanish \| "inherit" \| "plaintext-only"` | — |
 | `contextMenu` (optional) | `string` | — |
-| `dangerouslySetInnerHTML` (optional) | `{  }` | — |
+| `dangerouslySetInnerHTML` (optional) | `{ }` | — |
 | `datatype` (optional) | `string` | — |
 | `defaultChecked` (optional) | `boolean` | — |
-| `defaultValue` (optional) | `string | number | readonly string[]` | — |
+| `defaultValue` (optional) | `string \| number \| readonly string[]` | — |
 | `dir` (optional) | `string` | — |
 | `draggable` (optional) | `Booleanish` | — |
-| `enterKeyHint` (optional) | `"enter" | "done" | "go" | "next" | "previous" | "search" | "send"` | — |
+| `enterKeyHint` (optional) | `"enter" \| "done" \| "go" \| "next" \| "previous" \| "search" \| "send"` | — |
 | `exportparts` (optional) | `string` | — |
 | `hidden` (optional) | `boolean` | — |
 | `id` (optional) | `string` | — |
 | `inert` (optional) | `boolean` | — |
 | `inlist` (optional) | `any` | — |
-| `inputMode` (optional) | `"none" | "search" | "text" | "tel" | "url" | "email" | "numeric" | "decimal"` | Hints at the type of data that might be entered by the user while editing the element or its contents |
+| `inputMode` (optional) | `"none" \| "search" \| "text" \| "tel" \| "url" \| "email" \| "numeric" \| "decimal"` | Hints at the type of data that might be entered by the user while editing the element or its contents |
 | `is` (optional) | `string` | Specify that a standard HTML element should behave like a defined custom built-in element |
 | `itemID` (optional) | `string` | — |
 | `itemProp` (optional) | `string` | — |
@@ -309,9 +373,9 @@ A hint could be a sample value or a brief description of the expected format. |
 | `onWheel` (optional) | `WheelEventHandler<HTMLBodyElement>` | — |
 | `onWheelCapture` (optional) | `WheelEventHandler<HTMLBodyElement>` | — |
 | `part` (optional) | `string` | — |
-| `popover` (optional) | `"" | "auto" | "manual" | "hint"` | — |
+| `popover` (optional) | `"" \| "auto" \| "manual" \| "hint"` | — |
 | `popoverTarget` (optional) | `string` | — |
-| `popoverTargetAction` (optional) | `"toggle" | "show" | "hide"` | — |
+| `popoverTargetAction` (optional) | `"toggle" \| "show" \| "hide"` | — |
 | `prefix` (optional) | `string` | — |
 | `property` (optional) | `string` | — |
 | `radioGroup` (optional) | `string` | — |
@@ -323,14 +387,14 @@ A hint could be a sample value or a brief description of the expected format. |
 | `security` (optional) | `string` | — |
 | `slot` (optional) | `string` | — |
 | `spellCheck` (optional) | `Booleanish` | — |
-| `style` (optional) | `CSSProperties` | — |
+| `style` (optional) | `CSSProperties` | Inline styles merged onto the `<body>` element alongside the theme output. |
 | `suppressContentEditableWarning` (optional) | `boolean` | — |
 | `suppressHydrationWarning` (optional) | `boolean` | — |
 | `tabIndex` (optional) | `number` | — |
 | `title` (optional) | `string` | — |
-| `translate` (optional) | `"yes" | "no"` | — |
+| `translate` (optional) | `"yes" \| "no"` | — |
 | `typeof` (optional) | `string` | — |
-| `unselectable` (optional) | `"off" | "on"` | — |
+| `unselectable` (optional) | `"off" \| "on"` | — |
 | `vocab` (optional) | `string` | — |
 
 ---
@@ -343,54 +407,52 @@ Every attribute a plain `<html>` element accepts, You can pass straight
 through to `ThemeProvider`. `className` and `style` are merged with the
 theme's SSR output rather than replaced.
 
+**See also:** `ThemeProvider`
+
 | Member | Type | Description |
 | ------ | ---- | ----------- |
 | `about` (optional) | `string` | — |
 | `accessKey` (optional) | `string` | — |
 | `aria-activedescendant` (optional) | `string` | Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. |
 | `aria-atomic` (optional) | `Booleanish` | Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. |
-| `aria-autocomplete` (optional) | `"none" | "list" | "inline" | "both"` | Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
-presented if they are made. |
+| `aria-autocomplete` (optional) | `"none" \| "list" \| "inline" \| "both"` | Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be presented if they are made. |
 | `aria-braillelabel` (optional) | `string` | Defines a string value that labels the current element, which is intended to be converted into Braille. |
 | `aria-brailleroledescription` (optional) | `string` | Defines a human-readable, author-localized abbreviated description for the role of an element, which is intended to be converted into Braille. |
 | `aria-busy` (optional) | `Booleanish` | — |
-| `aria-checked` (optional) | `boolean | "true" | "false" | "mixed"` | Indicates the current "checked" state of checkboxes, radio buttons, and other widgets. |
+| `aria-checked` (optional) | `boolean \| "true" \| "false" \| "mixed"` | Indicates the current "checked" state of checkboxes, radio buttons, and other widgets. |
 | `aria-colcount` (optional) | `number` | Defines the total number of columns in a table, grid, or treegrid. |
 | `aria-colindex` (optional) | `number` | Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid. |
 | `aria-colindextext` (optional) | `string` | Defines a human readable text alternative of aria-colindex. |
 | `aria-colspan` (optional) | `number` | Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid. |
 | `aria-controls` (optional) | `string` | Identifies the element (or elements) whose contents or presence are controlled by the current element. |
-| `aria-current` (optional) | `boolean | "true" | "false" | "page" | "step" | "location" | "date" | "time"` | Indicates the element that represents the current item within a container or set of related elements. |
+| `aria-current` (optional) | `boolean \| "true" \| "false" \| "page" \| "step" \| "location" \| "date" \| "time"` | Indicates the element that represents the current item within a container or set of related elements. |
 | `aria-describedby` (optional) | `string` | Identifies the element (or elements) that describes the object. |
 | `aria-description` (optional) | `string` | Defines a string value that describes or annotates the current element. |
 | `aria-details` (optional) | `string` | Identifies the element that provides a detailed, extended description for the object. |
 | `aria-disabled` (optional) | `Booleanish` | Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable. |
-| `aria-dropeffect` (optional) | `"none" | "link" | "copy" | "execute" | "move" | "popup"` | Indicates what functions can be performed when a dragged object is released on the drop target. |
+| `aria-dropeffect` (optional) | `"none" \| "link" \| "copy" \| "execute" \| "move" \| "popup"` | Indicates what functions can be performed when a dragged object is released on the drop target. |
 | `aria-errormessage` (optional) | `string` | Identifies the element that provides an error message for the object. |
 | `aria-expanded` (optional) | `Booleanish` | Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. |
-| `aria-flowto` (optional) | `string` | Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
-allows assistive technology to override the general default of reading in document source order. |
+| `aria-flowto` (optional) | `string` | Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion, allows assistive technology to override the general default of reading in document source order. |
 | `aria-grabbed` (optional) | `Booleanish` | Indicates an element's "grabbed" state in a drag-and-drop operation. |
-| `aria-haspopup` (optional) | `boolean | "true" | "false" | "dialog" | "grid" | "listbox" | "menu" | "tree"` | Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. |
+| `aria-haspopup` (optional) | `boolean \| "true" \| "false" \| "dialog" \| "grid" \| "listbox" \| "menu" \| "tree"` | Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. |
 | `aria-hidden` (optional) | `Booleanish` | Indicates whether the element is exposed to an accessibility API. |
-| `aria-invalid` (optional) | `boolean | "true" | "false" | "grammar" | "spelling"` | Indicates the entered value does not conform to the format expected by the application. |
+| `aria-invalid` (optional) | `boolean \| "true" \| "false" \| "grammar" \| "spelling"` | Indicates the entered value does not conform to the format expected by the application. |
 | `aria-keyshortcuts` (optional) | `string` | Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. |
 | `aria-label` (optional) | `string` | Defines a string value that labels the current element. |
 | `aria-labelledby` (optional) | `string` | Identifies the element (or elements) that labels the current element. |
 | `aria-level` (optional) | `number` | Defines the hierarchical level of an element within a structure. |
-| `aria-live` (optional) | `"off" | "assertive" | "polite"` | Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. |
+| `aria-live` (optional) | `"off" \| "assertive" \| "polite"` | Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. |
 | `aria-modal` (optional) | `Booleanish` | Indicates whether an element is modal when displayed. |
 | `aria-multiline` (optional) | `Booleanish` | Indicates whether a text box accepts multiple lines of input or only a single line. |
 | `aria-multiselectable` (optional) | `Booleanish` | Indicates that the user may select more than one item from the current selectable descendants. |
-| `aria-orientation` (optional) | `"horizontal" | "vertical"` | Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. |
-| `aria-owns` (optional) | `string` | Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
-between DOM elements where the DOM hierarchy cannot be used to represent the relationship. |
-| `aria-placeholder` (optional) | `string` | Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
-A hint could be a sample value or a brief description of the expected format. |
+| `aria-orientation` (optional) | `"horizontal" \| "vertical"` | Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. |
+| `aria-owns` (optional) | `string` | Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship between DOM elements where the DOM hierarchy cannot be used to represent the relationship. |
+| `aria-placeholder` (optional) | `string` | Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value. A hint could be a sample value or a brief description of the expected format. |
 | `aria-posinset` (optional) | `number` | Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. |
-| `aria-pressed` (optional) | `boolean | "true" | "false" | "mixed"` | Indicates the current "pressed" state of toggle buttons. |
+| `aria-pressed` (optional) | `boolean \| "true" \| "false" \| "mixed"` | Indicates the current "pressed" state of toggle buttons. |
 | `aria-readonly` (optional) | `Booleanish` | Indicates that the element is not editable, but is otherwise operable. |
-| `aria-relevant` (optional) | `"text" | "additions" | "additions removals" | "additions text" | "all" | "removals" | "removals additions" | "removals text" | "text additions" | "text removals"` | Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified. |
+| `aria-relevant` (optional) | `"text" \| "additions" \| "additions removals" \| "additions text" \| "all" \| "removals" \| "removals additions" \| "removals text" \| "text additions" \| "text removals"` | Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified. |
 | `aria-required` (optional) | `Booleanish` | Indicates that user input is required on the element before a form may be submitted. |
 | `aria-roledescription` (optional) | `string` | Defines a human-readable, author-localized description for the role of an element. |
 | `aria-rowcount` (optional) | `number` | Defines the total number of rows in a table, grid, or treegrid. |
@@ -399,33 +461,33 @@ A hint could be a sample value or a brief description of the expected format. |
 | `aria-rowspan` (optional) | `number` | Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid. |
 | `aria-selected` (optional) | `Booleanish` | Indicates the current "selected" state of various widgets. |
 | `aria-setsize` (optional) | `number` | Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. |
-| `aria-sort` (optional) | `"none" | "ascending" | "descending" | "other"` | Indicates if items in a table or grid are sorted in ascending or descending order. |
+| `aria-sort` (optional) | `"none" \| "ascending" \| "descending" \| "other"` | Indicates if items in a table or grid are sorted in ascending or descending order. |
 | `aria-valuemax` (optional) | `number` | Defines the maximum allowed value for a range widget. |
 | `aria-valuemin` (optional) | `number` | Defines the minimum allowed value for a range widget. |
 | `aria-valuenow` (optional) | `number` | Defines the current value for a range widget. |
 | `aria-valuetext` (optional) | `string` | Defines the human readable text alternative of aria-valuenow for a range widget. |
-| `autoCapitalize` (optional) | `string & object | "off" | "none" | "on" | "sentences" | "words" | "characters"` | — |
+| `autoCapitalize` (optional) | `string & object \| "off" \| "none" \| "on" \| "sentences" \| "words" \| "characters"` | — |
 | `autoCorrect` (optional) | `string` | — |
 | `autoFocus` (optional) | `boolean` | — |
 | `autoSave` (optional) | `string` | — |
-| `className` (optional) | `string` | — |
+| `className` (optional) | `string` | Extra classes merged onto the `<html>` element alongside the theme output. |
 | `color` (optional) | `string` | — |
 | `content` (optional) | `string` | — |
-| `contentEditable` (optional) | `Booleanish | "inherit" | "plaintext-only"` | — |
+| `contentEditable` (optional) | `Booleanish \| "inherit" \| "plaintext-only"` | — |
 | `contextMenu` (optional) | `string` | — |
-| `dangerouslySetInnerHTML` (optional) | `{  }` | — |
+| `dangerouslySetInnerHTML` (optional) | `{ }` | — |
 | `datatype` (optional) | `string` | — |
 | `defaultChecked` (optional) | `boolean` | — |
-| `defaultValue` (optional) | `string | number | readonly string[]` | — |
+| `defaultValue` (optional) | `string \| number \| readonly string[]` | — |
 | `dir` (optional) | `string` | — |
 | `draggable` (optional) | `Booleanish` | — |
-| `enterKeyHint` (optional) | `"enter" | "done" | "go" | "next" | "previous" | "search" | "send"` | — |
+| `enterKeyHint` (optional) | `"enter" \| "done" \| "go" \| "next" \| "previous" \| "search" \| "send"` | — |
 | `exportparts` (optional) | `string` | — |
 | `hidden` (optional) | `boolean` | — |
 | `id` (optional) | `string` | — |
 | `inert` (optional) | `boolean` | — |
 | `inlist` (optional) | `any` | — |
-| `inputMode` (optional) | `"none" | "search" | "text" | "tel" | "url" | "email" | "numeric" | "decimal"` | Hints at the type of data that might be entered by the user while editing the element or its contents |
+| `inputMode` (optional) | `"none" \| "search" \| "text" \| "tel" \| "url" \| "email" \| "numeric" \| "decimal"` | Hints at the type of data that might be entered by the user while editing the element or its contents |
 | `is` (optional) | `string` | Specify that a standard HTML element should behave like a defined custom built-in element |
 | `itemID` (optional) | `string` | — |
 | `itemProp` (optional) | `string` | — |
@@ -602,9 +664,9 @@ A hint could be a sample value or a brief description of the expected format. |
 | `onWheel` (optional) | `WheelEventHandler<HTMLHtmlElement>` | — |
 | `onWheelCapture` (optional) | `WheelEventHandler<HTMLHtmlElement>` | — |
 | `part` (optional) | `string` | — |
-| `popover` (optional) | `"" | "auto" | "manual" | "hint"` | — |
+| `popover` (optional) | `"" \| "auto" \| "manual" \| "hint"` | — |
 | `popoverTarget` (optional) | `string` | — |
-| `popoverTargetAction` (optional) | `"toggle" | "show" | "hide"` | — |
+| `popoverTargetAction` (optional) | `"toggle" \| "show" \| "hide"` | — |
 | `prefix` (optional) | `string` | — |
 | `property` (optional) | `string` | — |
 | `radioGroup` (optional) | `string` | — |
@@ -616,14 +678,14 @@ A hint could be a sample value or a brief description of the expected format. |
 | `security` (optional) | `string` | — |
 | `slot` (optional) | `string` | — |
 | `spellCheck` (optional) | `Booleanish` | — |
-| `style` (optional) | `CSSProperties` | — |
+| `style` (optional) | `CSSProperties` | Inline styles merged onto the `<html>` element alongside the theme output. |
 | `suppressContentEditableWarning` (optional) | `boolean` | — |
 | `suppressHydrationWarning` (optional) | `boolean` | — |
 | `tabIndex` (optional) | `number` | — |
 | `title` (optional) | `string` | — |
-| `translate` (optional) | `"yes" | "no"` | — |
+| `translate` (optional) | `"yes" \| "no"` | — |
 | `typeof` (optional) | `string` | — |
-| `unselectable` (optional) | `"off" | "on"` | — |
+| `unselectable` (optional) | `"off" \| "on"` | — |
 | `vocab` (optional) | `string` | — |
 
 ---
@@ -632,9 +694,11 @@ A hint could be a sample value or a brief description of the expected format. |
 ### `ThemeProviderProps<T extends ThemeDefinition>`
 
 **Extends** `ThemeProviderHtmlProps`
-Every attribute a plain `<html>` element accepts, You can pass straight
-through to `ThemeProvider`. `className` and `style` are merged with the
-theme's SSR output rather than replaced.
+Props for the App Router `ThemeProvider`. Renders the `<html>` and `<body>`
+elements, applies the SSR-resolved theme (zero-flash), and mounts the client
+runtime inside the body.
+
+**See also:** `ThemeProvider`, `ThemeProviderBodyProps`
 
 | Member | Type | Description |
 | ------ | ---- | ----------- |
@@ -642,48 +706,44 @@ theme's SSR output rather than replaced.
 | `accessKey` (optional) | `string` | — |
 | `aria-activedescendant` (optional) | `string` | Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. |
 | `aria-atomic` (optional) | `Booleanish` | Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. |
-| `aria-autocomplete` (optional) | `"none" | "list" | "inline" | "both"` | Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
-presented if they are made. |
+| `aria-autocomplete` (optional) | `"none" \| "list" \| "inline" \| "both"` | Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be presented if they are made. |
 | `aria-braillelabel` (optional) | `string` | Defines a string value that labels the current element, which is intended to be converted into Braille. |
 | `aria-brailleroledescription` (optional) | `string` | Defines a human-readable, author-localized abbreviated description for the role of an element, which is intended to be converted into Braille. |
 | `aria-busy` (optional) | `Booleanish` | — |
-| `aria-checked` (optional) | `boolean | "true" | "false" | "mixed"` | Indicates the current "checked" state of checkboxes, radio buttons, and other widgets. |
+| `aria-checked` (optional) | `boolean \| "true" \| "false" \| "mixed"` | Indicates the current "checked" state of checkboxes, radio buttons, and other widgets. |
 | `aria-colcount` (optional) | `number` | Defines the total number of columns in a table, grid, or treegrid. |
 | `aria-colindex` (optional) | `number` | Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid. |
 | `aria-colindextext` (optional) | `string` | Defines a human readable text alternative of aria-colindex. |
 | `aria-colspan` (optional) | `number` | Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid. |
 | `aria-controls` (optional) | `string` | Identifies the element (or elements) whose contents or presence are controlled by the current element. |
-| `aria-current` (optional) | `boolean | "true" | "false" | "page" | "step" | "location" | "date" | "time"` | Indicates the element that represents the current item within a container or set of related elements. |
+| `aria-current` (optional) | `boolean \| "true" \| "false" \| "page" \| "step" \| "location" \| "date" \| "time"` | Indicates the element that represents the current item within a container or set of related elements. |
 | `aria-describedby` (optional) | `string` | Identifies the element (or elements) that describes the object. |
 | `aria-description` (optional) | `string` | Defines a string value that describes or annotates the current element. |
 | `aria-details` (optional) | `string` | Identifies the element that provides a detailed, extended description for the object. |
 | `aria-disabled` (optional) | `Booleanish` | Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable. |
-| `aria-dropeffect` (optional) | `"none" | "link" | "copy" | "execute" | "move" | "popup"` | Indicates what functions can be performed when a dragged object is released on the drop target. |
+| `aria-dropeffect` (optional) | `"none" \| "link" \| "copy" \| "execute" \| "move" \| "popup"` | Indicates what functions can be performed when a dragged object is released on the drop target. |
 | `aria-errormessage` (optional) | `string` | Identifies the element that provides an error message for the object. |
 | `aria-expanded` (optional) | `Booleanish` | Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. |
-| `aria-flowto` (optional) | `string` | Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
-allows assistive technology to override the general default of reading in document source order. |
+| `aria-flowto` (optional) | `string` | Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion, allows assistive technology to override the general default of reading in document source order. |
 | `aria-grabbed` (optional) | `Booleanish` | Indicates an element's "grabbed" state in a drag-and-drop operation. |
-| `aria-haspopup` (optional) | `boolean | "true" | "false" | "dialog" | "grid" | "listbox" | "menu" | "tree"` | Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. |
+| `aria-haspopup` (optional) | `boolean \| "true" \| "false" \| "dialog" \| "grid" \| "listbox" \| "menu" \| "tree"` | Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. |
 | `aria-hidden` (optional) | `Booleanish` | Indicates whether the element is exposed to an accessibility API. |
-| `aria-invalid` (optional) | `boolean | "true" | "false" | "grammar" | "spelling"` | Indicates the entered value does not conform to the format expected by the application. |
+| `aria-invalid` (optional) | `boolean \| "true" \| "false" \| "grammar" \| "spelling"` | Indicates the entered value does not conform to the format expected by the application. |
 | `aria-keyshortcuts` (optional) | `string` | Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. |
 | `aria-label` (optional) | `string` | Defines a string value that labels the current element. |
 | `aria-labelledby` (optional) | `string` | Identifies the element (or elements) that labels the current element. |
 | `aria-level` (optional) | `number` | Defines the hierarchical level of an element within a structure. |
-| `aria-live` (optional) | `"off" | "assertive" | "polite"` | Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. |
+| `aria-live` (optional) | `"off" \| "assertive" \| "polite"` | Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. |
 | `aria-modal` (optional) | `Booleanish` | Indicates whether an element is modal when displayed. |
 | `aria-multiline` (optional) | `Booleanish` | Indicates whether a text box accepts multiple lines of input or only a single line. |
 | `aria-multiselectable` (optional) | `Booleanish` | Indicates that the user may select more than one item from the current selectable descendants. |
-| `aria-orientation` (optional) | `"horizontal" | "vertical"` | Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. |
-| `aria-owns` (optional) | `string` | Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
-between DOM elements where the DOM hierarchy cannot be used to represent the relationship. |
-| `aria-placeholder` (optional) | `string` | Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
-A hint could be a sample value or a brief description of the expected format. |
+| `aria-orientation` (optional) | `"horizontal" \| "vertical"` | Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. |
+| `aria-owns` (optional) | `string` | Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship between DOM elements where the DOM hierarchy cannot be used to represent the relationship. |
+| `aria-placeholder` (optional) | `string` | Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value. A hint could be a sample value or a brief description of the expected format. |
 | `aria-posinset` (optional) | `number` | Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. |
-| `aria-pressed` (optional) | `boolean | "true" | "false" | "mixed"` | Indicates the current "pressed" state of toggle buttons. |
+| `aria-pressed` (optional) | `boolean \| "true" \| "false" \| "mixed"` | Indicates the current "pressed" state of toggle buttons. |
 | `aria-readonly` (optional) | `Booleanish` | Indicates that the element is not editable, but is otherwise operable. |
-| `aria-relevant` (optional) | `"text" | "additions" | "additions removals" | "additions text" | "all" | "removals" | "removals additions" | "removals text" | "text additions" | "text removals"` | Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified. |
+| `aria-relevant` (optional) | `"text" \| "additions" \| "additions removals" \| "additions text" \| "all" \| "removals" \| "removals additions" \| "removals text" \| "text additions" \| "text removals"` | Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified. |
 | `aria-required` (optional) | `Booleanish` | Indicates that user input is required on the element before a form may be submitted. |
 | `aria-roledescription` (optional) | `string` | Defines a human-readable, author-localized description for the role of an element. |
 | `aria-rowcount` (optional) | `number` | Defines the total number of rows in a table, grid, or treegrid. |
@@ -692,39 +752,37 @@ A hint could be a sample value or a brief description of the expected format. |
 | `aria-rowspan` (optional) | `number` | Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid. |
 | `aria-selected` (optional) | `Booleanish` | Indicates the current "selected" state of various widgets. |
 | `aria-setsize` (optional) | `number` | Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. |
-| `aria-sort` (optional) | `"none" | "ascending" | "descending" | "other"` | Indicates if items in a table or grid are sorted in ascending or descending order. |
+| `aria-sort` (optional) | `"none" \| "ascending" \| "descending" \| "other"` | Indicates if items in a table or grid are sorted in ascending or descending order. |
 | `aria-valuemax` (optional) | `number` | Defines the maximum allowed value for a range widget. |
 | `aria-valuemin` (optional) | `number` | Defines the minimum allowed value for a range widget. |
 | `aria-valuenow` (optional) | `number` | Defines the current value for a range widget. |
 | `aria-valuetext` (optional) | `string` | Defines the human readable text alternative of aria-valuenow for a range widget. |
-| `autoCapitalize` (optional) | `string & object | "off" | "none" | "on" | "sentences" | "words" | "characters"` | — |
+| `autoCapitalize` (optional) | `string & object \| "off" \| "none" \| "on" \| "sentences" \| "words" \| "characters"` | — |
 | `autoCorrect` (optional) | `string` | — |
 | `autoFocus` (optional) | `boolean` | — |
 | `autoSave` (optional) | `string` | — |
 | `body` (optional) | `ThemeProviderBodyProps` | Attributes forwarded to the rendered `<body>` element. |
-| `children` | `ReactNode` | — |
-| `className` (optional) | `string` | — |
+| `children` | `ReactNode` | The application content rendered inside the `<body>` element. |
+| `className` (optional) | `string` | Extra classes merged onto the `<html>` element alongside the theme output. |
 | `color` (optional) | `string` | — |
 | `content` (optional) | `string` | — |
-| `contentEditable` (optional) | `Booleanish | "inherit" | "plaintext-only"` | — |
+| `contentEditable` (optional) | `Booleanish \| "inherit" \| "plaintext-only"` | — |
 | `contextMenu` (optional) | `string` | — |
-| `dangerouslySetInnerHTML` (optional) | `{  }` | — |
+| `dangerouslySetInnerHTML` (optional) | `{ }` | — |
 | `datatype` (optional) | `string` | — |
 | `defaultChecked` (optional) | `boolean` | — |
-| `defaultTheme` (optional) | `T["name"]` | Theme to be applied as default.
-Pass defaultTheme="light" for the theme-kit's default neutral light theme.
-And defaultTheme="dark" for default neutral dark theme. |
-| `defaultValue` (optional) | `string | number | readonly string[]` | — |
+| `defaultTheme` (optional) | `T["name"]` | Theme to be applied as default. Pass defaultTheme="light" for the theme-kit's default neutral light theme. And defaultTheme="dark" for default neutral dark theme. |
+| `defaultValue` (optional) | `string \| number \| readonly string[]` | — |
 | `dir` (optional) | `string` | — |
 | `draggable` (optional) | `Booleanish` | — |
-| `enterKeyHint` (optional) | `"enter" | "done" | "go" | "next" | "previous" | "search" | "send"` | — |
+| `enterKeyHint` (optional) | `"enter" \| "done" \| "go" \| "next" \| "previous" \| "search" \| "send"` | — |
 | `exportparts` (optional) | `string` | — |
 | `font` (optional) | `string` | Font family applied to the body element (e.g. "Inter, sans-serif"). |
 | `hidden` (optional) | `boolean` | — |
 | `id` (optional) | `string` | — |
 | `inert` (optional) | `boolean` | — |
 | `inlist` (optional) | `any` | — |
-| `inputMode` (optional) | `"none" | "search" | "text" | "tel" | "url" | "email" | "numeric" | "decimal"` | Hints at the type of data that might be entered by the user while editing the element or its contents |
+| `inputMode` (optional) | `"none" \| "search" \| "text" \| "tel" \| "url" \| "email" \| "numeric" \| "decimal"` | Hints at the type of data that might be entered by the user while editing the element or its contents |
 | `is` (optional) | `string` | Specify that a standard HTML element should behave like a defined custom built-in element |
 | `itemID` (optional) | `string` | — |
 | `itemProp` (optional) | `string` | — |
@@ -902,9 +960,9 @@ And defaultTheme="dark" for default neutral dark theme. |
 | `onWheel` (optional) | `WheelEventHandler<HTMLHtmlElement>` | — |
 | `onWheelCapture` (optional) | `WheelEventHandler<HTMLHtmlElement>` | — |
 | `part` (optional) | `string` | — |
-| `popover` (optional) | `"" | "auto" | "manual" | "hint"` | — |
+| `popover` (optional) | `"" \| "auto" \| "manual" \| "hint"` | — |
 | `popoverTarget` (optional) | `string` | — |
-| `popoverTargetAction` (optional) | `"toggle" | "show" | "hide"` | — |
+| `popoverTargetAction` (optional) | `"toggle" \| "show" \| "hide"` | — |
 | `prefix` (optional) | `string` | — |
 | `property` (optional) | `string` | — |
 | `radioGroup` (optional) | `string` | — |
@@ -913,104 +971,110 @@ And defaultTheme="dark" for default neutral dark theme. |
 | `results` (optional) | `number` | — |
 | `rev` (optional) | `string` | — |
 | `role` (optional) | `AriaRole` | — |
-| `scheduled` (optional) | `false | ScheduledThemeOptions<T>` | Sunrise/sunset scheduling. Passed to the client runtime; the server
-resolves the initial theme (zero-flash) and the client schedule controls
-activation. Exposed reactively via `useThemeSchedule()`. |
-| `scrollbar` (optional) | `boolean | PrePaintScrollbarOptions` | Opt into a custom document scrollbar that exists from the very first
-paint �?" no native-scrollbar flash, no gap while the bundle hydrates.
-
-`true` builds the pre-paint overlay with defaults; pass
-`PrePaintScrollbarOptions` to customize it. The server emits the overlay
-`tk-scrollbar` class on `<html>` plus a blocking `<style>` (via
-`createPrePaintScrollbarCSS`) so the native scrollbar is hidden from the
-very first paint �?" no flash and no hydration mismatch. When your
-`<ThemeScrollbar>` / `createOverlayScrollbar` hydrates, the engine creates
-the custom strips and takes over. Import
-`@theme-kit/core/scrollbar.css` for the pre-paint styles. |
+| `scheduled` (optional) | `false \| ScheduledThemeOptions<T>` | Sunrise/sunset scheduling. Passed to the client runtime; the server resolves the initial theme (zero-flash) and the client schedule controls activation. Exposed reactively via `useThemeSchedule()`. |
+| `scrollbar` (optional) | `boolean \| PrePaintScrollbarOptions` | Opt into a custom document scrollbar that exists from the very first paint — no native-scrollbar flash, no gap while the bundle hydrates. `true` builds the pre-paint overlay with defaults; pass `PrePaintScrollbarOptions` to customize it. The server emits the overlay `tk-scrollbar` class on `<html>` plus a blocking `<style>` (via `createPrePaintScrollbarCSS`) so the native scrollbar is hidden from the very first paint — no flash and no hydration mismatch. When your `<ThemeScrollbar>` / `createOverlayScrollbar` hydrates, the engine creates the custom strips and takes over. Import `@theme-kit/core/scrollbar.css` for the pre-paint styles. |
 | `security` (optional) | `string` | — |
 | `slot` (optional) | `string` | — |
 | `spellCheck` (optional) | `Booleanish` | — |
-| `style` (optional) | `CSSProperties` | — |
+| `style` (optional) | `CSSProperties` | Inline styles merged onto the `<html>` element alongside the theme output. |
 | `suppressContentEditableWarning` (optional) | `boolean` | — |
 | `suppressHydrationWarning` (optional) | `boolean` | — |
 | `tabIndex` (optional) | `number` | — |
 | `themes` (optional) | `readonly T[]` | Collection of themes to be specified for the application. |
 | `title` (optional) | `string` | — |
-| `transition` (optional) | `boolean | ThemeTransitionOptions` | CSS transition options for theme changes. |
-| `translate` (optional) | `"yes" | "no"` | — |
+| `transition` (optional) | `boolean \| ThemeTransitionOptions` | CSS transition options for theme changes. |
+| `translate` (optional) | `"yes" \| "no"` | — |
 | `typeof` (optional) | `string` | — |
-| `unselectable` (optional) | `"off" | "on"` | — |
+| `unselectable` (optional) | `"off" \| "on"` | — |
 | `vocab` (optional) | `string` | — |
+
+```ts
+// app/layout.tsx
+import { ThemeProvider } from "@theme-kit/next";
+
+export default function RootLayout({ children }) {
+  return (
+    <ThemeProvider defaultTheme="light" font="Inter, sans-serif">
+      {children}
+    </ThemeProvider>
+  );
+}
+```
 
 ---
 
 
 ### `ThemeScopeProps`
+Props for the ThemeScope component.
+
+Accepts `theme` (exact selection), `family`/`mode` (family-based
+selection), `themes` (scope-local definitions), and `transition`.
+
 | Member | Type | Description |
 | ------ | ---- | ----------- |
-| `children` | `ReactNode` | — |
-| `className` (optional) | `string` | — |
-| `family` (optional) | `string` | Theme family for the scoped subtree. When `mode` is omitted the scope
- follows the provider's current mode (light/dark/system). |
-| `mode` (optional) | `ThemeMode` | Mode for a family-based scope. Optional — defaults to the provider's
- current mode so `family="plum"` flips light/dark with the page. |
-| `style` (optional) | `CSSProperties` | — |
-| `theme` (optional) | `string` | Exact theme name, family name, or a `{ family, mode }`-style object.
- When `family`/`mode` are also passed, `theme` wins (it's the explicit
- selection). Omit to follow the global selection inside a new boundary. |
-| `themes` (optional) | `readonly ThemeDefinition<string>[]` | Local theme definitions for genuinely isolated components. Resolved FIRST
- (they shadow same-named parent themes), then the provider's registry
- falls back — no second runtime is created. |
-| `transition` (optional) | `boolean | ThemeTransitionOptions` | Transition for this scope's own theme changes. `undefined` inherits the
- `<ThemeProvider/>` transition, `false` disables it, `true` inherits, and
- an object is merged over the provider's config (local keys win). |
+| `children` | `ReactNode` | The scoped subtree. |
+| `className` (optional) | `string` | Additional class applied to the scope wrapper element. |
+| `family` (optional) | `string` | Theme family for the scoped subtree. When `mode` is omitted the scope follows the provider's current mode (light/dark/system). |
+| `mode` (optional) | `ThemeMode` | Mode for a family-based scope. Optional — defaults to the provider's current mode so `family="plum"` flips light/dark with the page. |
+| `style` (optional) | `CSSProperties` | Inline styles applied to the scope wrapper element. Merged over the resolved theme variables, so user styles win on conflicts. |
+| `theme` (optional) | `string` | Exact theme name, family name, or a `{ family, mode }`-style object. When `family`/`mode` are also passed, `theme` wins (it's the explicit selection). Omit to follow the global selection inside a new boundary. |
+| `themes` (optional) | `readonly ThemeDefinition<string>[]` | Local theme definitions for genuinely isolated components. Resolved FIRST (they shadow same-named parent themes), then the provider's registry falls back — no second runtime is created. |
+| `transition` (optional) | `boolean \| ThemeTransitionOptions` | Transition for this scope's own theme changes. `undefined` inherits the `<ThemeProvider/>` transition, `false` disables it, `true` inherits, and an object is merged over the provider's config (local keys win). |
 
 ---
 
 
 ### `ThemeScrollbarProps`
+Props for the ThemeScrollbar overlay component.
+
+Options are grouped into `behavior`, `appearance`, and `icons` — but every
+option is also accepted as a flat, top-level prop (flat props win over the
+grouped ones).
+
 | Member | Type | Description |
 | ------ | ---- | ----------- |
-| `activeThumbColor` (optional) | `string` | — |
-| `animationDuration` (optional) | `number` | — |
+| `activeThumbColor` (optional) | `string` | Flat alias for `OverlayScrollbarOptions.activeThumbColor`. |
+| `animationDuration` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.animationDuration`. |
 | `appearance` (optional) | `ThemeScrollbarAppearance` | Grouped appearance options. Flat props override these. |
 | `arrowDownIcon` (optional) | `ReactNode` | JSX / element for the "scroll down" button. Falls back to `arrowIcon`. |
-| `arrowIcon` (optional) | `ReactNode` | JSX / element rendered inside every arrow button (overrides the built-in
- CSS triangle). Accepts any `ReactNode`. |
+| `arrowIcon` (optional) | `ReactNode` | JSX / element rendered inside every arrow button (overrides the built-in CSS triangle). Accepts any `ReactNode`. |
 | `arrowLeftIcon` (optional) | `ReactNode` | JSX / element for the "scroll left" button. Falls back to `arrowIcon`. |
 | `arrowRightIcon` (optional) | `ReactNode` | JSX / element for the "scroll right" button. Falls back to `arrowIcon`. |
-| `arrows` (optional) | `boolean` | — |
+| `arrows` (optional) | `boolean` | Flat alias for `OverlayScrollbarOptions.arrows`. |
 | `arrowUpIcon` (optional) | `ReactNode` | JSX / element for the "scroll up" button. Falls back to `arrowIcon`. |
-| `autoHide` (optional) | `boolean` | Flat aliases mirroring `OverlayScrollbarOptions` (for convenience /
- backwards compatibility). Each is overridden by the matching flat prop. |
-| `autoHideDelay` (optional) | `number` | Idle (ms) before a revealed strip fades out after its last activity.
- Each host has its own timer, so only the strip you're scrolling/hovering
- is revealed, then it fades after idle; other scrollbars stay hidden.
- Default `900`. Only takes effect when `autoHide` is `true`. |
-| `axes` (optional) | `ScrollbarAxis[]` | — |
+| `autoHide` (optional) | `boolean` | Flat alias for `OverlayScrollbarOptions.autoHide`. |
+| `autoHideDelay` (optional) | `number` | Idle (ms) before a revealed strip fades out after its last activity. Each host has its own timer, so only the strip you're scrolling/hovering is revealed, then it fades after idle; other scrollbars stay hidden. Default `900`. Only takes effect when `autoHide` is `true`. |
+| `axes` (optional) | `ScrollbarAxis[]` | Flat alias for `OverlayScrollbarOptions.axes`. |
 | `behavior` (optional) | `ThemeScrollbarBehavior` | Grouped behavior options. Flat props (e.g. `autoHide`) override these. |
-| `children` (optional) | `ReactNode` | — |
-| `clickToJump` (optional) | `boolean` | — |
-| `dir` (optional) | `"auto" | "ltr" | "rtl"` | — |
-| `draggable` (optional) | `boolean` | — |
-| `duration` (optional) | `number` | — |
-| `exclude` (optional) | `string[] | null` | — |
-| `hoverExpand` (optional) | `boolean` | — |
-| `hoverThickness` (optional) | `number` | — |
+| `children` (optional) | `ReactNode` | Renders nothing visible; kept for API symmetry (the overlay is created against the runtime, not the component tree). |
+| `clickToJump` (optional) | `boolean` | Flat alias for `OverlayScrollbarOptions.clickToJump`. |
+| `dir` (optional) | `"auto" \| "ltr" \| "rtl"` | Flat alias for `OverlayScrollbarOptions.dir`. |
+| `draggable` (optional) | `boolean` | Flat alias for `OverlayScrollbarOptions.draggable`. |
+| `duration` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.duration`. |
+| `exclude` (optional) | `string[] \| null` | Flat alias for `OverlayScrollbarOptions.exclude`. |
+| `hoverExpand` (optional) | `boolean` | Flat alias for `OverlayScrollbarOptions.hoverExpand`. |
+| `hoverThickness` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.hoverThickness`. |
 | `icons` (optional) | `ThemeScrollbarIcons` | Grouped arrow button icons. Flat `arrow*Icon` props override these. |
-| `include` (optional) | `string[] | null` | — |
-| `minThumbSize` (optional) | `number` | — |
-| `offset` (optional) | `number` | — |
-| `overscroll` (optional) | `boolean` | — |
-| `radius` (optional) | `number` | — |
-| `smooth` (optional) | `boolean` | — |
-| `thickness` (optional) | `number` | — |
-| `thumbColor` (optional) | `string` | — |
-| `thumbHoverColor` (optional) | `string` | — |
-| `thumbOpacity` (optional) | `number` | — |
-| `touch` (optional) | `boolean` | — |
-| `trackColor` (optional) | `string` | — |
-| `trackOpacity` (optional) | `number` | — |
-| `zIndex` (optional) | `number` | — |
+| `include` (optional) | `string[] \| null` | Flat alias for `OverlayScrollbarOptions.include`. |
+| `minThumbSize` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.minThumbSize`. |
+| `offset` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.offset`. |
+| `overscroll` (optional) | `boolean` | Flat alias for `OverlayScrollbarOptions.overscroll`. |
+| `radius` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.radius`. |
+| `smooth` (optional) | `boolean` | Flat alias for `OverlayScrollbarOptions.smooth`. |
+| `thickness` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.thickness`. |
+| `thumbColor` (optional) | `string` | Flat alias for `OverlayScrollbarOptions.thumbColor`. |
+| `thumbHoverColor` (optional) | `string` | Flat alias for `OverlayScrollbarOptions.thumbHoverColor`. |
+| `thumbOpacity` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.thumbOpacity`. |
+| `touch` (optional) | `boolean` | Flat alias for `OverlayScrollbarOptions.touch`. |
+| `trackColor` (optional) | `string` | Flat alias for `OverlayScrollbarOptions.trackColor`. |
+| `trackOpacity` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.trackOpacity`. |
+| `zIndex` (optional) | `number` | Flat alias for `OverlayScrollbarOptions.zIndex`. |
 
 ---
+
+## Related docs
+
+- [Runtime](/architecture) — One runtime per app owns the store, selection, registry, history, lifecycle and adapters; every framework binding is a thin view over it.
+- [ThemeScope](/scoped-theme) — Apply a different family/mode (or a local theme definition) to a subtree, with scoped CSS variables and pre-paint support.
+- [Custom scrollbar](/custom-scrollbar) — Themed overlay scrollbars that match the active theme and pre-paint before hydration.
+- [Next.js](/framework-guides/next) — the framework integration

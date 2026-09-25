@@ -1,5 +1,7 @@
 "use client";
 
+import { Select } from "../ui/select";
+
 import { useEffect, useMemo, useState } from "react";
 import {
   calculateSunTimes,
@@ -220,22 +222,22 @@ export function ScheduledDemo() {
                 </span>
               )}
             </span>
-            <select
+            <Select
               value={selectedZone}
-              onChange={(e) => onTimeZoneChange(e.target.value)}
-              className="rounded-lg border border-border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
-            >
-              <option value={AUTO}>
-                {mounted && detectedZone
-                  ? `Auto — my location (${detectedZone})`
-                  : "Auto — my location"}
-              </option>
-              {timeZones.map((zone) => (
-                <option key={zone} value={zone}>
-                  {zone}
-                </option>
-              ))}
-            </select>
+              onChange={onTimeZoneChange}
+              label="Location / timezone"
+              options={[
+                {
+                  value: AUTO,
+                  label:
+                    mounted && detectedZone
+                      ? `Auto — my location (${detectedZone})`
+                      : "Auto — my location",
+                  hint: "Detected from your browser",
+                },
+                ...timeZones.map((zone) => ({ value: zone, label: zone })),
+              ]}
+            />
             <span className="text-xs opacity-60">
               {activeZone && selectedZone !== AUTO && (
                 <>
@@ -247,36 +249,43 @@ export function ScheduledDemo() {
           </label>
 
           <div className="rounded-lg border border-border bg-muted/30 px-4 py-3 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-            <div>
+            <div className="relative">
               <div className="text-[10px] uppercase tracking-wider opacity-40 font-semibold">
                 Sunrise
               </div>
-              <div className="mono text-sm font-semibold mt-0.5">
-                {fmtTime(state?.sunrise)}
-              </div>
+              <div className="mono text-sm font-semibold mt-0.5">{fmtTime(state?.sunrise)}</div>
             </div>
-            <div>
+            <div className="relative">
               <div className="text-[10px] uppercase tracking-wider opacity-40 font-semibold">
                 Sunset
               </div>
-              <div className="mono text-sm font-semibold mt-0.5">
-                {fmtTime(state?.sunset)}
-              </div>
+              <div className="mono text-sm font-semibold mt-0.5">{fmtTime(state?.sunset)}</div>
             </div>
-            <div>
+            <div className="relative">
               <div className="text-[10px] uppercase tracking-wider opacity-40 font-semibold">
                 Next transition
               </div>
               <div className="mono text-sm font-semibold mt-0.5">
-                {next ? `${fmtTime(next.at)} → ${next.theme}` : "—:—"}
+                {next ? (
+                  <span className="inline-flex items-center gap-1">
+                    <span className={`inline-block h-1.5 w-1.5 rounded-full ${next.theme.includes("dark") ? "bg-indigo-400" : "bg-amber-400"}`} />
+                    {fmtTime(next.at)} → {next.theme.replace("scheduled-", "")}
+                  </span>
+                ) : "—:—"}
               </div>
             </div>
-            <div>
+            <div className="relative">
               <div className="text-[10px] uppercase tracking-wider opacity-40 font-semibold">
                 Scheduled themes
               </div>
               <div className="mono text-sm font-semibold mt-0.5">
-                {state?.lightTheme} / {state?.darkTheme}
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-2 w-2 rounded-full bg-amber-400" title="Light" />
+                  {state?.lightTheme?.replace("scheduled-", "")}
+                  <span className="opacity-30">/</span>
+                  <span className="inline-block h-2 w-2 rounded-full bg-indigo-400" title="Dark" />
+                  {state?.darkTheme?.replace("scheduled-", "")}
+                </span>
               </div>
             </div>
           </div>
@@ -400,8 +409,21 @@ export function ScheduledDemo() {
         </div>
 
         <div className="rounded-xl border border-border bg-card p-4">
-          <div className="text-[11px] font-semibold uppercase tracking-wider opacity-50 mb-2">
-            Sun path today
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-[11px] font-semibold uppercase tracking-wider opacity-50">
+              Sun path today
+            </div>
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                isDay === null
+                  ? "bg-muted text-muted-foreground"
+                  : isDay
+                    ? "bg-amber-400/20 text-amber-600 dark:text-amber-400"
+                    : "bg-indigo-500/20 text-indigo-600 dark:text-indigo-400"
+              }`}
+            >
+              {isDay === null ? "…" : isDay ? "☀ Day" : "☾ Night"}
+            </span>
           </div>
           <svg
             viewBox="0 0 260 90"
@@ -409,6 +431,7 @@ export function ScheduledDemo() {
             role="img"
             aria-label="Sun path visualization"
           >
+            {/* Horizon */}
             <line
               x1="0"
               y1="70"
@@ -417,6 +440,14 @@ export function ScheduledDemo() {
               stroke="var(--theme-color-border)"
               strokeWidth="1.5"
               strokeDasharray="4 4"
+            />
+            {/* Fill under the arc (day region) */}
+            <path
+              d={`${dayArcPoints
+                .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
+                .join(" ")} L 260 90 L 0 90 Z`}
+              fill={isDay ? "var(--theme-color-primary)" : "var(--theme-color-secondary)"}
+              opacity="0.08"
             />
             {[0, 6, 12, 18, 24].map((h) => {
               const pt = dayArcPoints[h]!;
@@ -444,20 +475,67 @@ export function ScheduledDemo() {
               opacity="0.5"
               strokeLinecap="round"
             />
+            {/* Sun position marker */}
             {mounted && (
-              <circle
-                cx={dayArcPoints[sunIndex]!.x}
-                cy={dayArcPoints[sunIndex]!.y}
-                r="7"
-                fill={isDay ? "#fbbf24" : "#818cf8"}
-                stroke="var(--theme-color-background)"
-                strokeWidth="2"
-              />
+              <g>
+                <circle
+                  cx={dayArcPoints[sunIndex]!.x}
+                  cy={dayArcPoints[sunIndex]!.y}
+                  r="9"
+                  fill={isDay ? "#fbbf24" : "#818cf8"}
+                  opacity="0.25"
+                />
+                <circle
+                  cx={dayArcPoints[sunIndex]!.x}
+                  cy={dayArcPoints[sunIndex]!.y}
+                  r="5.5"
+                  fill={isDay ? "#fbbf24" : "#818cf8"}
+                  stroke="var(--theme-color-background)"
+                  strokeWidth="2"
+                />
+              </g>
             )}
           </svg>
-          <div className="text-[11px] opacity-50 mt-1 text-center">
-            Sun position now — pick a timezone above or drag the sliders to
-            move around the world.
+          {/* Progress meter */}
+          <div className="mt-3">
+            <div className="flex items-center justify-between text-[10px] opacity-50 mb-1">
+              <span>Sunrise {fmtTime(sunrise)}</span>
+              <span className="mono font-semibold opacity-70">
+                {Math.round(progress * 100)}%
+              </span>
+              <span>Sunset {fmtTime(sunset)}</span>
+            </div>
+            <div
+              className="relative h-2 rounded-full overflow-hidden"
+              style={{ background: "var(--theme-color-muted)" }}
+              role="meter"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress * 100)}
+              aria-label="Day progress between sunrise and sunset"
+            >
+              {/* Gradient fill */}
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${Math.round(progress * 100)}%`,
+                  background: "linear-gradient(90deg, var(--theme-color-secondary), var(--theme-color-primary))",
+                }}
+              />
+              {/* Glow dot at the leading edge */}
+              <div
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full transition-all duration-500"
+                style={{
+                  left: `${Math.round(progress * 100)}%`,
+                  background: isDay ? "#fbbf24" : "#818cf8",
+                  boxShadow: "0 0 8px 2px color-mix(in srgb, var(--theme-color-primary) 40%, transparent)",
+                }}
+              />
+            </div>
+            <div className="mt-1 text-[11px] opacity-50 text-center">
+              Sun position now — pick a timezone above or drag the sliders to
+              move around the world.
+            </div>
           </div>
         </div>
       </div>

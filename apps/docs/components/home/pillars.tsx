@@ -23,7 +23,7 @@ const pillars: Pillar[] = [
   {
     title: "Theme families",
     desc: "Palette and mode switch independently — mint-light, mint-dark, plum-light, plum-dark, all from one API.",
-    visual: ["mint", "plum", "cocoa", "forest"],
+    visual: ["mint", "plum", "cocoa", "iris"],
     href: "/core-concepts",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -36,7 +36,7 @@ const pillars: Pillar[] = [
     ),
   },
   {
-    title: "SSR + zero flash",
+    title: "SSR + zero-flash",
     desc: "The server resolves the persisted theme before first paint. No flicker, no hydration mismatch.",
     visual: ["server", "resolve", "bootstrap", "paint", "hydrate"],
     href: "/zero-flash",
@@ -95,7 +95,7 @@ export function Pillars() {
               className="w-8 h-8 rounded-lg grid place-items-center"
               style={{
                 background: "var(--theme-color-secondary)",
-                color: "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
+                color: "var(--theme-color-secondaryForeground)",
               }}
             >
               {pillar.icon}

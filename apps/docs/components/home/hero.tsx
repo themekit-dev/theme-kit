@@ -8,14 +8,62 @@ import {
   useSetThemeFamily,
 } from "@theme-kit/next/client";
 import { Button } from "../ui/button";
+import { CodeBlock } from "../code-block";
+import { highlightCode } from "../../lib/highlight";
 import { frameworks } from "../../lib/frameworks";
+import { c, colorsOf, contrastRatio } from "../../lib/contrast";
+import { PKG_VERSION_BADGE } from "../../lib/version";
+
+/** Tiny inline trend line for the stat tiles — decorative, token-colored. */
+function Sparkline({ values, color }: { values: number[]; color: string }) {
+  const w = 68;
+  const h = 18;
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const range = max - min || 1;
+  const step = values.length > 1 ? w / (values.length - 1) : w;
+  const points = values
+    .map((v, i) => {
+      const x = i * step;
+      const y = h - 1 - ((v - min) / range) * (h - 2);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+  return (
+    <svg
+      width={w}
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      className="mt-2 w-full"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      <polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
+
+const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
 function DashboardPreview() {
   const { theme, family, mode } = useTheme();
+  const colors = colorsOf(theme);
+  const ratio = contrastRatio(
+    c(colors, "foreground", "#000000"),
+    c(colors, "background", "#ffffff"),
+  );
 
   return (
     <div
-      className="glass-card hero-card float-y p-5 w-full max-w-md mx-auto"
+      className="glass-card hero-card float-y p-5 w-full max-w-123 mx-auto"
       data-preview-card
     >
       <div className="flex items-center justify-between mb-5">
@@ -24,14 +72,20 @@ function DashboardPreview() {
             className="w-8 h-8 rounded-full grid place-items-center text-sm font-bold"
             style={{
               background: "var(--theme-color-primary)",
-              color:
-                "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+              color: "var(--theme-color-primaryForeground)",
             }}
           >
             T
           </div>
           <div>
-            <div className="text-sm font-semibold leading-tight">Theme Kit</div>
+            <div className="text-sm font-semibold leading-tight flex items-center gap-1.5">
+              Theme Kit
+              <span
+                className="w-1.5 h-1.5 rounded-full pulse-soft"
+                style={{ background: "var(--theme-color-success)" }}
+                aria-hidden
+              />
+            </div>
             <div className="text-[11px] opacity-50 leading-tight mono">
               {theme.name}
             </div>
@@ -41,8 +95,7 @@ function DashboardPreview() {
           className="px-2.5 py-1 rounded-full text-[11px] font-semibold"
           style={{
             background: "var(--theme-color-secondary)",
-            color:
-              "var(--theme-color-secondary-foreground, var(--theme-color-secondaryForeground))",
+            color: "var(--theme-color-secondaryForeground)",
           }}
         >
           {family} · {mode}
@@ -67,6 +120,10 @@ function DashboardPreview() {
           >
             ▲ 12.4% this week
           </div>
+          <Sparkline
+            values={[38, 44, 41, 55, 52, 68, 74]}
+            color="var(--theme-color-primary)"
+          />
         </div>
         <div
           className="rounded-lg p-3.5 border"
@@ -81,10 +138,23 @@ function DashboardPreview() {
           <div className="text-xl font-bold tracking-tight">12,842</div>
           <div
             className="text-[11px] font-semibold mt-0.5"
-            style={{ color: "var(--theme-color-accent)" }}
+            style={{ color: "var(--theme-color-primary)" }}
           >
             ▲ 8.1% this week
           </div>
+          {/*
+            Deliberately not `--theme-color-accent`: accent is a background-tier
+            token — in the default light theme it is `#e8e6ff`, so as text it
+            measures ~1.1:1 and is invisible. Text needs 4.5:1, which only
+            `primary` (5.3:1) meets here. `success` is fine for the sparkline
+            because a non-text graphic only needs 3:1 (it measures 3.2:1).
+            A card that displays a measured-contrast badge should not itself
+            ship a failing pair.
+          */}
+          <Sparkline
+            values={[52, 48, 58, 54, 62, 59, 66]}
+            color="var(--theme-color-success)"
+          />
         </div>
       </div>
 
@@ -116,6 +186,17 @@ function DashboardPreview() {
             />
           ))}
         </div>
+        <div className="flex gap-2 mt-1.5">
+          {WEEKDAYS.map((d, i) => (
+            <span
+              key={i}
+              className="flex-1 text-center text-[9px] font-medium"
+              style={{ opacity: i === 5 ? 0.85 : 0.35 }}
+            >
+              {d}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
@@ -130,6 +211,7 @@ function DashboardPreview() {
         ].map((s) => (
           <div
             key={s.key}
+            title={colors[s.key] ?? `--theme-color-${s.key}`}
             className="flex items-center gap-1.5 px-2 py-1 rounded-md border text-[10px] font-semibold"
             style={{
               background: "var(--theme-color-background)",
@@ -148,6 +230,27 @@ function DashboardPreview() {
           </div>
         ))}
       </div>
+
+      {ratio !== null ? (
+        <div className="flex items-center justify-center gap-2 mb-4 text-[10px]">
+          <span
+            className="px-1.5 py-0.5 rounded-md font-semibold"
+            style={{
+              background:
+                ratio >= 4.5
+                  ? "color-mix(in srgb, var(--theme-color-success) 15%, transparent)"
+                  : "color-mix(in srgb, var(--theme-color-destructive) 15%, transparent)",
+              color:
+                ratio >= 4.5
+                  ? "var(--theme-color-success)"
+                  : "var(--theme-color-destructive)",
+            }}
+          >
+            {ratio >= 4.5 ? "AA" : "AA Large"} {ratio.toFixed(1)}:1
+          </span>
+          <span className="opacity-45 mono">foreground on background</span>
+        </div>
+      ) : null}
 
       <div
         aria-hidden="true"
@@ -190,6 +293,48 @@ function FamilyChips() {
           {f}
         </button>
       ))}
+    </div>
+  );
+}
+
+const MODE_LABELS = {
+  light: "Light",
+  dark: "Dark",
+  system: "System",
+} as const;
+
+/**
+ * Live code sample. Reflects the family/mode the visitor just picked (family
+ * via the chips below, mode via the top-navigation toggle), so the visible
+ * result and the code that produced it stay in sync.
+ */
+function LiveCodeSample() {
+  const { family, mode, theme } = useTheme();
+  const currentFamily = family ?? "default";
+  const themeName = theme?.name ?? `${currentFamily}-${mode}`;
+  const currentMode = mode in MODE_LABELS ? mode : "light";
+
+  const code = useMemo(
+    () =>
+      `import { createThemeRuntime } from "@theme-kit/core";
+
+// Applied on this page right now: ${themeName}
+const runtime = createThemeRuntime();
+
+runtime.selection.setFamily("${currentFamily}"); // swap the palette
+runtime.selection.setMode("${currentMode}");      // swap light/dark`,
+    [themeName, currentFamily, currentMode],
+  );
+
+  return (
+    <div className="w-full max-w-2xl mx-auto">
+      <CodeBlock
+        html={highlightCode(code, "tsx", { lineNumbers: false })}
+        code={code}
+        language="tsx"
+        filename={`Live · ${currentFamily} · ${currentMode}`}
+        className="rounded-xl !m-0"
+      />
     </div>
   );
 }
@@ -271,9 +416,20 @@ export function Hero() {
         </div>
 
         <div className="fade-up fade-up-3 mb-12 flex flex-col items-center gap-2">
+          {/*
+            Framework-agnostic on purpose. This used to read
+            `@theme-kit/core @theme-kit/react`, which quietly framed Theme Kit as
+            a React library on the page that has to communicate the opposite —
+            React is one adapter among ten. `@theme-kit/<your-framework>` states
+            the shape: core, plus the adapter for whichever stack you use.
+          */}
           <code className="chip mono text-xs sm:text-sm px-4 py-2">
-            npm install @theme-kit/core @theme-kit/react
+            npm install @theme-kit/core @theme-kit/&lt;your-framework&gt;
           </code>
+          <span className="text-xs opacity-60">
+            React · Next.js · Vue · Nuxt · Svelte · Solid · Angular · Astro ·
+            Remix · Web Components
+          </span>
           <Link
             href="/cli/quickstart"
             className="text-xs opacity-60 hover:opacity-100 transition-opacity no-underline"
@@ -287,14 +443,24 @@ export function Hero() {
           <DashboardPreview />
         </div>
 
-        <p className="fade-up fade-up-4 mb-3 text-xs uppercase tracking-widest opacity-40 font-semibold">
-          Try a family — click to switch live
-        </p>
-        <div className="fade-up fade-up-4">
+        <div className="fade-up fade-up-4 mb-8 flex flex-col items-center gap-3">
+          <p className="text-xs uppercase tracking-widest opacity-40 font-semibold">
+            Palette —{" "}
+            <span className="opacity-60 normal-case tracking-normal">
+              click to switch live; use the top-nav toggle for light/dark
+            </span>
+          </p>
           <FamilyChips />
         </div>
 
-        <div className="fade-up fade-up-4 mt-10 pt-8 border-t border-border">
+        <div className="fade-up fade-up-5 mb-4">
+          <p className="text-xs uppercase tracking-widest opacity-40 font-semibold mb-3 text-center">
+            Try changing the theme, and see the code reflect it live
+          </p>
+          <LiveCodeSample />
+        </div>
+
+        <div className="fade-up fade-up-5 mt-10 pt-8 border-t border-border">
           <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
             {frameworks.slice(0, 11).map((fw) => (
               <Link
@@ -307,14 +473,26 @@ export function Hero() {
               </Link>
             ))}
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 text-[11px] opacity-40">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] opacity-50">
             <span>11 frameworks</span>
-            <span>·</span>
-            <span>0 flash</span>
-            <span>·</span>
-            <span>100% type-safe</span>
-            <span>·</span>
+            <span aria-hidden>·</span>
             <span>MIT licensed</span>
+            <span aria-hidden>·</span>
+            <span>Zero runtime dependencies</span>
+            <span aria-hidden>·</span>
+            <Link
+              href="/changelog"
+              className="hover:opacity-100 transition-opacity no-underline"
+            >
+              {PKG_VERSION_BADGE}
+            </Link>
+            <span aria-hidden>·</span>
+            <Link
+              href="/known-limitations"
+              className="hover:opacity-100 transition-opacity no-underline"
+            >
+              Known limitations
+            </Link>
           </div>
         </div>
       </div>

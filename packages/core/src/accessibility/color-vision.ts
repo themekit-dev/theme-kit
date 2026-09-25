@@ -1,5 +1,8 @@
 import type { ThemeDefinition } from "../model/theme";
 
+/**
+ * The type of color vision deficiency (CVD) to simulate.
+ */
 export type CVDType = "protanopia" | "deuteranopia" | "tritanopia" | "achromatopsia";
 
 const CVD_LABELS: Record<CVDType, string> = {
@@ -68,6 +71,20 @@ function LMSToLinearRGB([l, m, s]: [number, number, number]): [number, number, n
   ];
 }
 
+/**
+ * Simulate how a color appears to someone with the given color vision
+ * deficiency.
+ *
+ * Converts the color to linear RGB, transforms it through the LMS cone space,
+ * collapses the affected cone channel (or, for achromatopsia, reduces to
+ * luminance), and converts back to a hex string. Non-hex input is returned
+ * unchanged.
+ *
+ * @param hex The hex color to simulate.
+ * @param type The CVD type to simulate.
+ * @returns The simulated hex color, or `hex` unchanged when it is not a hex
+ *   color.
+ */
 export function simulateCVD(hex: string, type: CVDType): string {
   if (!/^#[0-9a-fA-F]{6,8}$/.test(hex)) return hex;
 
@@ -125,6 +142,19 @@ function walkAndSimulate(
   return result;
 }
 
+/**
+ * Produce a copy of a theme whose color tokens are simulated for the given
+ * color vision deficiency.
+ *
+ * Every hex color in `tokens.colors` is passed through {@link simulateCVD};
+ * non-color tokens and non-hex values are preserved. The returned theme is a
+ * new object and the input is not mutated. Themes without color tokens are
+ * returned unchanged.
+ *
+ * @param theme The theme definition to simulate.
+ * @param type The CVD type to simulate.
+ * @returns A new theme definition with simulated color tokens.
+ */
 export function simulateThemeForCVD(
   theme: ThemeDefinition,
   type: CVDType,

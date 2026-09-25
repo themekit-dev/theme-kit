@@ -33,14 +33,22 @@ export function allocateId(seen: Map<string, number>, text: string): string {
  * headings render inside client components (or SectionHeading) aren't visible
  * to the layout's RSC tree walk, so they pass their known headings here to
  * DocsLayout — ids stay in lockstep with the authoritative client scan.
+ *
+ * The label is stripped too, not just the id. `SectionHeading` renders its
+ * number inside the `<h2>`, so `textContent` reads "4Zero flash (SSR)"; the
+ * client scanner strips that prefix, and the server has to agree or the rail's
+ * label changes on hydration.
  */
 export function buildPageHeadings(
   entries: Array<{ text: string; level: 2 | 3 }>,
 ): TocItem[] {
   const seen = new Map<string, number>();
-  return entries.map(({ text, level }) => ({
-    text,
-    level,
-    id: allocateId(seen, stripNumberPrefix(text)),
-  }));
+  return entries.map(({ text, level }) => {
+    const label = stripNumberPrefix(text);
+    return {
+      text: label,
+      level,
+      id: allocateId(seen, label),
+    };
+  });
 }

@@ -2,10 +2,11 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { describe, expect, it } from "vitest";
+import { renderToString } from "react-dom/server";
 import { createThemeRuntime, defineTheme } from "@theme-kit/core";
 import { ThemeProvider } from "../src/provider";
 import { ThemeModeButton } from "../src/theme-mode-button";
-import { useThemeTokens, useThemeSchedule } from "../src/hooks";
+import { useThemeMode, useThemeTokens, useThemeSchedule } from "../src/hooks";
 
 function TokensDemo() {
   const tokens = useThemeTokens();
@@ -252,5 +253,59 @@ describe("react hooks", () => {
 
     runtime.destroy();
     document.body.removeChild(container);
+  });
+});
+
+/**
+ * Hydration snapshots.
+ *
+ * A client runtime can legitimately hold a different value than the one the
+ * server rendered — it adopts the pre-paint bootstrap, which knows
+ * `prefers-color-scheme` and the server does not. React therefore needs the
+ * server's value for the hydration render and the live one afterwards, which is
+ * what `runtime.initial` is for. Without it the two disagree and React reports
+ * a hydration mismatch.
+ */
+describe("react hooks — hydration snapshot", () => {
+  const themes = [
+    defineTheme({
+      name: "light",
+      meta: { family: "default", mode: "light" },
+      tokens: { colors: { background: "#ffffff" } },
+    }),
+    defineTheme({
+      name: "dark",
+      meta: { family: "default", mode: "dark" },
+      tokens: { colors: { background: "#000000" } },
+    }),
+  ];
+
+  function ModeDemo() {
+    return <span>{useThemeMode()}</span>;
+  }
+
+  it("renders the server's selection while the live one differs", () => {
+    const runtime = createThemeRuntime({
+      themes,
+      defaultTheme: "light",
+      initial: {
+        theme: themes[0]!,
+        selection: { mode: "system", family: "default" },
+      },
+    });
+
+    // What the browser resolved after adopting the bootstrap.
+    runtime.selection.setMode("dark");
+    expect(runtime.selection.getMode()).toBe("dark");
+
+    const html = renderToString(
+      <ThemeProvider runtime={runtime}>
+        <ModeDemo />
+      </ThemeProvider>,
+    );
+
+    // The hydration render uses the server's value, not the live one.
+    expect(html).toContain("system");
+    expect(html).not.toContain("dark");
   });
 });

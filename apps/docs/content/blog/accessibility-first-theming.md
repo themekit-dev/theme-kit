@@ -12,16 +12,14 @@ color-vision problems *before* your users do.
 ## Contrast ratios, live
 
 `getContrastRatio(foreground, background)` returns the WCAG 2.x ratio, and
-`checkContrastPair` annotates it with AA/AAA conformance and a pass/fail verdict:
+`validateThemeContrast(theme)` audits every semantic token pair against the
+AA/AAA thresholds:
 
 ```ts
-import { getContrastRatio, checkContrastPair } from "@theme-kit/core";
+import { getContrastRatio, validateThemeContrast } from "@theme-kit/core";
 
 getContrastRatio("#111111", "#ffffff"); // → 19.56
-checkContrastPair("#777777", "#ffffff");
-// → { foreground: "#777777", background: "#ffffff", ratio: 4.54,
-//     passesAANormal: false, passesAALarge: true,
-//     passesAAANormal: false, passesAAALarge: false }
+const audit = validateThemeContrast(theme); // full AA/AAA audit
 ```
 
 ## Auditing a whole theme
@@ -47,7 +45,7 @@ entire theme. Combined with the runtime, you can preview *exactly* what a user
 with CVD sees:
 
 ```ts
-import { simulateThemeForCVD, getCVDLabel } from "@theme-kit/core";
+import { simulateThemeForCVD } from "@theme-kit/core";
 
 const deuteranopic = simulateThemeForCVD(theme, "deuteranopia");
 ```

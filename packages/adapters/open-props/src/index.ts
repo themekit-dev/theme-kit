@@ -1,8 +1,15 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import type { AdapterStrategy, ThemeDefinition } from "@theme-kit/core";
-import { useThemeRuntime } from "@theme-kit/react";
+/**
+ * Theme Kit Open Props adapter — framework-neutral entry.
+ *
+ * Exports the React-free `createOpenPropsAdapter` factory (also available from
+ * `@theme-kit/open-props/factory`), the `createOpenPropsVariables` generator,
+ * and the `injectOpenPropsCSS` helper. Framework wrappers live on their own
+ * subpaths: `useOpenPropsTheme(runtime)` on `@theme-kit/open-props/react`, and
+ * equivalent composables/injectables on `/vue`, `/svelte`, `/solid`, and
+ * `/angular`.
+ *
+ * @packageDocumentation
+ */
 import openPropsCss from "./open-props.css";
 
 import { createOpenPropsAdapter } from "./adapter";
@@ -26,45 +33,4 @@ export function injectOpenPropsCSS(): void {
   style.setAttribute("data-css", "");
   style.textContent = openPropsCss;
   document.head.appendChild(style);
-}
-
-/**
- * React hook that installs the Open Props adapter onto the active Theme Kit
- * runtime. The adapter maintains a tagged `:root` style element containing
- * concrete `--color-*` / `--brand` / `--size-*` / `--shadow-*` variables in
- * sync as the theme changes.
- *
- * Call once in your app root:
- *
- * ```tsx
- * import { useOpenPropsTheme } from "@theme-kit/open-props";
- *
- * function App() {
- *   useOpenPropsTheme();
- *   return <YourApp />;
- * }
- * ```
- */
-export function useOpenPropsTheme(options?: {
-  strategy?: AdapterStrategy;
-}): void {
-  const runtime = useThemeRuntime<ThemeDefinition>();
-
-  const adapterRef = useRef<ReturnType<typeof createOpenPropsAdapter> | null>(
-    null,
-  );
-  if (!adapterRef.current) {
-    adapterRef.current = createOpenPropsAdapter(
-      options?.strategy ? { strategy: options.strategy } : {},
-    );
-  }
-
-  useEffect(() => {
-    const adapter = adapterRef.current!;
-    injectOpenPropsCSS();
-    const handle = runtime.adapters.use(adapter);
-    return () => {
-      handle.dispose();
-    };
-  }, [runtime, adapterRef.current, options?.strategy]);
 }

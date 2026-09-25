@@ -1,0 +1,10 @@
+{
+  "feature": "plugins",
+  "framework": "core",
+  "packages": ["@theme-kit/core"],
+  "peerDependencies": [],
+  "files": ["src/example.ts"],
+  "entry": "src/example.ts",
+  "prerequisites": [],
+  "expectedExportsUsed": ["createPluginManager", "ThemeDefinition", "ThemePlugin"]
+}

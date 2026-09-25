@@ -9,6 +9,7 @@ import { SITE_URL, GITHUB_URL, CONTACT_URL, CONTACT_EMAIL } from "../../lib/site
 export const metadata = legalMetadata(
   "Privacy Policy",
   "What the Theme Kit documentation website stores and why: theme preference cookies and browser storage, nothing else.",
+  "/privacy",
 );
 
 const updated = "August 24, 2026";

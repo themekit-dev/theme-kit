@@ -13,7 +13,6 @@ export default defineConfig({
     "react-dom",
     "@theme-kit/core",
     "@theme-kit/adapters",
-    "@theme-kit/react",
     "@mui/material",
     "@emotion/react",
     "@emotion/styled",

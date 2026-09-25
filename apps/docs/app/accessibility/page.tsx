@@ -8,8 +8,10 @@ import { PageHeader } from "../../components/ui/page-header";
 import { SectionHeading } from "../../components/ui/section-heading";
 import { Callout } from "../../components/ui/callout";
 import { highlightCode } from "../../lib/highlight";
+import { docsUrl } from "../../lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: docsUrl("/accessibility") },
   title: "Accessibility",
   description:
     "How Theme Kit handles accessibility: contrast and CVD simulation, focus rings, prefers-reduced-motion, color-scheme, keyboard navigation and scrollbar behavior.",
@@ -21,7 +23,6 @@ const reducedMotionSnippet = {
   code: `import { createThemeRuntime } from "@theme-kit/core";
 
 const runtime = createThemeRuntime({
-  themes,
   defaultTheme: "light",
   transition: {
     enabled: true,
@@ -103,7 +104,7 @@ export default function AccessibilityPage() {
                       i === 2
                         ? {
                             background: "var(--theme-color-primary)",
-                            color: "var(--theme-color-primary-foreground, var(--theme-color-primaryForeground))",
+                            color: "var(--theme-color-primaryForeground)",
                           }
                         : undefined
                     }
@@ -292,6 +293,22 @@ export default function AccessibilityPage() {
               <span style={{ color: "var(--theme-color-primary)" }}>→</span>
             </Link>
           </div>
+        </section>
+        <section id="api-reference" className="scroll-mt-24 mb-10">
+          <SectionHeading
+            num={7}
+            desc="Every export used on this page is generated from source JSDoc — this guide links it rather than duplicating it."
+          >
+            API reference
+          </SectionHeading>
+          <p className="text-sm leading-relaxed opacity-80">
+            The full surface:
+          </p>
+          <p className="mt-3 text-sm">
+            <Link href="/api-reference/core" className="underline">
+              @theme-kit/core API reference
+            </Link>
+          </p>
         </section>
       </div>
     </DocsLayout>

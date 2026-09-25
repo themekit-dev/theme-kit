@@ -1,0 +1,10 @@
+{
+  "feature": "cli",
+  "framework": "core",
+  "packages": ["@theme-kit/cli"],
+  "peerDependencies": [],
+  "files": ["src/example.ts"],
+  "entry": "src/example.ts",
+  "prerequisites": [],
+  "expectedExportsUsed": ["parseArgs"]
+}

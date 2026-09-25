@@ -2,10 +2,23 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [["@theme-kit/*"]],
+  "fixed": [["@theme-kit/core", "@theme-kit/web"]],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@theme-kit/docs"]
+  "ignore": [
+    "@theme-kit/docs",
+    "@theme-kit/app-angular",
+    "@theme-kit/app-astro",
+    "@theme-kit/app-next",
+    "@theme-kit/app-nuxt",
+    "@theme-kit/app-react",
+    "@theme-kit/app-remix",
+    "@theme-kit/app-solid",
+    "@theme-kit/app-svelte",
+    "@theme-kit/app-tailwind",
+    "@theme-kit/app-vue",
+    "@theme-kit/app-web"
+  ]
 }

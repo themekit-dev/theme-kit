@@ -40,6 +40,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   "core-concepts": "Core Concepts",
   migration: "Migration",
   "choose-package": "Which package?",
+  changelog: "Changelog",
 };
 
 function humanize(segment: string): string {

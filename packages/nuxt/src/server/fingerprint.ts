@@ -1,18 +1,13 @@
-import type { ThemeDefinition } from "@theme-kit/core";
-
 /**
- * Fingerprint the theme configuration so stale cookies from an older build
- * (different themes / default) are ignored instead of being applied against
- * themes they were never valid for.
+ * Re-exported from `@theme-kit/core`.
  *
- * Mirrors `@theme-kit/next`'s `computeFingerprint` so both SSR integrations
- * agree on the same cookie contract.
+ * The fingerprint is part of the **stable cookie contract**
+ * (`theme-mode` / `theme-family` / `theme-fingerprint`), so it has to be
+ * byte-identical across every SSR integration. Nuxt, Next, Astro and Remix each
+ * carried a private copy; they now share core's implementation. This module
+ * keeps the package-internal import path (`./fingerprint`) working.
+ *
+ * @see {@link computeFingerprint}
+ * @see {@link resolveThemeFromCookies}
  */
-export function computeFingerprint(
-  themes: readonly ThemeDefinition[],
-  defaultTheme?: string,
-): string {
-  if (!themes.length) return "";
-  const names = themes.map((t) => t.name).sort().join(",");
-  return `${defaultTheme ?? ""}|${names}`;
-}
+export { computeFingerprint } from "@theme-kit/core";

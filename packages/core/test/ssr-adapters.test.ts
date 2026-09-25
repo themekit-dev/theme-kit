@@ -48,10 +48,11 @@ describe("createThemeRuntime", () => {
     runtime.selection.setMode("dark");
 
     expect(runtime.store.get().name).toBe("dark");
-    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
-    // The CSS variables swap on the next animation frame, so flush before
-    // asserting the new value.
+    // The identity attributes and the CSS variables commit together — see the
+    // note in runtime.test.ts. Both are asserted after the swap, so this
+    // asserts they agree rather than that one of them leads.
     await flushFrames();
+    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
     expect(
       document.documentElement.style.getPropertyValue(
         "--theme-color-background",

@@ -4,6 +4,7 @@ import { DocsLayout } from "../../../components/docs-layout";
 import { Markdown } from "../../../components/markdown";
 import { PageHeader } from "../../../components/ui/page-header";
 import { formatDate, getPost, getPosts } from "../../../lib/blog";
+import { docsUrl } from "../../../lib/site";
 
 export const dynamicParams = false;
 
@@ -22,6 +23,7 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.description,
+    alternates: { canonical: docsUrl(`/blog/${slug}`) },
   };
 }
 

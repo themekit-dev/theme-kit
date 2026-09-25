@@ -12,6 +12,19 @@ function cssBlock(selector: string, map: Record<string, string>): string {
   return `${selector} {\n${lines}\n}`;
 }
 
+/**
+ * Implements the `export` command: exports a theme file as CSS variables or
+ * JSON.
+ *
+ * Reads `--file`/`-f` (or the first positional), `--format`/`-F` (`css` or
+ * `json`), and `--output`/`-o`. Prints the exported CSS or JSON to stdout, or
+ * writes it to the output file when provided.
+ *
+ * @param args The parsed command-line arguments.
+ * @throws {UsageError} When no file is provided or the format is unknown.
+ *
+ * @see {@link parseArgs}
+ */
 export async function cmdExport(args: ParsedArgs) {
   const file = getString(args, "file") || getString(args, "f") || args._[1];
   const format = (getString(args, "format") || getString(args, "F") || "css").toLowerCase();

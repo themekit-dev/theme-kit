@@ -1,8 +1,15 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import type { AdapterStrategy, ThemeDefinition } from "@theme-kit/core";
-import { useThemeRuntime } from "@theme-kit/react";
+/**
+ * Theme Kit Bootstrap adapter — framework-neutral entry.
+ *
+ * Exports the React-free `createBootstrapAdapter` factory (also available from
+ * `@theme-kit/bootstrap/factory`), the `createBootstrapVariables` generator,
+ * and the `injectBootstrapCSS` helper. Framework wrappers live on their own
+ * subpaths: `useBootstrapTheme(runtime)` on `@theme-kit/bootstrap/react`, and
+ * equivalent composables/injectables on `/vue`, `/svelte`, `/solid`, and
+ * `/angular`.
+ *
+ * @packageDocumentation
+ */
 import bootstrapCss from "./bootstrap.css";
 
 import { createBootstrapAdapter } from "./adapter";
@@ -26,43 +33,4 @@ export function injectBootstrapCSS(): void {
   style.setAttribute("data-css", "");
   style.textContent = bootstrapCss;
   document.head.appendChild(style);
-}
-
-/**
- * React hook that installs the Bootstrap adapter onto the active Theme Kit
- * runtime. The adapter maintains a tagged `:root` style element containing
- * concrete `--bs-*` variables (including `-rgb` triplets) and keeps them in
- * sync as the theme changes.
- *
- * Call once in your app root:
- *
- * ```tsx
- * import { useBootstrapTheme } from "@theme-kit/bootstrap";
- *
- * function App() {
- *   useBootstrapTheme();
- *   return <YourApp />;
- * }
- * ```
- */
-export function useBootstrapTheme(options?: { strategy?: AdapterStrategy }): void {
-  const runtime = useThemeRuntime<ThemeDefinition>();
-
-  const adapterRef = useRef<ReturnType<typeof createBootstrapAdapter> | null>(
-    null,
-  );
-  if (!adapterRef.current) {
-    adapterRef.current = createBootstrapAdapter(
-      options?.strategy ? { strategy: options.strategy } : {},
-    );
-  }
-
-  useEffect(() => {
-    const adapter = adapterRef.current!;
-    injectBootstrapCSS();
-    const handle = runtime.adapters.use(adapter);
-    return () => {
-      handle.dispose();
-    };
-  }, [runtime, adapterRef.current, options?.strategy]);
 }

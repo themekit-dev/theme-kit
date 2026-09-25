@@ -13,7 +13,6 @@ import { createThemeRuntime } from "@theme-kit/core";
 import { createDevToolsPlugin, createDevToolsPanel } from "@theme-kit/devtools";
 
 const runtime = createThemeRuntime({
-  themes,
   plugins: [createDevToolsPlugin()],
 });
 
@@ -32,7 +31,7 @@ exposes it on `window.__THEME_KIT_DEVTOOLS__` so extensions can find it.
 ```ts
 const plugin = createDevToolsPlugin({ maxEntries: 200, maxPerfEntries: 100 });
 
-const runtime = createThemeRuntime({ themes, plugins: [plugin] });
+const runtime = createThemeRuntime({ plugins: [plugin] });
 
 plugin.getInspector().getState();
 // {
